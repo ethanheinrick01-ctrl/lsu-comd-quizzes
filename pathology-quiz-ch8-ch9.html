@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outer & Middle Ear Pathologies — Ch. 8 & 9 Quiz</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f0f1a;--card:#1a1a2e;--accent:#4a9eff;--orange:#e67e22;
+    --green:#27ae60;--red:#e74c3c;--text:#e0e0e0;--dim:#888;
+    --border:#2a2a4a;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px}
+  h1{text-align:center;font-size:1.5rem;color:var(--accent);margin-bottom:4px;letter-spacing:.5px}
+  .subtitle{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:20px}
+
+  #progress-bar-wrap{background:var(--border);border-radius:4px;height:6px;margin-bottom:10px;max-width:780px;margin-left:auto;margin-right:auto}
+  #progress-bar{height:6px;border-radius:4px;background:var(--accent);width:0;transition:width .3s}
+  #progress-text{text-align:center;font-size:.8rem;color:var(--dim);margin-bottom:16px}
+
+  .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+  .cat-ch8{background:#2a1a3e;color:#c084fc}
+  .cat-ch9{background:#0a2a3a;color:#38bdf8}
+
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;max-width:780px;margin:0 auto 20px auto}
+  .q-num{font-size:.8rem;color:var(--dim);margin-bottom:6px}
+  .q-text{font-size:1.05rem;line-height:1.55;margin-bottom:18px}
+
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    background:#12122a;border:1.5px solid var(--border);border-radius:8px;
+    padding:12px 16px;cursor:pointer;font-size:.95rem;line-height:1.4;
+    transition:border-color .15s,background .15s
+  }
+  .opt:hover:not(.locked){border-color:var(--accent);background:#1a1a3a}
+  .opt.selected{border-color:var(--orange);background:#2a1a0a}
+  .opt.correct{border-color:var(--green) !important;background:#0a2a12 !important}
+  .opt.wrong{border-color:var(--red) !important;background:#2a0a0a !important}
+  .opt.locked{cursor:default}
+
+  .explanation{margin-top:14px;padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);
+    background:#0d1a2a;font-size:.9rem;line-height:1.55;display:none;color:#c5d8f0}
+  .explanation.show{display:block}
+
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px auto;max-width:780px}
+  button{padding:10px 28px;border-radius:8px;border:none;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+  #btn-submit{background:var(--accent);color:#000}
+  #btn-next{background:var(--orange);color:#000}
+  #btn-skip{background:#333;color:var(--dim);font-size:.85rem;padding:8px 20px}
+  button:disabled{opacity:.35;cursor:default}
+  button:hover:not(:disabled){opacity:.82}
+
+  #header-nav{max-width:780px;margin:0 auto 16px auto;display:flex;gap:8px;flex-wrap:wrap}
+  .filter-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;
+    color:var(--dim);font-size:.8rem;cursor:pointer;transition:all .15s}
+  .filter-btn.active{border-color:var(--accent);color:var(--accent);background:#0d1a2a}
+
+  #final{display:none;max-width:780px;margin:0 auto;text-align:center}
+  #final h2{font-size:2rem;color:var(--accent);margin-bottom:10px}
+  .score-big{font-size:3.5rem;font-weight:900;color:#fff;margin:10px 0}
+  .verdict{font-size:1rem;line-height:1.65;color:#c5d8f0;margin:16px auto;max-width:600px;text-align:left;
+    background:var(--card);padding:18px 20px;border-radius:10px;border-left:4px solid var(--accent)}
+  .breakdown{text-align:left;background:var(--card);border-radius:10px;padding:20px;margin-top:20px}
+  .breakdown h3{color:var(--accent);margin-bottom:12px;font-size:.95rem}
+  .bk-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+  .bk-item:last-child{border-bottom:none}
+  .bk-q{flex:1;color:var(--text)}
+  .bk-ans{text-align:right;min-width:160px}
+  .bk-you{color:var(--red)}
+  .bk-correct{color:var(--green)}
+  #btn-restart{background:var(--accent);color:#000;margin-top:22px;font-size:1rem;padding:12px 36px}
+</style>
+</head>
+<body>
+
+<h1>Outer &amp; Middle Ear Pathologies</h1>
+<p class="subtitle">Chapters 8 &amp; 9 — COMD 4190 | Curated by the immortal Baldrizzt</p>
+
+<div id="quiz-wrap">
+  <div style="max-width:780px;margin:0 auto 6px auto">
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+  <div id="progress-text"></div>
+
+  <div id="header-nav">
+    <button type="button" class="filter-btn active" id="f-all" onclick="setFilter('all',this)">All Questions</button>
+    <button type="button" class="filter-btn" id="f-ch8" onclick="setFilter('ch8',this)">Ch. 8 — Outer Ear</button>
+    <button type="button" class="filter-btn" id="f-ch9" onclick="setFilter('ch9',this)">Ch. 9 — Middle Ear</button>
+  </div>
+
+  <div id="q-area"></div>
+
+  <div class="btn-row">
+    <button type="button" id="btn-skip" onclick="skip()">Skip</button>
+    <button type="button" id="btn-submit" onclick="submitAnswer()" disabled>Submit</button>
+    <button type="button" id="btn-next" onclick="nextQ()" disabled>Next &rarr;</button>
+  </div>
+</div>
+
+<div id="final">
+  <h2>Ritual Complete</h2>
+  <div class="score-big" id="final-score"></div>
+  <div class="verdict" id="final-verdict"></div>
+  <div class="breakdown" id="final-breakdown">
+    <h3>Review — Incorrect &amp; Skipped</h3>
+    <div id="breakdown-list"></div>
+  </div>
+  <button type="button" id="btn-restart" onclick="restart()">Resurrect &amp; Retry</button>
+</div>
+
+<script>
+var ALL_QUESTIONS = [
+
+// ── CHAPTER 8 — OUTER EAR ──────────────────────────────────────────
+
+{cat:'ch8',topic:'Congenital Anomalies',
+q:'A newborn presents with an extremely small, malformed pinna but the ear canal is otherwise present. This condition is called:',
+opts:['Anotia','Microtia','Atresia of the EAC','Macrotia'],
+ans:1,
+exp:'Microtia = abnormally small pinna. Anotia = completely absent pinna. Neither should be confused with EAC atresia, which involves the canal itself. Both microtia and anotia are managed surgically or with prosthetics.'},
+
+{cat:'ch8',topic:'Congenital Anomalies',
+q:'A child is born with NO pinna at all — the structure is completely absent. The correct term is:',
+opts:['Microtia','Stenosis','Anotia','Atresia'],
+ans:2,
+exp:'Anotia = total absence of the pinna. Microtia = small or malformed. Both may co-occur with canal atresia and are addressed via prosthetic or surgical reconstruction.'},
+
+{cat:'ch8',topic:'EAC Atresia',
+q:'Congenital atresia of the EAC results in which audiometric finding?',
+opts:['Sensorineural HL up to 60 dB with absent bone conduction','Conductive HL up to ~60 dB with NORMAL bone conduction','Flat sensorineural loss across all frequencies','Mixed loss with reduced bone conduction thresholds'],
+ans:1,
+exp:'EAC atresia = no canal, no sound reaches TM = maximum conductive HL (~60 dB air-bone gap). The cochlea is unaffected so BC thresholds are normal. Immittance and OAEs cannot be obtained because there is no canal to place the probe in.'},
+
+{cat:'ch8',topic:'EAC Atresia',
+q:'Why can\'t immittance audiometry or OAEs be performed with EAC atresia?',
+opts:['The cochlea is damaged and cannot generate emissions','The EAC is absent, so no probe can access the TM','Atresia causes sensorineural loss that blocks OAE generation','Bone-anchored hearing aids block probe placement'],
+ans:1,
+exp:'Immittance and OAEs both require a hermetically sealed probe tip in the EAC. With atresia there is no canal — the test physically cannot be conducted. This is a test access issue, not a pathophysiology issue.'},
+
+{cat:'ch8',topic:'Syndromes',
+q:'Treacher Collins Syndrome includes which combination of features?',
+opts:['Heart defect, choanal atresia, coloboma, genitourinary anomalies','Facial bone anomalies, EAC atresia, and preauricular skin tags','Only sensorineural hearing loss with no external ear involvement','Bony tumors in the EAC with cold-water exposure history'],
+ans:1,
+exp:'Treacher Collins = craniofacial hypoplasia (malar, mandibular) + EAC atresia + preauricular skin tags. Conductive HL from atresia is the audiologic consequence. Distinct from CHARGE syndrome.'},
+
+{cat:'ch8',topic:'Syndromes',
+q:'The acronym CHARGE stands for:',
+opts:[
+  'Conductive HL, Hemangioma, Atresia, Retinal defect, Growth delay, Exostoses',
+  'Coloboma, Heart defect, Atresia choanae, Retarded growth, Genitourinary anomalies, Ear anomalies',
+  'Cerumen, Hematoma, Atresia EAC, Rhinorrhea, Goldenhar, External otitis',
+  'Collapsing canal, Hemotympanum, Atresia, Retrocochlear lesion, Growth defect, Effusion'
+],
+ans:1,
+exp:'CHARGE: Coloboma, Heart defects, Atresia choanae, Retarded growth, Genitourinary anomalies, Ear anomalies. Broad multi-system disorder with variable expression. Ear anomalies include atresia and semicircular canal hypoplasia.'},
+
+{cat:'ch8',topic:'EAC Conditions',
+q:'A patient shows a 30 dB conductive HL with supra-aural earphones that DISAPPEARS when insert earphones are used. The most likely cause is:',
+opts:['Cerumen impaction','Collapsing external auditory canal','External otitis','EAC stenosis'],
+ans:1,
+exp:'Collapsing EAC: supra-aural earphone cushion pressure on the tragus collapses the canal walls, producing an artifactual conductive HL. Insert earphones bypass this. Always a test artifact; fix the test method, not the patient.'},
+
+{cat:'ch8',topic:'EAC Conditions',
+q:'Stenosis of the EAC refers to:',
+opts:['Complete absence of the canal','Narrowing of the canal, which may require surgery if severe','Collapse of the canal walls under earphone pressure','Bony growths from cold water exposure'],
+ans:1,
+exp:'Stenosis = narrowing, not complete absence. Mild = observation. Severe (blocks sound) = surgery. Can be congenital or acquired (post-trauma, post-surgical).'},
+
+{cat:'ch8',topic:'Infection',
+q:'External Otitis ("Swimmer\'s Ear") is characterized by:',
+opts:['Infection of the middle ear mucosa with Type B tympanogram','Bacterial or fungal EAC infection; painful; mild conductive HL; treated with topical antibiotics/steroids','Inflammation of the TM with blebs on its surface','Osteomyelitis of the temporal bone in diabetics'],
+ans:1,
+exp:'External otitis = EAC skin infection (bacterial > fungal), intense pain on auricular manipulation, itching, discharge, edema. Mild conductive HL if canal is swollen. Tx: topical antibiotic + steroid drops (e.g., ciprofloxacin/dexamethasone otic).'},
+
+{cat:'ch8',topic:'Infection',
+q:'Otomycosis is specifically:',
+opts:['Bacterial external otitis caused by Pseudomonas','Fungal external otitis, most commonly Aspergillus or Candida','A middle ear effusion following a viral URI','Chronic suppurative otitis media with cholesteatoma'],
+ans:1,
+exp:'Otomycosis = fungal external otitis. Aspergillus niger (black spores) and Candida albicans are the main culprits. Treatment differs from bacterial external otitis: antifungals, not antibiotics.'},
+
+{cat:'ch8',topic:'Infection',
+q:'Furunculosis refers to:',
+opts:['Diffuse bacterial infection of the entire EAC skin','Localized infection of a hair follicle in the lateral cartilaginous EAC','Fungal invasion of the bony EAC wall','Deep space infection of the mastoid air cells'],
+ans:1,
+exp:'Furuncle = hair follicle abscess. Only the lateral EAC has hair follicles (cartilaginous portion), so furunculosis is localized there. Extremely painful. Tx: systemic antibiotics +/- incision and drainage.'},
+
+{cat:'ch8',topic:'Infection',
+q:'Necrotizing (Malignant) External Otitis is dangerous primarily because:',
+opts:['It causes permanent sensorineural loss within 48 hours','It spreads beyond the EAC causing osteomyelitis of the temporal bone; potentially fatal in diabetics and immunocompromised patients','It ruptures the TM causing permanent perforation','It converts conductive loss to mixed loss within days'],
+ans:1,
+exp:'Malignant external otitis: caused almost exclusively by Pseudomonas aeruginosa. Erodes skull base, can invade cranial nerves and brainstem. High mortality without IV antibiotics. Immunocompromised and diabetics are most vulnerable.'},
+
+{cat:'ch8',topic:'TM Conditions',
+q:'Myringitis refers to:',
+opts:['TM perforation from barotrauma','Inflammation of the TM, often presenting with blebs (fluid-filled blisters) on its surface','Calcium plaques deposited in the TM fibrous layer','Thickening of the TM from recurrent otitis media'],
+ans:1,
+exp:'Myringitis = TM inflammation. Bullous myringitis specifically features fluid-filled blebs on the TM, associated with Mycoplasma or viral infection. Extremely painful. The TM is inflamed but not perforated in classic cases.'},
+
+{cat:'ch8',topic:'TM Conditions',
+q:'Tympanosclerosis is best described as:',
+opts:['Scarring of the ossicular chain that always causes severe HL','Calcium/hyaline deposits (plaques) on the TM and/or ME structures; HL only occurs if there is extensive ossicular involvement','Fluid accumulation behind an intact TM','Bony overgrowth of the oval window niche'],
+ans:1,
+exp:'Tympanosclerosis = white chalky calcium plaques visible on otoscopy. If limited to TM: HL is often minimal. If plaques encase ossicles: significant conductive HL. No reliably effective medical treatment. Surgical removal of plaques rarely worthwhile.'},
+
+{cat:'ch8',topic:'TM Conditions',
+q:'A TM perforation causes conductive hearing loss that is:',
+opts:['Flat at ~60 dB regardless of perforation size','Proportional to perforation size — larger perforation = greater HL','Always maximum (60 dB) due to loss of TM tension','Limited to low frequencies only'],
+ans:1,
+exp:'Perforation size determines HL magnitude. Small: mild HL (5-20 dB). Large: up to ~50 dB. Total TM destruction approaches maximum conductive HL. Myringoplasty closes the perforation and can restore thresholds.'},
+
+{cat:'ch8',topic:'TM Conditions',
+q:'The surgical repair of a TM perforation is called:',
+opts:['Tympanoplasty type III','Stapedectomy','Myringoplasty','Ossiculoplasty'],
+ans:2,
+exp:'Myringoplasty = surgical closure of a TM perforation using a tissue graft (typically temporalis fascia). Tympanoplasty encompasses broader ME reconstruction. Stapedectomy = stapes footplate surgery for otosclerosis.'},
+
+{cat:'ch8',topic:'Cerumen',
+q:'Cerumen impaction results in which audiometric finding?',
+opts:['Sensorineural HL, 40-60 dB, descending configuration','Mild to moderate flat conductive HL (up to ~40 dB)','Type B tympanogram with absent reflexes and normal AC thresholds','Bilateral symmetric sensorineural loss at high frequencies'],
+ans:1,
+exp:'Cerumen blocks sound in the EAC = conductive HL. Severity depends on degree of occlusion. Complete impaction: up to ~40 dB flat conductive HL. Remove cerumen and retest — thresholds should normalize.'},
+
+{cat:'ch8',topic:'Bony EAC Growths',
+q:'Exostoses of the EAC (Surfer\'s Ear) are associated with:',
+opts:['UV radiation exposure causing bony proliferation','Repeated cold water exposure causing benign multiple bony projections from EAC walls','Chronic fungal infection eroding the bony EAC','Trauma to the mastoid causing cortical bone proliferation'],
+ans:1,
+exp:'Exostoses = multiple, smooth, bilateral bony projections from periosteal hyperplasia caused by cold water and wind. Common in surfers and open-water swimmers. Treated surgically only if large enough to trap debris or cause occlusion.'},
+
+{cat:'ch8',topic:'Bony EAC Growths',
+q:'An osteoma of the EAC differs from exostoses in that it is:',
+opts:['Multiple, bilateral, and caused by cold water exposure','Singular, pedunculated, unrelated to cold water; requires removal/biopsy to rule out malignancy','A soft tissue polyp with no bony component','A cholesteatoma pearl within the bony EAC'],
+ans:1,
+exp:'Osteoma = solitary pedunculated bony benign tumor. NOT cold-water related (unlike exostoses which are multiple and sessile). Requires biopsy to confirm benign. Removed if causing symptoms or occlusion.'},
+
+{cat:'ch8',topic:'Carcinoma',
+q:'Basal Cell Carcinoma affecting the pinna is most strongly associated with:',
+opts:['Cold water exposure','Chronic bacterial infection of the EAC','Ultraviolet (UV) radiation exposure; most commonly affects the helix','Repeated trauma from earphone use'],
+ans:2,
+exp:'BCC = most common skin cancer; sun-exposed pinna helix is high risk. Early detection and surgical excision with clear margins is critical. If untreated, can invade the EAC and middle ear.'},
+
+{cat:'ch8',topic:'Hematoma',
+q:'An auricular hematoma is most commonly caused by:',
+opts:['UV radiation','Blunt trauma to the pinna (common in wrestlers and contact sport athletes)','Fungal infection of the perichondrium','Genetic collagen disorder'],
+ans:1,
+exp:'Auricular hematoma = blood between perichondrium and cartilage from blunt trauma. Must be drained promptly. Organized hematoma = cartilage necrosis = cauliflower ear (irreversible deformity).'},
+
+{cat:'ch8',topic:'TMJ',
+q:'TMJ (Temporomandibular Joint) Syndrome / MPD Syndrome presents audiologically as:',
+opts:['Conductive HL from TM retraction','Referred otalgia (ear pain) with normal audiogram, normal immittance, and normal otoscopy','Tinnitus with Type B tympanogram','Sensorineural HL from cochlear branch compression'],
+ans:1,
+exp:'TMJ syndrome = referred otalgia via the auriculotemporal nerve, which serves both the joint and outer ear. Audiogram and immittance are NORMAL. Key differential: ear pain + normal otoscopy/audiometry = think TMJ, not otologic pathology.'},
+
+{cat:'ch8',topic:'EAC Conditions',
+q:'Foreign body in the EAC most commonly causes:',
+opts:['Sensorineural HL from cochlear trauma','Mild conductive HL if it occludes the canal; treated by removal with method depending on object type','Immediate TM perforation in all cases','Type C tympanogram from negative ME pressure'],
+ans:1,
+exp:'Foreign body occludes EAC = mild conductive HL. Removal method matters: live insects (kill with mineral oil first), hygroscopic objects (do NOT irrigate — they swell), smooth objects (suction/hook). Risk of TM trauma during careless removal.'},
+
+// ── CHAPTER 9 — MIDDLE EAR ─────────────────────────────────────────
+
+{cat:'ch9',topic:'Eustachian Tube',
+q:'Eustachian Tube Dysfunction (ETD) with negative middle ear pressure produces which tympanogram type?',
+opts:['Type A','Type B','Type C','Type Ad'],
+ans:2,
+exp:'Type C tympanogram = peak compliance at NEGATIVE pressure (below -100 daPa). ME is at negative pressure relative to atmosphere — classic ETD. TM appears retracted on otoscopy.'},
+
+{cat:'ch9',topic:'Eustachian Tube',
+q:'In ETD with unilateral negative ME pressure, the Weber test lateralizes to:',
+opts:['The unaffected ear','The affected (ipsilateral) ear','The midline always','Neither ear — Weber is absent in ETD'],
+ans:1,
+exp:'Weber lateralizes to the ear with the conductive component (occlusion effect). The affected ear has the conductive HL, so bone-conducted sound appears louder there. Classic conductive pattern.'},
+
+{cat:'ch9',topic:'Eustachian Tube',
+q:'Which maneuver involves pinching the nose shut and blowing gently to force open the Eustachian tube?',
+opts:['Toynbee maneuver','Politzerization','Valsalva maneuver','Paracetesis'],
+ans:2,
+exp:'Valsalva: pinch nose, close mouth, blow gently = increased nasopharyngeal pressure = ET forced open. Toynbee = pinch nose while swallowing. Politzerization = clinician forces air via rubber bulb through nasal olive while patient swallows.'},
+
+{cat:'ch9',topic:'Otitis Media',
+q:'Suppurative (Acute) Otitis Media typically produces which audiometric pattern?',
+opts:['Sloping sensorineural loss, absent OAEs, normal tympanogram','Flat conductive HL, Type B tympanogram, absent acoustic reflexes, normal WRS, absent OAEs','Notched audiogram at 4000 Hz, Type A tympanogram','High-frequency conductive HL with Type A tympanogram'],
+ans:1,
+exp:'Suppurative OM = purulent ME fluid. Flat conductive HL (fluid mass-loads ME), Type B (no TM mobility), absent reflexes (ME can\'t transduce), normal WRS (cochlea intact), absent OAEs (ME disrupts reverse transmission), delayed ABR latencies.'},
+
+{cat:'ch9',topic:'Otitis Media',
+q:'In Suppurative Otitis Media, why is Word Recognition Score (WRS) typically normal?',
+opts:['Because the cochlea and auditory nerve are unaffected — only the conductive pathway is disrupted','Because WRS tests low frequencies where HL is minimal','Because antibiotics normalize WRS within hours','Because Type B tympanogram is associated with normal speech processing'],
+ans:0,
+exp:'WRS tests neural/cochlear processing. Suppurative OM is a CONDUCTIVE disorder — the cochlea and 8th nerve are intact. Once sound is sufficiently amplified, the patient understands speech normally. Normal WRS is a hallmark of conductive HL.'},
+
+{cat:'ch9',topic:'Otitis Media',
+q:'Chronic Suppurative Otitis Media (CSOM) differs from acute OM in that:',
+opts:['It resolves spontaneously within 3 weeks','It involves persistent TM perforation with recurrent or continuous purulent discharge lasting >6 weeks','It is always unilateral with Type C tympanogram','It only affects adults'],
+ans:1,
+exp:'CSOM = chronic ME infection with persistent TM perforation and discharge. High risk for cholesteatoma. Requires surgical management (tympanoplasty). Tympanometry through a perforation shows Type B with large Vea.'},
+
+{cat:'ch9',topic:'Effusion',
+q:'Serous Otitis Media (glue ear) differs from suppurative OM audiometrically in that:',
+opts:['Serous OM causes sensorineural HL while suppurative causes conductive HL','Serous OM produces greater HL at high frequencies due to the fluid\'s mass effect on the TM/ossicles','Serous OM shows Type C tympanogram while suppurative shows Type B','Serous OM has normal acoustic reflexes while suppurative has absent reflexes'],
+ans:1,
+exp:'Serous OM fluid mass-loads the TM and ossicles, reducing high-frequency transmission more than low. Suppurative OM tends to be flatter across frequencies. Both show Type B tympanogram.'},
+
+{cat:'ch9',topic:'Effusion',
+q:'A meniscus is visible behind the TM on otoscopy. This finding is most consistent with:',
+opts:['Hemotympanum','Serous (sterile) middle ear effusion — glue ear','Cholesteatoma','Acute suppurative otitis media'],
+ans:1,
+exp:'A meniscus (air-fluid level) visible through a translucent TM is classic for serous effusion. The fluid moves with head tilt. Hemotympanum = blue/dark TM. Cholesteatoma = white mass. Acute OM = erythematous, bulging, opaque TM.'},
+
+{cat:'ch9',topic:'Effusion',
+q:'PE tubes (pressure equalization tubes) are indicated when:',
+opts:['A single acute OM episode occurs in a child over 5','ME fluid persists >3 months despite treatment, or recurrent OM is causing HL or complications','Any child has a Type B tympanogram at a single visit','ME fluid is present bilaterally for >2 weeks'],
+ans:1,
+exp:'PE tube criteria: bilateral ME fluid >3 months, unilateral >6 months, recurrent acute OM (>= 3 in 6 months or >= 4 in 12 months), or associated significant conductive HL. Tubes bypass the ET, aerating the ME directly.'},
+
+{cat:'ch9',topic:'Effusion',
+q:'A Type B tympanogram with a LARGE ear canal volume (Vea) suggests:',
+opts:['Serous ME effusion with intact TM','TM perforation or patent PE tube — the probe measures EAC + ME cavity combined','Ossicular discontinuity','Otosclerosis'],
+ans:1,
+exp:'Normal Vea ~0.6-1.5 mL. Type B + large Vea (>2 mL) = ME communicates with EAC = TM perforation or patent tube. Type B + normal Vea = ME effusion with intact TM. This distinction is clinically critical.'},
+
+{cat:'ch9',topic:'Barotrauma',
+q:'Hemotympanum (blood in the ME space) most commonly results from:',
+opts:['Chronic Eustachian tube dysfunction alone','Acute barotrauma — rapid pressure change that ruptures ME vasculature or the TM','Bacterial infection with Pseudomonas aeruginosa','Cholesteatoma erosion of ossicular blood supply'],
+ans:1,
+exp:'Rapid pressure differential (diving descent, airplane descent without equalization) can rupture TM vessels or TM itself, filling ME with blood. Otoscopy: blue/dark TM. Typically resolves spontaneously. Audiogram shows conductive HL.'},
+
+{cat:'ch9',topic:'Mastoiditis',
+q:'Mastoiditis is best described as:',
+opts:['A primary infection of the mastoid, unrelated to otitis media','A complication of untreated OM where infection spreads to and destroys mastoid air cell septa','Benign bony expansion of the mastoid from cold-water swimming','A sensorineural component caused by cochlear damage from OM'],
+ans:1,
+exp:'Mastoiditis = OM complication. Mastoid air cells connect to ME via aditus ad antrum. Uncontrolled infection destroys bony septa (coalescent mastoiditis) and can spread intracranially. Tx: IV antibiotics + mastoidectomy.'},
+
+{cat:'ch9',topic:'Mastoiditis',
+q:'Which clinical sign is most associated with acute mastoiditis?',
+opts:['Meniscus visible through TM','Post-auricular swelling, erythema, and tenderness with the pinna displaced anteroinferiorly','Visible white mass behind TM','Absent stapedial reflexes bilaterally with normal TM'],
+ans:1,
+exp:'Mastoiditis: post-auricular redness, swelling, tenderness. Pinna is pushed forward and downward by the swelling. Key distinguisher from external otitis: mastoiditis = post-auricular displacement; external otitis = tragal/auricular tenderness without pinna displacement.'},
+
+{cat:'ch9',topic:'MRSA',
+q:'MRSA otitis media is clinically significant because:',
+opts:['It only affects the outer ear and needs topical steroids','It is caused by methicillin-resistant Staphylococcus aureus — standard beta-lactam antibiotics fail; requires targeted agents like clindamycin or trimethoprim-sulfamethoxazole','It causes permanent sensorineural loss within 48 hours','It is the primary cause of external otitis in immunocompromised patients'],
+ans:1,
+exp:'MRSA = multi-drug resistant staph. Standard amoxicillin or amoxicillin-clavulanate FAIL. Requires culture-guided treatment. Increasingly common in community-acquired OM. Aggressive treatment is essential to prevent intracranial complications.'},
+
+{cat:'ch9',topic:'Tympanogram Interpretation',
+q:'Which tympanogram type is associated with ossicular discontinuity?',
+opts:['Type B','Type C','Type As (shallow)','Type Ad (deep/hypermobile)'],
+ans:3,
+exp:'Type Ad (Abnormally Deep) = peak compliance exceeds upper normal limit (>1.75 mL). Indicates hypermobility of the ME system. Classic for ossicular discontinuity (broken chain) or a monomeric/flaccid TM.'},
+
+{cat:'ch9',topic:'Tympanogram Interpretation',
+q:'Type As (shallow) tympanogram suggests:',
+opts:['Normal ME pressure with hypermobile TM','Reduced TM/ossicular mobility, as seen in otosclerosis or tympanosclerosis with ossicular fixation','ME effusion','TM perforation with patent PE tube'],
+ans:1,
+exp:'Type As = Abnormally Shallow peak. Compliance is lower than normal = the ME system is stiff. Classic causes: otosclerosis (stapes fixation) or tympanosclerosis with ossicular involvement.'},
+
+{cat:'ch9',topic:'ABR Findings',
+q:'In Suppurative Otitis Media, ABR wave latencies are:',
+opts:['Normal — conductive HL does not affect ABR','Delayed (prolonged absolute latencies) due to reduced effective stimulus intensity reaching the cochlea','Shortened from enhanced bone conduction','Absent entirely due to cochlear destruction'],
+ans:1,
+exp:'Conductive HL = less sound energy reaching the cochlea = cochlea behaves as if stimulus is softer. ABR waves are PRESENT but DELAYED (increased absolute latencies). Inter-wave intervals remain normal — the neural pathway itself is intact.'},
+
+{cat:'ch9',topic:'OAE Findings',
+q:'Why are OAEs absent in middle ear effusion even when cochlear function is intact?',
+opts:['The cochlear hair cells are damaged by the fluid pressure','ME fluid blocks the reverse transmission of OAEs from the cochlea back to the EAC probe microphone','The probe cannot generate adequate stimulus intensity through the TM','Negative pressure destroys the outer hair cells'],
+ans:1,
+exp:'OAEs are generated by outer hair cells and travel retrograde through the ME system to be recorded in the EAC. ME pathology disrupts this reverse path — OAEs appear absent even with perfectly normal cochleae. This is why absent OAEs do not always mean cochlear damage.'},
+
+{cat:'ch9',topic:'Mixed Review',
+q:'A patient has flat conductive HL, Type B tympanogram, absent acoustic reflexes, normal WRS, and absent OAEs. The most likely diagnosis is:',
+opts:['Cochlear sensorineural HL','Auditory neuropathy spectrum disorder','Middle ear effusion (serous or suppurative OM)','Auditory processing disorder'],
+ans:2,
+exp:'Classic ME effusion profile: conductive pathway disrupted (Type B, absent reflexes, absent OAEs) but cochlea and nerve are intact (normal WRS, normal BC thresholds). This pattern = middle ear, not cochlea or nerve.'},
+
+{cat:'ch9',topic:'Mixed Review',
+q:'Which correctly matches all tympanogram types to their clinical interpretations?',
+opts:[
+  'Type A = ME effusion; Type B = normal; Type C = negative pressure',
+  'Type A = normal; Type B = ME effusion or perforation; Type C = negative ME pressure (ETD)',
+  'Type A = ossicular discontinuity; Type As = normal; Type Ad = ME effusion',
+  'Type B = negative ME pressure; Type C = ME effusion; Type A = perforation'
+],
+ans:1,
+exp:'Master this: Type A = normal peak near 0 daPa. Type B = flat (effusion, perforation, cerumen). Type C = peak at negative pressure (ETD). Type As = stiff system (otosclerosis). Type Ad = hypermobile system (discontinuity). This is tested constantly.'},
+
+{cat:'ch9',topic:'Politzerization',
+q:'Politzerization is a procedure where:',
+opts:['A clinician inserts a tympanostomy tube under local anesthesia','A clinician forces air into the nasopharynx via a rubber bulb and nasal olive while the patient swallows, opening the Eustachian tube','The patient performs repeated swallowing to equalize pressure','A paracentesis needle drains ME fluid transtympanically'],
+ans:1,
+exp:'Politzerization: clinician places rubber Politzer bag tip in one nostril, occludes the other, patient swallows or says "K-K-K" to close the nasopharynx, clinician inflates bag. Air is forced through the ET into the ME. Historically useful for ETD management.'},
+
+{cat:'ch8',topic:'EAC Atresia',
+q:'Which statement about acoustic reflexes in EAC atresia is correct?',
+opts:[
+  'Acoustic reflex thresholds are elevated but measurable via BC probe',
+  'Acoustic reflexes cannot be measured because the probe cannot access the ME',
+  'Acoustic reflex is present and normal since atresia does not affect it',
+  'Acoustic reflex is absent due to cochlear damage from atresia'
+],
+ans:1,
+exp:'EAC atresia = no canal = no probe placement = entire immittance battery is impossible. This is a test access issue, not a pathophysiological absence of the reflex arc.'},
+
+{cat:'ch8',topic:'Cerumen',
+q:'Cerumenolytic agents are used to:',
+opts:['Surgically remove impacted cerumen under direct visualization','Soften impacted cerumen to facilitate its removal by irrigation, suction, or curette','Prevent cerumen production in recurrent impaction','Treat external otitis by eliminating cerumen that harbors bacteria'],
+ans:1,
+exp:'Cerumenolytics (carbamide peroxide, mineral oil, sodium bicarbonate drops) soften and break down cerumen, making mechanical removal easier. They do not remove cerumen by themselves — must follow with irrigation, suction, or curette.'}
+
+];
+
+// ─────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────
+var filter = 'all';
+var questions = [];
+var idx = 0;
+var userAnswers = [];
+var locked = [];
+var answerHistory = [];
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  restart();
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function shuffleQuestionOptions(question) {
+  var optionMeta = question.opts.map(function(opt, index) {
+    return {
+      text: opt,
+      isCorrect: index === question.ans
+    };
+  });
+  var shuffledOptions = shuffle(optionMeta);
+  return {
+    cat: question.cat,
+    topic: question.topic,
+    q: question.q,
+    opts: shuffledOptions.map(function(opt) { return opt.text; }),
+    ans: shuffledOptions.findIndex(function(opt) { return opt.isCorrect; }),
+    exp: question.exp
+  };
+}
+
+function buildQuestionSet() {
+  var pool = filter === 'all' ? ALL_QUESTIONS : ALL_QUESTIONS.filter(function(q){ return q.cat === filter; });
+  questions = shuffle(pool.slice()).map(shuffleQuestionOptions);
+  userAnswers = questions.map(function(){ return null; });
+  locked = questions.map(function(){ return false; });
+  answerHistory = [];
+  idx = 0;
+}
+
+// ─────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────
+function render() {
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  var isLocked = locked[idx];
+
+  // progress bar
+  var pct = Math.round(idx / questions.length * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent =
+    'Question ' + (idx + 1) + ' of ' + questions.length;
+
+  var catHTML = Q.cat === 'ch8'
+    ? '<span class="cat-badge cat-ch8">Ch. 8 \u2014 Outer Ear</span>'
+    : '<span class="cat-badge cat-ch9">Ch. 9 \u2014 Middle Ear</span>';
+
+  var optsHTML = '';
+  for(var i = 0; i < Q.opts.length; i++) {
+    var cls = 'opt';
+    if(isLocked) {
+      cls += ' locked';
+      if(i === Q.ans) cls += ' correct';
+      else if(i === chosen) cls += ' wrong';
+    } else {
+      if(i === chosen) cls += ' selected';
+    }
+    var clickAttr = isLocked ? '' : 'onclick="selectOpt(' + i + ')"';
+    optsHTML += '<div class="' + cls + '" ' + clickAttr + '>' + Q.opts[i] + '</div>';
+  }
+
+  var expCls = isLocked ? 'explanation show' : 'explanation';
+
+  document.getElementById('q-area').innerHTML =
+    '<div class="q-card">' +
+      catHTML +
+      '<span style="float:right;font-size:.75rem;color:var(--dim);margin-top:3px">' + Q.topic + '</span>' +
+      '<div class="q-num">Q' + (idx + 1) + '.</div>' +
+      '<div class="q-text">' + Q.q + '</div>' +
+      '<div class="options">' + optsHTML + '</div>' +
+      '<div class="' + expCls + '">\u{1F480} <strong>Baldrizzt says:</strong> ' + Q.exp + '</div>' +
+    '</div>';
+
+  // buttons
+  var submitBtn = document.getElementById('btn-submit');
+  var nextBtn   = document.getElementById('btn-next');
+  var skipBtn   = document.getElementById('btn-skip');
+  nextBtn.textContent = idx < questions.length - 1 ? 'Next →' : 'Finish →';
+
+  if(isLocked) {
+    submitBtn.style.display = 'none';
+    skipBtn.style.display   = 'none';
+    nextBtn.style.display   = 'inline-block';
+    nextBtn.disabled        = false;
+  } else {
+    submitBtn.style.display = 'inline-block';
+    submitBtn.disabled = (chosen === null);
+    skipBtn.style.display   = 'inline-block';
+    nextBtn.style.display   = 'inline-block';
+    nextBtn.disabled        = true;
+  }
+}
+
+function selectOpt(i) {
+  if(locked[idx]) return;
+  userAnswers[idx] = i;
+  document.getElementById('btn-submit').disabled = false;
+  // re-render just the options highlight
+  var opts = document.querySelectorAll('.opt');
+  for(var k = 0; k < opts.length; k++) {
+    opts[k].className = 'opt' + (k === i ? ' selected' : '');
+    if(!locked[idx]) {
+      (function(index){
+        opts[index].onclick = function(){ selectOpt(index); };
+      })(k);
+    }
+  }
+}
+
+function submitAnswer() {
+  if(locked[idx] || userAnswers[idx] === null) return;
+  locked[idx] = true;
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  answerHistory.push({
+    q: Q.q,
+    chosenText: Q.opts[chosen],
+    correctText: Q.opts[Q.ans],
+    isCorrect: chosen === Q.ans
+  });
+  render();
+}
+
+function skip() {
+  if(locked[idx]) return;
+  userAnswers[idx] = -1;
+  locked[idx] = true;
+  var Q = questions[idx];
+  answerHistory.push({
+    q: Q.q,
+    chosenText: '[Skipped]',
+    correctText: Q.opts[Q.ans],
+    isCorrect: false
+  });
+  render();
+  // auto-advance after skip
+  setTimeout(function(){
+    if(idx < questions.length - 1) { idx++; render(); }
+    else showFinal();
+  }, 400);
+}
+
+function nextQ() {
+  if(idx < questions.length - 1) {
+    idx++;
+    render();
+  } else {
+    showFinal();
+  }
+}
+
+// ─────────────────────────────────────────────────
+// FINAL SCREEN
+// ─────────────────────────────────────────────────
+function showFinal() {
+  document.getElementById('quiz-wrap').style.display = 'none';
+  document.getElementById('final').style.display = 'block';
+
+  var total = questions.length;
+  var correct = answerHistory.filter(function(h){ return h.isCorrect; }).length;
+  var pct = Math.round(correct / total * 100);
+
+  document.getElementById('final-score').textContent = correct + ' / ' + total + ' (' + pct + '%)';
+
+  var verdict;
+  if(pct >= 90)
+    verdict = "Hm. Not embarrassing. That score is tolerable for an apprentice who spent centuries drooling at my feet. You've absorbed a reasonable fraction of what I taught you about the festering holes in people's skulls. Don't let it inflate that undead ego.";
+  else if(pct >= 75)
+    verdict = "Decent. Like a correctly-placed tympanostomy tube — functional, but not inspired genius-tier necromantic medicine. You know the tympanograms, you know the syndromes. Revisit the sections where you flailed like a half-animated skeleton.";
+  else if(pct >= 60)
+    verdict = "Mediocre, Va'xul. A sputtering Eustachian tube has more pressure than your performance. You know just enough to be dangerous — which in audiology means misdiagnosing a Type C as normal and blaming the audiometer. Study harder.";
+  else if(pct >= 40)
+    verdict = "I didn't spend three thousand years accumulating wisdom so my apprentice could fumble middle-ear pathology like a sleep-deprived first-year. You're confusing suppurative OM with serous OM. This is not acceptable.";
+  else
+    verdict = "Absolutely catastrophic. I've seen fresher corpses with better clinical reasoning. Re-read BOTH chapters tonight, all of Table 8.1, and do not return until you can differentiate a Type B from a Type C tympanogram in your sleep — which, being a Bone Lich, is most of the time.";
+
+  document.getElementById('final-verdict').textContent = verdict;
+
+  var wrong = answerHistory.filter(function(h){ return !h.isCorrect; });
+  var bkEl = document.getElementById('breakdown-list');
+  if(wrong.length === 0) {
+    bkEl.innerHTML = '<div style="color:var(--green);font-size:.9rem;padding:8px 0">Every single one correct. Unsettling.</div>';
+  } else {
+    bkEl.innerHTML = wrong.map(function(h){
+      var qShort = h.q.length > 100 ? h.q.substring(0, 100) + '\u2026' : h.q;
+      return '<div class="bk-item">' +
+        '<div class="bk-q">' + qShort + '</div>' +
+        '<div class="bk-ans">' +
+          '<div class="bk-you">You: ' + h.chosenText + '</div>' +
+          '<div class="bk-correct">\u2713 ' + h.correctText + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function restart() {
+  document.getElementById('quiz-wrap').style.display = 'block';
+  document.getElementById('final').style.display = 'none';
+  buildQuestionSet();
+  render();
+}
+
+// ─── INIT ───
+buildQuestionSet();
+render();
+</script>
+</body>
+</html>

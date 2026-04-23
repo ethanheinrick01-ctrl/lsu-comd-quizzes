@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMD 4190 — Audiology Labeling Quiz</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f0f1a;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column}
+#header{background:#16213e;padding:12px 20px;border-bottom:2px solid #4a9eff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#header h1{font-size:1rem;color:#4a9eff;font-weight:800;letter-spacing:.03em}
+#progress-dots{display:flex;gap:5px;align-items:center}
+.dot{width:11px;height:11px;border-radius:50%;background:#222;border:2px solid #444;transition:all .3s;cursor:pointer}
+.dot.active{border-color:#4a9eff;background:#4a9eff}
+.dot.done-pass{border-color:#2ecc71;background:#2ecc71}
+.dot.done-fail{border-color:#e74c3c;background:#e74c3c}
+#scorebox{font-size:.85rem;color:#aaa}
+#scorebox span{color:#4a9eff;font-weight:700}
+
+#main{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px;gap:14px;overflow:auto}
+#quiz-header{text-align:center}
+#quiz-title{font-size:1.2rem;font-weight:700;color:#4a9eff}
+#quiz-desc{font-size:.8rem;color:#888;margin-top:3px}
+#instructions{font-size:.78rem;color:#f39c12;background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.3);padding:6px 12px;border-radius:6px;text-align:center}
+
+#diagram-wrap{background:#fff;border-radius:10px;padding:6px;box-shadow:0 0 25px rgba(74,158,255,.25);max-width:620px;width:100%;position:relative}
+#diagram-wrap svg{width:100%;height:auto;display:block}
+
+.mgrp{cursor:pointer}
+.mgrp circle{transition:fill .2s}
+
+#wordbank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:680px;width:100%}
+#wordbank-label{width:100%;text-align:center;font-size:.72rem;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.wcard{padding:7px 13px;border-radius:18px;background:#0f3460;border:2px solid #4a9eff;color:#ddd;cursor:pointer;font-size:.8rem;transition:all .2s;user-select:none;white-space:nowrap}
+.wcard:hover:not(.used):not(.sel){background:#1a5276;transform:translateY(-1px)}
+.wcard.sel{background:#e67e22;border-color:#e67e22;color:#fff;box-shadow:0 0 10px rgba(230,126,34,.5)}
+.wcard.used{opacity:.28;pointer-events:none}
+
+#feedback{padding:10px 18px;border-radius:8px;font-weight:600;text-align:center;display:none;font-size:.9rem}
+#feedback.show{display:block}
+#feedback.pass{background:rgba(46,204,113,.15);border:2px solid #2ecc71;color:#2ecc71}
+#feedback.fail{background:rgba(231,76,60,.15);border:2px solid #e74c3c;color:#e74c3c}
+
+#controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{padding:9px 20px;border-radius:7px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;transition:all .2s}
+button:disabled{opacity:.35;cursor:default}
+#btnPrev{background:#34495e;color:#fff}
+#btnPrev:not(:disabled):hover{background:#2c3e50}
+#btnCheck{background:#27ae60;color:#fff}
+#btnCheck:not(:disabled):hover{background:#219a52}
+#btnReset{background:#7f8c8d;color:#fff}
+#btnReset:hover{background:#636e72}
+#btnNext{background:#4a9eff;color:#fff}
+#btnNext:not(:disabled):hover{background:#2980b9}
+
+#final{display:none;flex-direction:column;align-items:center;gap:20px;padding:40px 20px;text-align:center}
+#final.show{display:flex}
+#final h2{font-size:2rem;color:#4a9eff}
+#final-score{font-size:3.5rem;font-weight:900;color:#f1c40f}
+#final-msg{font-size:1rem;color:#aaa;max-width:420px;line-height:1.5}
+#btnRestart{background:#4a9eff;color:#fff;font-size:1rem;padding:12px 28px}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>🦴 COMD 4190 — Audiology Labeling Quiz</h1>
+  <div id="progress-dots"></div>
+  <div id="scorebox">Score: <span id="scoreNum">0</span> / <span id="scoreTotal">0</span></div>
+</div>
+
+<div id="main">
+  <div id="quiz-header">
+    <div id="quiz-title"></div>
+    <div id="quiz-desc"></div>
+  </div>
+  <div id="instructions">① Click a term from the word bank → ② Click a numbered marker to place it. Click a placed marker to remove it.</div>
+  <div id="diagram-wrap"></div>
+  <div id="wordbank"><div id="wordbank-label">— Word Bank —</div></div>
+  <div id="feedback"></div>
+  <div id="controls">
+    <button id="btnPrev" onclick="go(cur-1)">← Prev</button>
+    <button id="btnCheck" onclick="checkAnswers()">Check Answers</button>
+    <button id="btnReset" onclick="resetDiagram()">Reset</button>
+    <button id="btnNext" onclick="go(cur+1)">Next →</button>
+  </div>
+</div>
+
+<div id="final">
+  <h2>Quiz Complete!</h2>
+  <div id="final-score"></div>
+  <div id="final-msg"></div>
+  <button id="btnRestart" onclick="restart()">Try Again</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// QUIZ DATA  — 10 diagrams matching the PDF exactly
+// ═══════════════════════════════════════════════════════════════
+const Q = [
+
+// ─── 1. VESTIBULAR LABYRINTH (colored illustration) ───────────
+{ title:"Diagram 1: Vestibular Labyrinth",
+  desc:"Inner ear — semicircular canals, otolith organs, and cochlea",
+  labels:[
+    {id:1, ans:"Anterior Canal",   x:310, y:55},
+    {id:2, ans:"Posterior Canal",  x:105, y:118},
+    {id:3, ans:"Horizontal Canal", x:88,  y:278},
+    {id:4, ans:"Utricle",          x:342, y:192},
+    {id:5, ans:"Saccule",          x:315, y:262},
+    {id:6, ans:"Cochlea",          x:428, y:288},
+  ],
+  svg:`<svg viewBox="0 0 530 390" xmlns="http://www.w3.org/2000/svg" style="background:#f5e8ce">
+  <!-- bony shell hints -->
+  <ellipse cx="260" cy="210" rx="185" ry="155" fill="#e8c8a0" opacity=".45"/>
+  <!-- Cochlea spiral -->
+  <path d="M405,280 Q433,258 438,282 Q441,306 420,316 Q397,326 376,314 Q354,300 356,278 Q360,248 388,238 Q420,228 445,248 Q466,268 460,296" fill="none" stroke="#d0a870" stroke-width="16" stroke-linecap="round"/>
+  <path d="M405,280 Q427,262 431,282 Q433,300 416,308 Q399,316 381,306 Q365,295 367,279 Q370,258 392,250 Q418,242 438,258 Q455,273 450,296" fill="none" stroke="#9898cc" stroke-width="7"/>
+  <!-- central vestibule/utricle-saccule mass -->
+  <path d="M205,148 Q262,128 305,148 Q348,172 352,218 Q356,262 325,288 Q290,310 252,300 Q212,285 198,252 Q185,215 205,148Z" fill="#7080c8" stroke="#5060a0" stroke-width="1.5"/>
+  <!-- Anterior canal outer shell -->
+  <path d="M258,148 Q268,78 312,58 Q354,40 376,68 Q398,98 378,136 Q362,162 322,165 Q290,166 270,152" fill="none" stroke="#d4a880" stroke-width="20"/>
+  <path d="M260,150 Q270,82 312,64 Q350,48 370,74 Q390,100 372,136 Q357,158 320,161 Q291,162 272,150" fill="none" stroke="#9090d0" stroke-width="9"/>
+  <!-- Posterior canal outer shell -->
+  <path d="M218,152 Q178,118 132,118 Q92,118 74,154 Q58,192 82,225 Q108,256 155,252 Q196,248 212,218" fill="none" stroke="#d4a880" stroke-width="20"/>
+  <path d="M220,154 Q180,122 135,122 Q97,122 80,156 Q65,193 87,222 Q110,250 155,246 Q193,242 210,216" fill="none" stroke="#9090d0" stroke-width="9"/>
+  <!-- Horizontal canal outer shell -->
+  <path d="M212,232 Q196,258 165,270 Q130,282 106,268 Q80,252 82,224 Q84,200 112,192 Q142,185 178,200 Q202,213 212,232" fill="none" stroke="#d4a880" stroke-width="20"/>
+  <path d="M214,234 Q200,258 168,270 Q134,281 110,267 Q86,252 88,225 Q90,203 116,196 Q145,188 180,202 Q203,215 214,234" fill="none" stroke="#9090d0" stroke-width="9"/>
+  <!-- Utricle otolith -->
+  <ellipse cx="296" cy="192" rx="22" ry="13" fill="#d4870a" stroke="#a06000" stroke-width="1.5"/>
+  <ellipse cx="296" cy="192" rx="28" ry="19" fill="none" stroke="#333" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <!-- Saccule otolith -->
+  <ellipse cx="285" cy="250" rx="16" ry="11" fill="#d4870a" stroke="#a06000" stroke-width="1.5"/>
+  <ellipse cx="285" cy="250" rx="22" ry="16" fill="none" stroke="#333" stroke-width="1.5" stroke-dasharray="3,2"/>
+</svg>`},
+
+// ─── 2. VESTIBULAR SYSTEM DETAILED (line drawing + nerves) ────
+{ title:"Diagram 2: Vestibular System — Detailed",
+  desc:"Semicircular canals, ampullae, otolith organs, and CN VIII branches",
+  labels:[
+    {id:1, ans:"Superior Canal",   x:108, y:32},
+    {id:2, ans:"Posterior Canal",  x:52,  y:148},
+    {id:3, ans:"Horizontal Canal", x:55,  y:260},
+    {id:4, ans:"Ampullae",         x:195, y:138},
+    {id:5, ans:"Utricle",          x:218, y:192},
+    {id:6, ans:"Sacculus",         x:220, y:235},
+    {id:7, ans:"Vestibular Nerve", x:345, y:175},
+    {id:8, ans:"Cochlear Nerve",   x:362, y:262},
+  ],
+  svg:`<svg viewBox="0 0 490 340" xmlns="http://www.w3.org/2000/svg" style="background:#fff">
+  <!-- Superior canal -->
+  <path d="M168,62 Q132,25 100,30 Q65,36 54,66 Q44,97 70,118 Q96,136 136,124 Q163,114 171,89" fill="none" stroke="#555" stroke-width="3"/>
+  <!-- Posterior canal -->
+  <path d="M160,82 Q145,52 118,48 Q86,44 67,73 Q50,102 66,130 Q82,154 114,157 Q146,158 164,136" fill="none" stroke="#555" stroke-width="3"/>
+  <!-- Horizontal canal -->
+  <path d="M162,170 Q156,202 130,214 Q100,226 78,212 Q56,196 60,170 Q64,147 90,139 Q120,132 150,152" fill="none" stroke="#555" stroke-width="3"/>
+  <!-- Vestibule body -->
+  <path d="M160,82 Q202,70 218,97 Q233,127 228,172 Q222,212 207,233 Q192,252 172,250 Q149,247 138,222 Q128,197 136,167 Q142,142 150,120 Q155,100 160,82Z" fill="#dde8f5" stroke="#5588aa" stroke-width="2"/>
+  <!-- Ampullae bumps -->
+  <ellipse cx="170" cy="140" rx="13" ry="8" fill="#5588aa" opacity=".7" transform="rotate(-20,170,140)"/>
+  <ellipse cx="156" cy="157" rx="11" ry="7" fill="#5588aa" opacity=".7"/>
+  <ellipse cx="162" cy="170" rx="11" ry="7" fill="#5588aa" opacity=".7"/>
+  <!-- Utricle chamber -->
+  <ellipse cx="200" cy="185" rx="21" ry="14" fill="#88aacc" opacity=".6"/>
+  <!-- Sacculus chamber -->
+  <ellipse cx="198" cy="224" rx="17" ry="12" fill="#88aacc" opacity=".6"/>
+  <!-- Cochlea -->
+  <g transform="translate(215,278)">
+    <path d="M0,0 Q22,-18 26,0 Q28,18 14,26 Q0,32 -14,24 Q-28,12 -25,-3 Q-20,-24 -4,-30 Q16,-37 30,-22" fill="none" stroke="#888" stroke-width="6"/>
+  </g>
+  <!-- Vestibular nerve (superior) -->
+  <path d="M220,212 Q285,202 335,192 Q362,186 398,186" stroke="#cc4444" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Cochlear nerve (inferior) -->
+  <path d="M222,275 Q282,263 338,261 Q364,260 398,260" stroke="#4444cc" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- IAC terminus -->
+  <circle cx="408" cy="222" r="24" fill="#e8e8e8" stroke="#aaa" stroke-width="2"/>
+  <line x1="396" y1="210" x2="420" y2="234" stroke="#aaa" stroke-width="1.2"/>
+  <line x1="400" y1="206" x2="424" y2="230" stroke="#aaa" stroke-width="1.2"/>
+  <line x1="392" y1="214" x2="416" y2="238" stroke="#aaa" stroke-width="1.2"/>
+</svg>`},
+
+// ─── 3. UNROLLING OF COCHLEA ──────────────────────────────────
+{ title:"Diagram 3: Unrolling of the Cochlea",
+  desc:"Conceptual sequence showing cochlear 'unrolling' to expose the basilar membrane",
+  labels:[
+    {id:1, ans:"Cochlear Base",      x:92,  y:222},
+    {id:2, ans:"Basilar Membrane",   x:235, y:272},
+    {id:3, ans:"Unrolled Cochlea",   x:355, y:250},
+    {id:4, ans:"Cochlear Apex",      x:468, y:232},
+  ],
+  svg:`<svg viewBox="0 0 540 340" xmlns="http://www.w3.org/2000/svg" style="background:#fdf8f0">
+  <defs><marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#666"/></marker></defs>
+  <!-- Process icons top row -->
+  <g transform="translate(68,52) scale(.55)">
+    <path d="M0,0 Q28,-22 32,2 Q34,24 18,34 Q0,42 -20,32 Q-38,18 -36,-4 Q-32,-32 -8,-42 Q20,-52 42,-32 Q58,-14 54,10 Q50,35 30,48" fill="none" stroke="#c8a060" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <path d="M105,68 L138,68" stroke="#666" stroke-width="1.8" marker-end="url(#arr)"/>
+  <g transform="translate(162,46) scale(.48)">
+    <path d="M0,0 Q28,-22 32,2 Q34,24 18,34 Q0,42 -20,32 Q-38,18 -36,-4 Q-32,-32 -8,-42" fill="none" stroke="#c8a060" stroke-width="14" stroke-linecap="round"/>
+    <path d="M-8,-42 Q10,-55 40,-42 Q65,-25 75,-5" fill="none" stroke="#c8a060" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <path d="M225,68 L258,68" stroke="#666" stroke-width="1.8" marker-end="url(#arr)"/>
+  <path d="M262,50 Q312,42 360,45 Q395,47 420,52" fill="none" stroke="#c8a060" stroke-width="12" stroke-linecap="round"/>
+  <!-- Basilar membrane in small diagram -->
+  <text x="312" y="35" font-size="9" fill="#888" text-anchor="middle">Basilar membrane</text>
+  <line x1="312" y1="37" x2="312" y2="48" stroke="#888" stroke-width="1"/>
+
+  <!-- Main large unrolled cochlea illustration -->
+  <!-- Left: coiled cochlea -->
+  <g transform="translate(85,218)">
+    <path d="M0,0 Q28,-22 32,2 Q34,24 18,34 Q0,42 -20,32 Q-38,18 -36,-4 Q-32,-32 -8,-42 Q20,-52 42,-32 Q58,-14 54,10 Q50,35 30,48" fill="none" stroke="#c8a060" stroke-width="20" stroke-linecap="round"/>
+    <path d="M0,0 Q22,-16 25,2 Q27,18 14,26 Q0,32 -15,24 Q-28,12 -26,-3 Q-22,-24 -5,-32 Q16,-40 32,-24 Q44,-10 41,8" fill="none" stroke="#d4c090" stroke-width="7"/>
+  </g>
+  <!-- Cochlear base label dot -->
+  <circle cx="85" cy="218" r="6" fill="#3388cc"/>
+  <!-- Unrolled tube body -->
+  <path d="M118,260 Q265,245 420,243 Q468,243 485,244" fill="none" stroke="#c8a060" stroke-width="28" stroke-linecap="round"/>
+  <!-- Basilar membrane (inner striped sheet) -->
+  <path d="M118,260 Q265,260 420,255 Q466,254 483,254" fill="none" stroke="#8080b0" stroke-width="6" stroke-dasharray="9,3"/>
+  <!-- Wave pattern hinting at traveling wave -->
+  <path d="M200,258 Q215,252 230,258 Q245,264 260,258 Q275,252 290,258" fill="none" stroke="#5555a0" stroke-width="2.5"/>
+  <!-- Apex end -->
+  <ellipse cx="485" cy="244" rx="9" ry="17" fill="#c8a060"/>
+  <!-- Apex dot -->
+  <circle cx="485" cy="244" r="6" fill="#22aa44"/>
+</svg>`},
+
+// ─── 4. BASILAR MEMBRANE TUNING (Fig 10-1) ───────────────────
+{ title:"Diagram 4: Basilar Membrane Tuning (Fig. 10-1)",
+  desc:"Tonotopic map of the cochlear spiral — stiffness and frequency gradients",
+  labels:[
+    {id:1, ans:"High Frequencies",  x:285, y:62},
+    {id:2, ans:"Low Frequencies",   x:215, y:358},
+    {id:3, ans:"Narrow Basal End",  x:372, y:178},
+    {id:4, ans:"Wide Apex",         x:205, y:232},
+    {id:5, ans:"More Stiff",        x:122, y:95},
+    {id:6, ans:"Less Stiff",        x:112, y:328},
+    {id:7, ans:"Helicotrema",       x:382, y:258},
+    {id:8, ans:"Vestibule",         x:435, y:148},
+  ],
+  svg:`<svg viewBox="0 0 530 420" xmlns="http://www.w3.org/2000/svg" style="background:#fff">
+  <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#333"/></marker></defs>
+  <!-- Outer arc (basal end, stiff, narrow, high freq) with hash marks -->
+  <path d="M395,128 Q430,150 447,182 Q460,215 452,248 Q440,282 415,300 Q385,318 350,322 Q310,326 278,314 Q242,300 222,272 Q200,242 200,207 Q200,170 222,142 Q245,114 278,104 Q315,94 350,102 Q382,110 398,130" fill="none" stroke="#222" stroke-width="12"/>
+  <!-- hash marks on outer arc (stiff, high) -->
+  <line x1="400" y1="128" x2="410" y2="118" stroke="#555" stroke-width="1.5"/>
+  <line x1="411" y1="139" x2="422" y2="131" stroke="#555" stroke-width="1.5"/>
+  <line x1="421" y1="153" x2="433" y2="147" stroke="#555" stroke-width="1.5"/>
+  <line x1="430" y1="168" x2="443" y2="164" stroke="#555" stroke-width="1.5"/>
+  <line x1="436" y1="185" x2="449" y2="183" stroke="#555" stroke-width="1.5"/>
+  <!-- Second ring -->
+  <path d="M345,135 Q315,128 285,136 Q255,145 238,168 Q220,192 222,222 Q224,253 244,272 Q265,292 295,298 Q325,303 352,293 Q378,282 390,258 Q400,234 395,210" fill="none" stroke="#444" stroke-width="9"/>
+  <!-- Third ring (inner) -->
+  <path d="M380,215 Q378,235 365,248 Q348,262 328,263 Q305,263 290,250 Q275,236 275,215 Q275,192 292,180 Q308,168 330,168 Q352,168 365,182 Q378,196 380,215Z" fill="none" stroke="#666" stroke-width="7"/>
+  <!-- Helicotrema (center) -->
+  <path d="M342,215 Q342,228 330,233 Q318,238 310,230 Q303,222 306,213 Q309,204 320,200 Q333,197 340,205" fill="none" stroke="#888" stroke-width="5"/>
+  <circle cx="322" cy="218" r="10" fill="#f0f0f0" stroke="#888" stroke-width="2"/>
+  <!-- Arrows for tuning direction -->
+  <path d="M170,98 Q180,72 202,60" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arr2)"/>
+  <path d="M155,336 Q168,360 188,372" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arr2)"/>
+  <!-- Labels baked into diagram for context -->
+  <text x="255" y="220" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">WIDE</text>
+  <text x="255" y="234" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">APEX</text>
+</svg>`},
+
+// ─── 5. ORGAN OF CORTI ────────────────────────────────────────
+{ title:"Diagram 5: Organ of Corti",
+  desc:"Cross-section through the cochlear duct showing hair cells and supporting structures",
+  labels:[
+    {id:1, ans:"Tectorial Membrane",     x:115, y:55},
+    {id:2, ans:"Outer Hair Cell",        x:255, y:55},
+    {id:3, ans:"Inner Tunnel",           x:338, y:68},
+    {id:4, ans:"Inner Hair Cell",        x:418, y:58},
+    {id:5, ans:"Scala Media",            x:82,  y:185},
+    {id:6, ans:"Outer Pillar Cell",      x:268, y:182},
+    {id:7, ans:"Inner Pillar Cell",      x:378, y:180},
+    {id:8, ans:"Basilar Membrane",       x:310, y:248},
+  ],
+  svg:`<svg viewBox="0 0 530 300" xmlns="http://www.w3.org/2000/svg" style="background:#f8f0ff">
+  <!-- Tectorial membrane (overhanging shelf) -->
+  <path d="M28,82 Q80,55 162,60 Q212,62 258,76 Q295,87 315,97 Q282,108 240,110 Q178,112 118,107 Q68,102 28,92Z" fill="#c8a0d0" stroke="#9060a0" stroke-width="1.5"/>
+  <!-- Scala media (endolymph space) -->
+  <path d="M28,94 L28,258 L505,258 L505,112 Q400,97 300,97 Q200,97 118,108 Q72,116 28,94Z" fill="#ead8f8" opacity=".45"/>
+  <!-- Outer hair cells — 3 columns simplified -->
+  <g opacity=".95">
+    <circle cx="203" cy="125" r="11" fill="#e8a8e8" stroke="#9060a0" stroke-width="1.5"/>
+    <circle cx="203" cy="107" r="5" fill="#7040a0"/>
+    <rect x="198" y="136" width="10" height="32" rx="3" fill="#cc80cc"/>
+    <circle cx="228" cy="123" r="11" fill="#e8a8e8" stroke="#9060a0" stroke-width="1.5"/>
+    <circle cx="228" cy="105" r="5" fill="#7040a0"/>
+    <rect x="223" y="134" width="10" height="32" rx="3" fill="#cc80cc"/>
+    <circle cx="253" cy="121" r="11" fill="#e8a8e8" stroke="#9060a0" stroke-width="1.5"/>
+    <circle cx="253" cy="103" r="5" fill="#7040a0"/>
+    <rect x="248" y="132" width="10" height="32" rx="3" fill="#cc80cc"/>
+  </g>
+  <!-- Inner hair cell -->
+  <circle cx="390" cy="124" r="13" fill="#e8a8e8" stroke="#9060a0" stroke-width="1.5"/>
+  <circle cx="390" cy="103" r="6" fill="#7040a0"/>
+  <rect x="383" y="137" width="14" height="38" rx="4" fill="#cc80cc"/>
+  <!-- Inner tunnel (triangular void between pillar cells) -->
+  <path d="M308,258 L326,158 L363,158 L380,258Z" fill="#f0e0ff" stroke="#8848a0" stroke-width="1.5" opacity=".7"/>
+  <!-- Outer pillar cell -->
+  <path d="M308,258 L320,205 L334,162" stroke="#7030a0" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Inner pillar cell -->
+  <path d="M378,258 L374,205 L369,162" stroke="#7030a0" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Basilar membrane (floor) -->
+  <rect x="98" y="246" width="408" height="12" rx="3" fill="#9898d0" stroke="#6868b0" stroke-width="2"/>
+  <!-- Outer phalangeal cells (slim rods flanking OHCs) -->
+  <rect x="192" y="168" width="7" height="78" rx="2" fill="#d0a0d0" opacity=".55"/>
+  <rect x="217" y="166" width="7" height="80" rx="2" fill="#d0a0d0" opacity=".55"/>
+  <!-- Nerve fibers below BM -->
+  <path d="M160,264 Q250,278 350,275 Q420,272 460,268" stroke="#6666cc" stroke-width="3" fill="none"/>
+</svg>`},
+
+// ─── 6. CENTRAL AUDITORY PATHWAY ──────────────────────────────
+{ title:"Diagram 6: Central Auditory Pathway",
+  desc:"Ascending bilateral pathway from cochlea → cochlear nucleus → superior olive → inferior colliculus → MGB → auditory cortex",
+  labels:[
+    {id:1, ans:"Cochlea",                 x:72,  y:342},
+    {id:2, ans:"Cochlear Nucleus",        x:75,  y:260},
+    {id:3, ans:"Superior Olive",          x:178, y:260},
+    {id:4, ans:"Inferior Colliculus",     x:178, y:173},
+    {id:5, ans:"Medial Geniculate Body",  x:178, y:90},
+    {id:6, ans:"Auditory Cortex",         x:262, y:28},
+  ],
+  svg:`<svg viewBox="0 0 510 400" xmlns="http://www.w3.org/2000/svg" style="background:#e8e8f5">
+  <defs>
+    <marker id="ba" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#3366cc"/></marker>
+    <marker id="ra" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#cc3333"/></marker>
+  </defs>
+  <!-- Brain at top -->
+  <path d="M175,22 Q210,10 255,12 Q298,14 330,28 Q352,42 355,60 Q358,76 345,84 Q330,90 318,86" fill="#f5c8b8" stroke="#c08888" stroke-width="2"/>
+  <path d="M175,22 Q150,36 147,54 Q144,70 158,80 Q174,87 195,82" fill="#f5c8b8" stroke="#c08888" stroke-width="2"/>
+  <path d="M253,12 L253,38" stroke="#c08888" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <!-- Medial geniculate body (bilateral) -->
+  <circle cx="195" cy="108" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="195" y="104" text-anchor="middle" font-size="8.5" fill="#664">medial</text>
+  <text x="195" y="116" text-anchor="middle" font-size="8.5" fill="#664">geniculate</text>
+  <circle cx="315" cy="108" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="315" y="104" text-anchor="middle" font-size="8.5" fill="#664">medial</text>
+  <text x="315" y="116" text-anchor="middle" font-size="8.5" fill="#664">geniculate</text>
+  <!-- Inferior colliculus (bilateral) -->
+  <circle cx="195" cy="188" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="195" y="184" text-anchor="middle" font-size="8.5" fill="#664">inferior</text>
+  <text x="195" y="196" text-anchor="middle" font-size="8.5" fill="#664">colliculus</text>
+  <circle cx="315" cy="188" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="315" y="184" text-anchor="middle" font-size="8.5" fill="#664">inferior</text>
+  <text x="315" y="196" text-anchor="middle" font-size="8.5" fill="#664">colliculus</text>
+  <!-- Superior olive (bilateral) -->
+  <circle cx="195" cy="272" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="195" y="268" text-anchor="middle" font-size="8.5" fill="#664">superior</text>
+  <text x="195" y="280" text-anchor="middle" font-size="8.5" fill="#664">olive</text>
+  <circle cx="315" cy="272" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="315" y="268" text-anchor="middle" font-size="8.5" fill="#664">superior</text>
+  <text x="315" y="280" text-anchor="middle" font-size="8.5" fill="#664">olive</text>
+  <!-- Cochlear nucleus (bilateral) -->
+  <circle cx="118" cy="272" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="118" y="268" text-anchor="middle" font-size="8.5" fill="#664">cochlear</text>
+  <text x="118" y="280" text-anchor="middle" font-size="8.5" fill="#664">nucleus</text>
+  <circle cx="392" cy="272" r="29" fill="#f5e8c8" stroke="#c0a050" stroke-width="2"/>
+  <text x="392" y="268" text-anchor="middle" font-size="8.5" fill="#664">cochlear</text>
+  <text x="392" y="280" text-anchor="middle" font-size="8.5" fill="#664">nucleus</text>
+  <!-- Cochleae -->
+  <g transform="translate(118,360)"><path d="M0,0 Q16,-12 18,0 Q19,12 10,18 Q0,22 -12,16 Q-22,8 -20,-3 Q-16,-18 -4,-22 Q12,-27 22,-16" fill="none" stroke="#c0a050" stroke-width="5"/></g>
+  <g transform="translate(392,360)"><path d="M0,0 Q16,-12 18,0 Q19,12 10,18 Q0,22 -12,16 Q-22,8 -20,-3 Q-16,-18 -4,-22 Q12,-27 22,-16" fill="none" stroke="#c0a050" stroke-width="5"/></g>
+  <!-- Connections -->
+  <path d="M118,338 L118,301" stroke="#3366cc" stroke-width="3" marker-end="url(#ba)"/>
+  <path d="M392,338 L392,301" stroke="#cc3333" stroke-width="3" marker-end="url(#ra)"/>
+  <path d="M145,272 L166,272" stroke="#3366cc" stroke-width="3" marker-end="url(#ba)"/>
+  <path d="M364,272 L344,272" stroke="#cc3333" stroke-width="3" marker-end="url(#ra)"/>
+  <!-- Crossing fibers -->
+  <path d="M146,282 Q255,312 286,282" stroke="#3366cc" stroke-width="3" fill="none" marker-end="url(#ba)"/>
+  <path d="M364,282 Q255,312 224,282" stroke="#cc3333" stroke-width="3" fill="none" marker-end="url(#ra)"/>
+  <path d="M195,243 L195,217" stroke="#3366cc" stroke-width="3" marker-end="url(#ba)"/>
+  <path d="M315,243 L315,217" stroke="#cc3333" stroke-width="3" marker-end="url(#ra)"/>
+  <path d="M195,159 L195,137" stroke="#3366cc" stroke-width="3" marker-end="url(#ba)"/>
+  <path d="M315,159 L315,137" stroke="#cc3333" stroke-width="3" marker-end="url(#ra)"/>
+  <path d="M195,79 Q228,56 250,45" stroke="#3366cc" stroke-width="3" fill="none" marker-end="url(#ba)"/>
+  <path d="M315,79 Q285,56 268,45" stroke="#cc3333" stroke-width="3" fill="none" marker-end="url(#ra)"/>
+</svg>`},
+
+// ─── 7. BONY & MEMBRANOUS LABYRINTH (Encyclopaedia Britannica)
+{ title:"Diagram 7: Bony & Membranous Labyrinth",
+  desc:"Blue = bony labyrinth; Orange = membranous labyrinth bathed in perilymph",
+  labels:[
+    {id:1, ans:"Superior Semicircular Canal",    x:320, y:40},
+    {id:2, ans:"Horizontal Semicircular Canal",  x:88,  y:130},
+    {id:3, ans:"Posterior Semicircular Canal",   x:90,  y:232},
+    {id:4, ans:"Vestibule",                      x:310, y:172},
+    {id:5, ans:"Cochlea",                        x:440, y:245},
+    {id:6, ans:"Oval Window",                    x:325, y:250},
+    {id:7, ans:"Round Window",                   x:340, y:298},
+    {id:8, ans:"Ampullae",                       x:232, y:202},
+  ],
+  svg:`<svg viewBox="0 0 540 360" xmlns="http://www.w3.org/2000/svg" style="background:#e0d8cc">
+  <!-- Bony labyrinth outer shell: superior canal -->
+  <path d="M242,58 Q256,25 294,18 Q334,12 360,32 Q382,50 378,78 Q372,105 350,118 Q325,130 300,122 Q274,113 263,90" fill="none" stroke="#3388dd" stroke-width="20" opacity=".8"/>
+  <!-- Bony: horizontal canal -->
+  <path d="M232,148 Q216,170 186,180 Q152,190 128,174 Q104,158 108,130 Q112,105 138,95 Q166,86 192,102 Q218,118 230,145" fill="none" stroke="#3388dd" stroke-width="20" opacity=".8"/>
+  <!-- Bony: posterior canal -->
+  <path d="M238,170 Q222,186 202,202 Q180,220 156,222 Q130,222 116,204 Q102,184 110,162 Q118,142 142,136 Q165,130 186,145 Q208,160 222,177" fill="none" stroke="#3388dd" stroke-width="20" opacity=".8"/>
+  <!-- Bony vestibule -->
+  <path d="M253,108 Q290,94 326,104 Q360,115 368,148 Q375,180 355,205 Q332,232 295,234 Q258,235 240,210 Q222,185 228,155 Q234,128 253,110Z" fill="#3388dd" opacity=".65" stroke="#2266bb" stroke-width="2"/>
+  <!-- Bony cochlea -->
+  <g transform="translate(440,242)">
+    <path d="M0,0 Q35,-28 40,2 Q43,30 22,43 Q0,54 -24,40 Q-46,24 -44,-4 Q-39,-40 -9,-52 Q24,-64 50,-40 Q70,-20 67,10 Q62,40 38,56 Q10,70 -22,60" fill="none" stroke="#3388dd" stroke-width="20" stroke-linecap="round" opacity=".8"/>
+  </g>
+  <!-- Membranous (orange inner ducts): superior -->
+  <path d="M246,60 Q258,30 292,24 Q328,18 350,36 Q368,52 364,76 Q358,98 340,108 Q318,117 297,110 Q276,102 265,84" fill="none" stroke="#e8903a" stroke-width="10" opacity=".9"/>
+  <!-- Membranous: horizontal -->
+  <path d="M234,148 Q220,168 192,177 Q158,186 136,170 Q114,154 118,130 Q122,108 146,100 Q170,92 194,106 Q217,120 232,146" fill="none" stroke="#e8903a" stroke-width="10" opacity=".9"/>
+  <!-- Membranous: posterior -->
+  <path d="M240,172 Q226,186 207,200 Q186,216 163,217 Q140,217 128,200 Q116,182 123,162 Q130,145 153,140 Q175,135 194,148 Q213,162 228,178" fill="none" stroke="#e8903a" stroke-width="10" opacity=".9"/>
+  <!-- Membranous vestibule -->
+  <path d="M262,118 Q290,108 316,118 Q342,128 347,153 Q352,178 335,198 Q315,216 288,216 Q260,215 244,195 Q230,174 236,152 Q242,132 262,120Z" fill="#e8903a" opacity=".75" stroke="#c06010" stroke-width="1.5"/>
+  <!-- Ampullae (3 swellings) -->
+  <circle cx="242" cy="105" r="14" fill="#e8903a" stroke="#c06010" stroke-width="2"/>
+  <circle cx="232" cy="148" r="12" fill="#e8903a" stroke="#c06010" stroke-width="2"/>
+  <circle cx="240" cy="172" r="12" fill="#e8903a" stroke="#c06010" stroke-width="2"/>
+  <!-- Oval window -->
+  <ellipse cx="328" cy="222" rx="13" ry="19" fill="#aaccee" stroke="#2266bb" stroke-width="2" transform="rotate(-15,328,222)"/>
+  <!-- Round window -->
+  <ellipse cx="340" cy="265" rx="11" ry="15" fill="#aaccee" stroke="#2266bb" stroke-width="2"/>
+  <!-- Legend -->
+  <rect x="388" y="12" width="16" height="12" rx="2" fill="#3388dd"/>
+  <text x="408" y="22" font-size="9" fill="#224">bony labyrinth</text>
+  <rect x="388" y="30" width="16" height="12" rx="2" fill="#e8903a"/>
+  <text x="408" y="40" font-size="9" fill="#224">membranous labyrinth</text>
+</svg>`},
+
+// ─── 8. FULL EAR DIAGRAM (Vestibular Disorders Association) ───
+{ title:"Diagram 8: Full Ear Anatomy",
+  desc:"Complete cross-section — outer, middle, and inner ear structures (Vestibular Disorders Assoc.)",
+  labels:[
+    {id:1,  ans:"External Auditory Canal",  x:88,  y:228},
+    {id:2,  ans:"Tympanic Membrane",        x:190, y:270},
+    {id:3,  ans:"Malleus",                  x:228, y:195},
+    {id:4,  ans:"Incus",                    x:262, y:172},
+    {id:5,  ans:"Stapes",                   x:292, y:215},
+    {id:6,  ans:"Eustachian Tube",          x:245, y:325},
+    {id:7,  ans:"Cochlea",                  x:352, y:268},
+    {id:8,  ans:"Semicircular Canals",      x:338, y:128},
+    {id:9,  ans:"Cochlear Nerve",           x:398, y:295},
+    {id:10, ans:"Vestibular Nerve",         x:398, y:248},
+  ],
+  svg:`<svg viewBox="0 0 540 400" xmlns="http://www.w3.org/2000/svg" style="background:#ede8e0">
+  <!-- Pinna -->
+  <path d="M30,115 Q18,170 20,235 Q22,295 42,335 Q62,368 82,362 Q96,356 98,340 Q100,322 90,310" fill="#d4a88a" stroke="#a07050" stroke-width="2"/>
+  <!-- EAC -->
+  <path d="M88,188 Q92,195 188,218 Q192,235 188,282 Q132,280 88,265Z" fill="#e8c8a0" stroke="#a07050" stroke-width="1.5"/>
+  <!-- Tympanic membrane -->
+  <path d="M186,178 Q195,228 188,282" stroke="#777" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Middle ear cavity -->
+  <path d="M188,182 Q272,172 288,200 Q302,228 288,268 Q272,298 188,282Z" fill="#f5e2ca" stroke="#ccc" stroke-width="1"/>
+  <!-- Malleus -->
+  <path d="M202,192 Q220,208 226,244 Q229,266 232,282" stroke="#c9a227" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="212" cy="184" rx="14" ry="10" fill="#c9a227" stroke="#8b6914" stroke-width="1.5"/>
+  <!-- Incus -->
+  <ellipse cx="258" cy="175" rx="12" ry="9" fill="#c9a227" stroke="#8b6914" stroke-width="1.5"/>
+  <path d="M262,183 Q270,208 280,225" stroke="#c9a227" stroke-width="5" fill="none"/>
+  <!-- Stapes -->
+  <circle cx="283" cy="226" r="6" fill="#c9a227" stroke="#8b6914" stroke-width="1.5"/>
+  <path d="M288,224 Q298,226 308,228" stroke="#c9a227" stroke-width="3"/>
+  <ellipse cx="312" cy="228" rx="8" ry="12" fill="#ddd" stroke="#999" stroke-width="1.5"/>
+  <!-- Round window -->
+  <ellipse cx="314" cy="268" rx="7" ry="10" fill="#ddd" stroke="#999" stroke-width="1.5"/>
+  <!-- Eustachian tube -->
+  <path d="M232,290 Q242,312 258,330 Q278,348 315,352" stroke="#a07050" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Cochlea -->
+  <g transform="translate(355,268)">
+    <path d="M0,0 Q30,-24 34,2 Q37,28 20,38 Q0,48 -22,36 Q-42,22 -40,-4 Q-35,-38 -8,-48 Q22,-58 46,-36 Q64,-18 60,10" fill="none" stroke="#8b5e3c" stroke-width="8" stroke-linecap="round"/>
+    <path d="M0,0 Q22,-16 25,2 Q27,20 14,28 Q0,35 -14,25 Q-28,14 -26,-3 Q-21,-24 -4,-30" fill="none" stroke="#b08060" stroke-width="4"/>
+  </g>
+  <!-- Semicircular canals (schematic) -->
+  <path d="M310,80 Q356,53 390,72 Q408,88 404,110 Q397,132 372,138 Q344,142 322,128 Q304,114 308,95" fill="none" stroke="#5588bb" stroke-width="8"/>
+  <path d="M322,90 Q350,75 372,88 Q385,98 380,115 Q372,130 355,133 Q334,135 320,122" fill="none" stroke="#5588bb" stroke-width="5"/>
+  <!-- Vestibular nerve -->
+  <path d="M386,250 Q420,250 448,248" stroke="#cc4444" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Cochlear nerve -->
+  <path d="M388,282 Q420,284 448,282" stroke="#4444cc" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Region labels -->
+  <text x="58" y="392" font-size="10" fill="#c00" font-weight="bold">Outer ear</text>
+  <text x="215" y="392" font-size="10" fill="#c00" font-weight="bold">Middle ear</text>
+  <text x="335" y="392" font-size="10" fill="#c00" font-weight="bold">Inner ear</text>
+</svg>`},
+
+// ─── 9. OSSICULAR CHAIN (Figure 3.2) ──────────────────────────
+{ title:"Diagram 9: Ossicular Chain (Fig. 3.2)",
+  desc:"The three middle-ear ossicles and associated ligaments/tendons — Malleus, Incus, Stapes",
+  labels:[
+    {id:1, ans:"Malleus",                  x:148, y:142},
+    {id:2, ans:"Head of Malleus",          x:178, y:68},
+    {id:3, ans:"Manubrium",                x:122, y:268},
+    {id:4, ans:"Umbo",                     x:142, y:315},
+    {id:5, ans:"Tympanic Membrane",        x:182, y:358},
+    {id:6, ans:"Incus",                    x:268, y:105},
+    {id:7, ans:"Stapes",                   x:352, y:218},
+    {id:8, ans:"Footplate",                x:378, y:255},
+  ],
+  svg:`<svg viewBox="0 0 480 410" xmlns="http://www.w3.org/2000/svg" style="background:#fff">
+  <!-- Tympanic membrane (cone/funnel) -->
+  <path d="M78,252 Q95,178 172,118 Q202,355 168,392 Q112,390 78,355Z" fill="#f5dfc5" stroke="#bbb" stroke-width="1.5" opacity=".7"/>
+  <!-- Malleus handle (manubrium) descending -->
+  <path d="M157,112 Q150,168 142,224 Q137,262 142,315 Q145,335 150,355" stroke="#8b6914" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Malleus head -->
+  <ellipse cx="180" cy="88" rx="30" ry="23" fill="#c9a227" stroke="#8b6914" stroke-width="2"/>
+  <!-- Malleus neck -->
+  <path d="M168,109 L160,120" stroke="#8b6914" stroke-width="5"/>
+  <!-- Lateral process bump -->
+  <circle cx="144" cy="224" r="8" fill="#c9a227" stroke="#8b6914" stroke-width="1.5"/>
+  <!-- Incus body -->
+  <ellipse cx="250" cy="100" rx="22" ry="18" fill="#c9a227" stroke="#8b6914" stroke-width="2"/>
+  <!-- Malleus-Incus joint -->
+  <path d="M202,88 L230,96" stroke="#8b6914" stroke-width="4"/>
+  <!-- Incus long crus -->
+  <path d="M257,116 Q264,162 272,212 Q276,242 288,268" stroke="#8b6914" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Stapes head -->
+  <circle cx="292" cy="270" r="8" fill="#c9a227" stroke="#8b6914" stroke-width="2"/>
+  <!-- Stapes crura (two arches) -->
+  <path d="M292,268 Q315,248 338,252 Q360,256 374,262" stroke="#8b6914" stroke-width="4" fill="none"/>
+  <path d="M293,272 Q316,294 340,290 Q362,285 375,275" stroke="#8b6914" stroke-width="4" fill="none"/>
+  <!-- Stapes footplate -->
+  <ellipse cx="380" cy="268" rx="16" ry="23" fill="#ddb830" stroke="#8b6914" stroke-width="2.5" transform="rotate(-15,380,268)"/>
+  <!-- Superior ligament (dashed line up) -->
+  <path d="M180,66 L180,30" stroke="#666" stroke-width="2" stroke-dasharray="5,3"/>
+  <path d="M165,30 L198,30" stroke="#666" stroke-width="2"/>
+  <text x="200" y="26" font-size="10" fill="#555">Superior ligament</text>
+  <!-- Tensor tympani tendon -->
+  <path d="M252,82 Q275,62 295,68" stroke="#888" stroke-width="2.5" fill="none"/>
+  <text x="298" y="64" font-size="9" fill="#666">Tendon of tensor tympani</text>
+</svg>`},
+
+// ─── 10. EXTERNAL EAR / PINNA ─────────────────────────────────
+{ title:"Diagram 10: External Ear (Pinna)",
+  desc:"Surface landmarks of the auricle — the structures your audiologist references during otoscopy",
+  labels:[
+    {id:1, ans:"Helix",                  x:152, y:38},
+    {id:2, ans:"Triangular Fossa",       x:218, y:88},
+    {id:3, ans:"Antihelix",              x:172, y:158},
+    {id:4, ans:"Concha",                 x:212, y:232},
+    {id:5, ans:"Tragus",                 x:295, y:205},
+    {id:6, ans:"External Auditory Canal",x:278, y:172},
+    {id:7, ans:"Antitragus",             x:242, y:292},
+    {id:8, ans:"Earlobe",                x:248, y:368},
+  ],
+  svg:`<svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" style="background:#f0ece4">
+  <!-- Pinna outer body -->
+  <path d="M158,32 Q88,60 68,132 Q52,192 62,244 Q78,304 110,342 Q142,378 180,392 Q212,402 242,396 Q272,386 276,360 Q280,336 260,320 Q240,308 232,286 Q242,270 282,255 Q314,240 318,210 Q322,180 300,160 Q290,152 296,130 Q302,108 286,84 Q270,58 240,38 Q200,18 158,32Z" fill="#d4a88a" stroke="#a07050" stroke-width="2.5"/>
+  <!-- Antihelix ridge (inner curved ridge) -->
+  <path d="M178,72 Q154,102 144,152 Q139,202 154,242 Q165,268 180,283" fill="none" stroke="#a07050" stroke-width="5.5" stroke-linecap="round"/>
+  <!-- Triangular fossa depression -->
+  <ellipse cx="218" cy="108" rx="30" ry="20" fill="#c49070" opacity=".45"/>
+  <!-- Concha bowl -->
+  <ellipse cx="218" cy="228" rx="38" ry="32" fill="#c49070" opacity=".38"/>
+  <!-- Tragus flap -->
+  <path d="M270,198 Q293,193 298,214 Q295,236 274,232Z" fill="#c8967a" stroke="#a07050" stroke-width="1.5"/>
+  <!-- EAC opening (dark ellipse) -->
+  <ellipse cx="278" cy="210" rx="13" ry="19" fill="#402015" opacity=".8"/>
+  <!-- Antitragus bump -->
+  <path d="M234,278 Q257,272 265,288 Q261,305 238,302Z" fill="#c8967a" stroke="#a07050" stroke-width="1.5"/>
+  <!-- Earlobe -->
+  <path d="M178,372 Q210,398 242,393 Q268,383 267,360 Q263,338 240,337 Q210,338 194,355Z" fill="#d4a88a" stroke="#a07050" stroke-width="1.5"/>
+</svg>`},
+
+]; // end Q
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let cur = 0;
+let selWord = null;
+let states = Q.map(q => ({
+  answers: {},
+  checked: false,
+  results: {},
+  order: shuffle(q.labels.map(l=>l.ans)),
+}));
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(function init(){
+  const total = Q.reduce((s,q)=>s+q.labels.length,0);
+  document.getElementById('scoreTotal').textContent = total;
+  const pd = document.getElementById('progress-dots');
+  Q.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.id='dot'+i;
+    d.title='Diagram '+(i+1);
+    d.onclick=()=>go(i);
+    pd.appendChild(d);
+  });
+  render(0);
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function render(idx){
+  const q = Q[idx];
+  const st = states[idx];
+  document.getElementById('quiz-title').textContent = q.title;
+  document.getElementById('quiz-desc').textContent = q.desc;
+
+  // Build SVG
+  const wrap = document.getElementById('diagram-wrap');
+  wrap.innerHTML = q.svg;
+  const svg = wrap.querySelector('svg');
+
+  // Add marker groups
+  q.labels.forEach(lbl=>{
+    const placed = st.answers[lbl.id];
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','mgrp');
+    g.setAttribute('data-id',lbl.id);
+
+    const ci = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ci.setAttribute('cx',lbl.x); ci.setAttribute('cy',lbl.y); ci.setAttribute('r','15');
+    ci.setAttribute('stroke','#fff'); ci.setAttribute('stroke-width','2.5');
+    if(st.checked){
+      ci.setAttribute('fill', st.results[lbl.id] ? '#27ae60' : '#e74c3c');
+    } else {
+      ci.setAttribute('fill', placed ? '#2980b9' : '#e67e22');
+    }
+    g.appendChild(ci);
+
+    const nt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    nt.setAttribute('x',lbl.x); nt.setAttribute('y',lbl.y);
+    nt.setAttribute('text-anchor','middle'); nt.setAttribute('dominant-baseline','central');
+    nt.setAttribute('fill','white'); nt.setAttribute('font-weight','bold');
+    nt.setAttribute('font-size','11'); nt.setAttribute('pointer-events','none');
+    nt.textContent = lbl.id;
+    g.appendChild(nt);
+
+    // Placed word label below circle
+    if(placed){
+      const pt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      pt.setAttribute('x',lbl.x); pt.setAttribute('y',lbl.y+22);
+      pt.setAttribute('text-anchor','middle');
+      pt.setAttribute('font-size','8.5');
+      pt.setAttribute('font-weight','bold');
+      pt.setAttribute('pointer-events','none');
+      const col = st.checked ? (st.results[lbl.id]?'#1a6a30':'#8b0000') : '#003080';
+      pt.setAttribute('fill',col);
+      // truncate long labels for SVG display
+      const words = placed.split(' ');
+      pt.textContent = words.length>3 ? words.slice(0,2).join(' ')+'…' : placed;
+      // background rect for readability
+      const rb = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rb.setAttribute('x',lbl.x-36); rb.setAttribute('y',lbl.y+13);
+      rb.setAttribute('width','72'); rb.setAttribute('height','13');
+      rb.setAttribute('rx','3'); rb.setAttribute('fill','rgba(255,255,255,0.82)');
+      rb.setAttribute('pointer-events','none');
+      g.appendChild(rb);
+      g.appendChild(pt);
+    }
+
+    g.addEventListener('click',()=>onMarker(lbl.id));
+    svg.appendChild(g);
+  });
+
+  buildBank(idx);
+
+  // Feedback
+  const fb = document.getElementById('feedback');
+  fb.className=''; fb.style.display='none';
+
+  // Buttons
+  document.getElementById('btnPrev').disabled = idx===0;
+  document.getElementById('btnNext').disabled = idx===Q.length-1;
+  document.getElementById('btnCheck').disabled = st.checked;
+
+  // Dots
+  Q.forEach((_,i)=>{
+    const d=document.getElementById('dot'+i);
+    d.className='dot';
+    if(i===idx) d.classList.add('active');
+    else if(states[i].checked){
+      const ok = Q[i].labels.every(l=>states[i].results[l.id]);
+      d.classList.add(ok?'done-pass':'done-fail');
+    }
+  });
+
+  selWord = null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WORD BANK
+// ═══════════════════════════════════════════════════════════════
+function buildBank(idx){
+  const st = states[idx];
+  const placed = Object.values(st.answers);
+  const bank = document.getElementById('wordbank');
+  Array.from(bank.querySelectorAll('.wcard')).forEach(el=>el.remove());
+
+  st.order.forEach(word=>{
+    const c = document.createElement('div');
+    c.className = 'wcard' + (placed.includes(word)?' used':'');
+    c.textContent = word;
+    c.dataset.word = word;
+    c.addEventListener('click',()=>onWord(word,c));
+    bank.appendChild(c);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════════════════════
+function onWord(word, card){
+  const st = states[cur];
+  if(st.checked) return;
+  if(Object.values(st.answers).includes(word)) return;
+  document.querySelectorAll('.wcard.sel').forEach(el=>el.classList.remove('sel'));
+  if(selWord===word){ selWord=null; return; }
+  selWord = word;
+  card.classList.add('sel');
+}
+
+function onMarker(id){
+  const st = states[cur];
+  if(st.checked) return;
+
+  // If already filled → unplace
+  if(st.answers[id]){
+    const w = st.answers[id];
+    delete st.answers[id];
+    selWord = w;
+    render(cur);
+    // re-highlight the returned word
+    document.querySelectorAll('.wcard').forEach(el=>{
+      if(el.dataset.word===w){ el.classList.remove('used'); el.classList.add('sel'); }
+    });
+    return;
+  }
+
+  if(selWord){
+    // Remove word from any other slot
+    Object.keys(st.answers).forEach(k=>{ if(st.answers[k]===selWord) delete st.answers[k]; });
+    st.answers[id] = selWord;
+    selWord = null;
+    render(cur);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHECK
+// ═══════════════════════════════════════════════════════════════
+function checkAnswers(){
+  const q = Q[cur];
+  const st = states[cur];
+  let correct=0;
+  q.labels.forEach(lbl=>{
+    const placed = (st.answers[lbl.id]||'').trim().toLowerCase();
+    const ans = lbl.ans.trim().toLowerCase();
+    const ok = placed===ans;
+    st.results[lbl.id]=ok;
+    if(ok) correct++;
+  });
+  st.checked=true;
+
+  // Update running score
+  const total = states.reduce((s,st2)=>s+Object.values(st2.results).filter(Boolean).length,0);
+  document.getElementById('scoreNum').textContent=total;
+
+  const fb=document.getElementById('feedback');
+  const pct=correct/q.labels.length;
+  fb.textContent=`${correct}/${q.labels.length} correct (${Math.round(pct*100)}%)`;
+  fb.className='show '+(pct>=0.7?'pass':'fail');
+
+  render(cur);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAV / RESET / FINAL
+// ═══════════════════════════════════════════════════════════════
+function go(idx){
+  if(idx<0||idx>=Q.length) return;
+  cur=idx;
+  render(idx);
+  if(states.every(s=>s.checked)) setTimeout(showFinal,600);
+}
+
+function resetDiagram(){
+  states[cur]={answers:{},checked:false,results:{},order:states[cur].order};
+  selWord=null;
+  document.getElementById('feedback').className='';
+  render(cur);
+}
+
+function showFinal(){
+  document.getElementById('main').style.display='none';
+  const total=states.reduce((s,st)=>s+Object.values(st.results).filter(Boolean).length,0);
+  const possible=Q.reduce((s,q)=>s+q.labels.length,0);
+  const pct=Math.round(total/possible*100);
+  document.getElementById('final-score').textContent=`${total} / ${possible}  (${pct}%)`;
+  const msgs=[
+    [90,"Baldrizzt nods. Barely. That's the highest praise you'll get from a god-tier gnome."],
+    [70,"Adequate. The cochlea won't reject you. Yet."],
+    [50,"Mediocre. This anatomy doesn't care about your feelings. Go restudy."],
+    [0,"Embarrassing. Even the earlobe knew more than you. Start over."]
+  ];
+  document.getElementById('final-msg').textContent=msgs.find(([t])=>pct>=t)[1];
+  document.getElementById('final').classList.add('show');
+}
+
+function restart(){
+  states=Q.map(q=>({answers:{},checked:false,results:{},order:shuffle(q.labels.map(l=>l.ans))}));
+  cur=0; selWord=null;
+  document.getElementById('scoreNum').textContent=0;
+  document.getElementById('main').style.display='flex';
+  document.getElementById('final').classList.remove('show');
+  render(0);
+}
+</script>
+</body>
+</html>
