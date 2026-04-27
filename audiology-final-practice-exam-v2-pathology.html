@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audiology Final — Practice Exam V2 (+ Pathology)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    text-align: center;
+    padding: 40px 20px;
+    border-bottom: 2px solid #30363d;
+    margin-bottom: 30px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff6b6b, #ffa347, #c896ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header p { color: #8b949e; font-size: 0.95rem; }
+  .score-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 12px; padding: 16px 24px; margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(10px);
+  }
+  .score-bar .left { font-weight: 600; font-size: 1.1rem; }
+  .score-bar .right { display: flex; gap: 20px; align-items: center; }
+  .score-bar .correct { color: #3fb950; font-weight: 700; }
+  .score-bar .wrong { color: #f85149; font-weight: 700; }
+  .score-bar .unanswered { color: #8b949e; }
+  .topic-tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  /* Original anatomy/PEDS tags */
+  .tag-peds    { background: #1f2d3d; color: #58a6ff; }
+  .tag-unhs    { background: #2a1f3f; color: #bc8cff; }
+  .tag-age     { background: #1f3f2a; color: #3fb950; }
+  .tag-vra     { background: #3f2a1f; color: #f0883e; }
+  .tag-outer   { background: #3f1f2a; color: #f778ba; }
+  .tag-tm      { background: #1f3f3f; color: #56d4dd; }
+  .tag-middle  { background: #3f3f1f; color: #d2a641; }
+  .tag-ossicle { background: #2f1f3f; color: #d2a6ff; }
+  .tag-imp     { background: #3f1f1f; color: #ff7b72; }
+  .tag-inner   { background: #1f3f2f; color: #7ee787; }
+  .tag-cochlea { background: #2a3f1f; color: #a5d6a7; }
+  .tag-hair    { background: #1f1f3f; color: #82aaff; }
+  .tag-fluid   { background: #3f2f1f; color: #ffb74d; }
+  .tag-prop    { background: #1f3f3a; color: #4dd0e1; }
+  .tag-embryo  { background: #3f1f3a; color: #ce93d8; }
+  /* NEW PATHOLOGY TAGS */
+  .tag-pathOuter  { background: #3f1510; color: #ff8a65; }
+  .tag-pathMiddle { background: #3f2a10; color: #ffcc02; }
+  .tag-pathInner  { background: #2a0f40; color: #d580ff; }
+  .tag-pathReflex { background: #103f30; color: #00e5a0; }
+  .question-card {
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 12px; padding: 24px; margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .question-card.answered-correct { border-color: #238636; }
+  .question-card.answered-wrong   { border-color: #da3633; }
+  .q-number {
+    display: inline-block; background: #30363d; color: #8b949e;
+    font-size: 0.75rem; font-weight: 700; padding: 4px 10px;
+    border-radius: 20px; margin-bottom: 12px;
+  }
+  .q-text { font-size: 1rem; font-weight: 500; line-height: 1.6; margin-bottom: 16px; }
+  .q-type-badge {
+    display: inline-block; font-size: 0.7rem; font-weight: 600;
+    padding: 3px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle;
+  }
+  .badge-mc { background: #1f3a5f; color: #58a6ff; }
+  .badge-tf { background: #2a1f3f; color: #bc8cff; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn {
+    display: flex; align-items: center; gap: 12px;
+    background: #0d1117; border: 1px solid #30363d;
+    border-radius: 8px; padding: 12px 16px; color: #e6edf3;
+    font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+    text-align: left; width: 100%; font-family: inherit;
+  }
+  .option-btn:hover:not(.locked) { border-color: #ff6b6b; background: #1a1414; }
+  .option-btn .letter {
+    min-width: 28px; height: 28px; display: flex; align-items: center;
+    justify-content: center; border-radius: 6px; background: #21262d;
+    font-weight: 700; font-size: 0.85rem; color: #8b949e;
+  }
+  .option-btn.selected  { border-color: #ff6b6b; background: #1a1414; }
+  .option-btn.selected .letter { background: #ff6b6b; color: #0d1117; }
+  .option-btn.correct-answer { border-color: #238636; background: #0d2818; }
+  .option-btn.correct-answer .letter { background: #238636; color: #fff; }
+  .option-btn.wrong-answer   { border-color: #da3633; background: #2d1214; }
+  .option-btn.wrong-answer .letter   { background: #da3633; color: #fff; }
+  .explanation {
+    margin-top: 12px; padding: 14px 16px; border-radius: 8px;
+    font-size: 0.9rem; line-height: 1.5; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation.correct-exp { background: #0d2818; border: 1px solid #238636; color: #3fb950; }
+  .explanation.wrong-exp   { background: #2d1214; border: 1px solid #da3633; color: #f85149; }
+  .submit-btn {
+    display: block; width: 100%; padding: 18px; margin-top: 30px;
+    background: linear-gradient(135deg, #8b1a1a, #c896ff);
+    color: #fff; font-size: 1.1rem; font-weight: 700;
+    border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .results-panel {
+    display: none; background: #161b22; border: 1px solid #30363d;
+    border-radius: 12px; padding: 30px; margin-top: 30px; text-align: center;
+  }
+  .results-panel h2 { font-size: 1.8rem; margin-bottom: 16px; }
+  .results-panel .big-score { font-size: 4rem; font-weight: 800; }
+  .results-panel .breakdown { margin-top: 20px; color: #8b949e; font-size: 0.95rem; line-height: 1.8; }
+  .reset-btn {
+    margin-top: 20px; padding: 12px 32px; background: #30363d;
+    color: #e6edf3; border: none; border-radius: 8px;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
+  .reset-btn:hover { background: #484f58; }
+  .missed-list { text-align: left; margin-top: 20px; padding: 20px; background: #0d1117; border-radius: 8px; }
+  .missed-list h3 { color: #f85149; margin-bottom: 10px; }
+  .missed-item { padding: 6px 0; border-bottom: 1px solid #21262d; font-size: 0.85rem; color: #8b949e; }
+  .topic-breakdown { margin-top: 16px; padding: 16px; background: #0d1117; border-radius: 8px; text-align: left; }
+  .topic-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.9rem; }
+  .topic-row .topic-name { color: #8b949e; }
+  .topic-row .topic-score { font-weight: 700; }
+  .section-divider {
+    text-align: center; margin: 30px 0 20px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #484f58;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: #21262d;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>AUDIOLOGY FINAL — PRACTICE EXAM V2</h1>
+    <p>70 Questions — PEDS + Anatomy + <strong style="color:#d580ff">PATHOLOGY</strong> — Sutherland Format · Shuffle on reload</p>
+  </div>
+  <div class="score-bar" id="scoreBar">
+    <div class="left">Progress: <span id="answeredCount">0</span>/70</div>
+    <div class="right">
+      <span class="correct"  id="correctCount">0 ✓</span>
+      <span class="wrong"    id="wrongCount">0 ✗</span>
+      <span class="unanswered" id="unansweredCount">70 left</span>
+    </div>
+  </div>
+  <div id="questionsContainer"></div>
+  <button class="submit-btn" id="submitBtn" onclick="submitExam()">Submit Exam</button>
+  <div class="results-panel" id="resultsPanel">
+    <h2>EXAM RESULTS</h2>
+    <div class="big-score" id="finalScore"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="topic-breakdown" id="topicBreakdown"></div>
+    <div class="missed-list" id="missedList"></div>
+    <button class="reset-btn" onclick="location.reload()">Retake (Reshuffle)</button>
+  </div>
+</div>
+
+<script>
+const allQuestions = [
+
+  // ═══════════════════════════════════════════════
+  // PEDS / UNHS / SCREENING  (Q1–Q15)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "unhs", tagLabel: "UNHS",
+    q: "Per the JCIH 1-3-6 guideline, all newborns should be screened by 1 month, diagnosed by 3 months, and enrolled in early intervention by 6 months of age.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. Screened by 1 month, diagnosed by 3 months, early intervention by 6 months — those are MONTHS, not weeks. Yoshinaga-Itano (1998) showed that identification + intervention before 6 months produces dramatically better language outcomes."
+  },
+  {
+    tag: "unhs", tagLabel: "UNHS",
+    q: "Which terminology is CORRECT when documenting a newborn hearing screening result?",
+    type: "mc",
+    options: ["Pass or Fail","Negative or Positive","Pass or Refer","Clear or Blocked"],
+    answer: 2,
+    explain: "Pass or Refer — NEVER 'fail.' A Refer means additional diagnostic follow-up is needed; it is NOT a diagnosis of hearing loss. Many referred infants have normal hearing on full diagnostic testing."
+  },
+  {
+    tag: "unhs", tagLabel: "UNHS",
+    q: "Why is AABR preferred over OAE for newborn hearing screening in the NICU?",
+    type: "mc",
+    options: [
+      "AABR is faster and less expensive than OAE",
+      "OAEs are unreliable in noisy NICU environments",
+      "AABR detects Auditory Neuropathy Spectrum Disorder (ANSD), which OAE screening alone will miss",
+      "AABR provides frequency-specific threshold information"
+    ],
+    answer: 2,
+    explain: "AABR measures the NEURAL response up through the brainstem. In ANSD, outer hair cells are intact (OAEs present) but neural transmission is disordered (ABR absent/abnormal). NICU infants have elevated ANSD risk due to hypoxia and hyperbilirubinemia — OAE-only screening will pass them and miss the disorder entirely."
+  },
+  {
+    tag: "peds", tagLabel: "CROSS-CHECK",
+    q: "The Cross-Check Principle (Jerger & Hayes, 1976) states that no single audiological measure should be the sole basis for a diagnosis — each finding must be confirmed by an independent measure.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. Every behavioral result must have a physiologic cross-check, and vice versa. This exists because infants cannot self-report, functional hearing loss occurs, and ANSD specifically requires cross-checking OAE with ABR to detect."
+  },
+  {
+    tag: "peds", tagLabel: "CROSS-CHECK",
+    q: "A child's behavioral audiogram shows severe SNHL bilaterally, but OAEs are clearly present in both ears. The MOST appropriate next step is:",
+    type: "mc",
+    options: [
+      "Diagnose severe SNHL and refer for hearing aid fitting immediately",
+      "Discard the OAE result — equipment error is the most likely cause",
+      "Invoke the Cross-Check Principle and investigate for ANSD or functional hearing loss",
+      "Repeat VRA because the child was not conditioned properly"
+    ],
+    answer: 2,
+    explain: "Present OAEs + severe behavioral hearing loss is the textbook Cross-Check flag. Possibilities: ANSD (OHCs working but neural transmission broken), functional/non-organic loss, or testing error. You NEVER skip to diagnosis — you investigate the discrepancy first."
+  },
+  {
+    tag: "unhs", tagLabel: "UNHS",
+    q: "Before universal newborn hearing screening, the High-Risk Register approach was the standard. Which statement BEST describes its effectiveness?",
+    type: "mc",
+    options: [
+      "It identified approximately 90% of congenital hearing losses",
+      "It identified approximately 70% of cases — acceptable but not ideal",
+      "It missed more than half of congenital hearing losses",
+      "It performed equivalently to modern universal screening programs"
+    ],
+    answer: 2,
+    explain: "The HRR missed >50% of congenital hearing losses because the majority of infants born with hearing loss had NO identifiable risk factor. This is why JCIH endorsed UNHS in 1994 — the risk-register approach was fundamentally inadequate."
+  },
+  {
+    tag: "peds", tagLabel: "OAE",
+    q: "Otoacoustic emissions (OAEs) are generated by the motility of outer hair cells and reflect cochlear amplifier function.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. The protein prestin drives rapid OHC length changes. This electromotility amplifies the traveling wave AND generates OAEs as a measurable byproduct. Absent OAEs indicate OHC dysfunction — conductive pathology blocking the signal or sensorineural damage at the OHC level."
+  },
+  {
+    tag: "peds", tagLabel: "MRL",
+    q: "In pediatric testing, the Minimum Response Level (MRL) is:",
+    type: "mc",
+    options: [
+      "Equivalent to true hearing threshold",
+      "The lowest level at which the child reliably responds — true threshold is inferred to be lower",
+      "Always measured at 20 dB below PTA",
+      "Used exclusively in ABR threshold estimation"
+    ],
+    answer: 1,
+    explain: "MRL ≠ threshold. MRL is the lowest level at which you observe a reliable behavioral response. True threshold is inferred to be several dB below MRL. The gap between MRL and true threshold narrows with age — in newborns it can be 30–40 dB."
+  },
+  {
+    tag: "unhs", tagLabel: "PREVALENCE",
+    q: "Approximately how many newborns per 1,000 are born with significant hearing loss?",
+    type: "mc",
+    options: ["0.1 per 1,000","1–3 per 1,000","8–10 per 1,000","15–20 per 1,000"],
+    answer: 1,
+    explain: "1–3 per 1,000 at birth. By school age, prevalence climbs to ~5 per 1,000 due to late-onset, progressive, and acquired losses. Hearing loss is the most common sensory disability at birth."
+  },
+  {
+    tag: "peds", tagLabel: "ABR",
+    q: "ABR requires active cooperation from the patient, which makes it unsuitable for testing infants and young children.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — this is the OPPOSITE of why we use ABR. ABR can be performed during natural sleep or sedation because it does not require voluntary responses. This is precisely what makes it the gold standard for objective infant threshold estimation."
+  },
+  {
+    tag: "peds", tagLabel: "ABR",
+    q: "Which ABR wave component is the most robust and is used clinically for threshold estimation in infant screening?",
+    type: "mc",
+    options: ["Wave I","Wave III","Wave V","Wave VII"],
+    answer: 2,
+    explain: "Wave V — the most robust component, generated at the level of the inferior colliculus. As stimulus intensity decreases, Wave V is the last component visible before it disappears. Threshold is estimated as the lowest intensity at which Wave V can be identified."
+  },
+  {
+    tag: "peds", tagLabel: "TYMP",
+    q: "Standard 226 Hz tympanometry is NOT reliable for infants younger than:",
+    type: "mc",
+    options: ["3 months","6 months","9 months","12 months"],
+    answer: 1,
+    explain: "6 months. In infants under 6 months, the ear canal walls are highly compliant (floppy), causing 226 Hz tympanometry to produce falsely normal-appearing Type A traces even in ears with pathology. Use 1000 Hz probe tone under 6 months, then transition to 226 Hz at and after 6 months."
+  },
+  {
+    tag: "peds", tagLabel: "ANSD",
+    q: "In Auditory Neuropathy Spectrum Disorder (ANSD), OAEs are absent and the ABR is present.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — REVERSED. ANSD = OAEs PRESENT (OHCs are intact and functioning) + ABR ABSENT or severely abnormal (neural transmission to the brainstem is disrupted). This is the ANSD fingerprint — OAE-only screening passes these babies and misses the disorder entirely."
+  },
+  {
+    tag: "peds", tagLabel: "OUTCOMES",
+    q: "According to Yoshinaga-Itano (1998), early identification and intervention before what age leads to the best language outcomes?",
+    type: "mc",
+    options: ["3 months","6 months","12 months","18 months"],
+    answer: 1,
+    explain: "6 months. Children identified and receiving intervention before 6 months showed language development significantly closer to normal peers compared to those identified later. This single study was the empirical anchor for the JCIH 1-3-6 guideline."
+  },
+  {
+    tag: "peds", tagLabel: "ABR",
+    q: "Click-evoked ABR provides frequency-specific threshold information across the full audiometric range.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False. Clicks are broadband stimuli that predominantly activate the 1–4 kHz region of the cochlear base. They do NOT give frequency-specific information. Tone-burst ABR (e.g., 500, 1000, 2000, 4000 Hz) is required for frequency-specific threshold estimation."
+  },
+
+  // ═══════════════════════════════════════════════
+  // AGE-APPROPRIATE TESTING / VRA / MILESTONES  (Q16–Q23)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "age", tagLabel: "AGE→TEST",
+    q: "What is the PRIMARY behavioral test method for a 9-month-old with no developmental delays?",
+    type: "mc",
+    options: ["BOA (Behavioral Observation Audiometry)","VRA (Visual Reinforcement Audiometry)","CPA (Conditioned Play Audiometry)","Conventional pure-tone audiometry"],
+    answer: 1,
+    explain: "VRA covers the 6-month to 2-year chronological age range. By 6 months the head-turn response is reliable enough for VRA conditioning. CPA requires the child to understand and perform a contingent motor task — not developmentally appropriate until ~2 years."
+  },
+  {
+    tag: "age", tagLabel: "BOA",
+    q: "BOA (Behavioral Observation Audiometry) is a conditioning task — the infant learns to produce a specific motor response to the sound stimulus.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False. BOA is OBSERVATION, not conditioning. The examiner watches for reflexive/orienting behaviors (startle, eye blink, head turn, arousal from sleep, change in sucking). VRA and CPA are the conditioning paradigms — this is a classic trap she plants."
+  },
+  {
+    tag: "vra", tagLabel: "VRA",
+    q: "Per Sutherland's lecture protocol, VRA testing begins at what initial intensity?",
+    type: "mc",
+    options: ["30 dB HL","40 dB HL","50 dB HL","60 dB HL"],
+    answer: 3,
+    explain: "60 dB HL per Sutherland — NOT 30 dB HL as many textbooks state. Her class, her values. Descend 20 dB after first response, then threshold-hunt with a 10 up / 5 down or similar bracketing strategy."
+  },
+  {
+    tag: "vra", tagLabel: "VRA",
+    q: "Per Sutherland's lecture, the correct frequency testing sequence for VRA is:",
+    type: "mc",
+    options: [
+      "1000 → 500 → 4000 → 1000 → 2000 Hz",
+      "2000 → 500 → 4000 → 1000 → 250 Hz",
+      "250 → 500 → 1000 → 2000 → 4000 Hz",
+      "500 → 1000 → 2000 → 4000 → 8000 Hz"
+    ],
+    answer: 1,
+    explain: "Sutherland's sequence: 2000 → 500 → 4000 → 1000 → 250 Hz. This is different from the standard textbook protocol (1000 → 500 → 4000 → 1000 → 2000). Memorize HER values exactly — those are what she tests."
+  },
+  {
+    tag: "vra", tagLabel: "VRA",
+    q: "Per Sutherland's lecture, VRA loudspeakers are positioned at what azimuth relative to the child?",
+    type: "mc",
+    options: ["0° (directly in front)","45°","90° (directly to the side)","135°"],
+    answer: 2,
+    explain: "90° azimuth per Sutherland — directly to the side. Textbooks commonly state 45°. The lit toy reinforcer is at 90° to maximize the head-turn conditioning signal. Use her value on this exam, not the textbook value."
+  },
+  {
+    tag: "vra", tagLabel: "VRA",
+    q: "Sutherland uses the term 'bone oscillators' when referring to bone conduction transducers in her lecture.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. Match her vocabulary exactly. If a question stem says 'bone oscillators,' you recognize it. If you see 'bone conduction transducers' on a test item, that's textbook — she may or may not use it. 'Bone oscillators' is her phrase."
+  },
+  {
+    tag: "age", tagLabel: "CPA",
+    q: "A 3.5-year-old is conditioned to drop a wooden block into a bucket each time they hear a pure tone. This behavioral audiometry technique is called:",
+    type: "mc",
+    options: ["BOA","VRA","CPA (Conditioned Play Audiometry)","Conventional pure-tone audiometry"],
+    answer: 2,
+    explain: "CPA (Conditioned Play Audiometry) — used for children approximately 2–5 years. The contingent motor task (block drop, ring stack, peg board) provides reliable frequency-specific thresholds in children who are developmentally ready for the game but not yet able to manage conventional hand-raise audiometry."
+  },
+  {
+    tag: "age", tagLabel: "MILESTONES",
+    q: "Approximately when does a typically-developing child produce their first true words?",
+    type: "mc",
+    options: ["6 months","9 months","12 months","18 months"],
+    answer: 2,
+    explain: "12 months. Sutherland explicitly stated this in her exam-content rundown: 'when do they start talking?' Earlier milestones: cooing at ~3 months, canonical babbling with intonation at ~9 months, but first true single words appear around 12 months."
+  },
+
+  // ═══════════════════════════════════════════════
+  // OUTER EAR / TM / MIDDLE EAR ANATOMY  (Q24–Q33)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "outer", tagLabel: "OUTER EAR",
+    q: "The adult external auditory canal (EAC) is approximately how long?",
+    type: "mc",
+    options: ["10 mm","15 mm","25 mm","40 mm"],
+    answer: 2,
+    explain: "~25 mm (~2.5 cm). The EAC functions as a quarter-wavelength resonator, providing 10–15 dB of gain centered around 2,500–3,500 Hz. This natural amplification in the high-frequency consonant range is a significant contributor to speech understanding."
+  },
+  {
+    tag: "outer", tagLabel: "OUTER EAR",
+    q: "The lateral one-third of the external auditory canal is bony, and the medial two-thirds is cartilaginous.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — REVERSED. Lateral 1/3 = CARTILAGINOUS (contains cerumen-producing glands, sebaceous glands, and hairs that trap particles). Medial 2/3 = BONY (thin epithelium directly over bone, no glands). This reversal is one of her favorite traps."
+  },
+  {
+    tag: "outer", tagLabel: "EAC RESONANCE",
+    q: "The external auditory canal's quarter-wavelength resonance provides approximately how much gain in the 2,500–3,500 Hz region?",
+    type: "mc",
+    options: ["3–5 dB","10–15 dB","20–25 dB","30+ dB"],
+    answer: 1,
+    explain: "10–15 dB. This resonance boosts the frequency region most critical for voiceless consonant perception (fricatives, stops). Open-canal hearing aids attempt to preserve this natural resonance by leaving the canal open."
+  },
+  {
+    tag: "tm", tagLabel: "TM",
+    q: "Which tympanic membrane landmark is located at the deepest inward point, where the tip of the manubrium of the malleus is embedded?",
+    type: "mc",
+    options: ["Annulus","Pars flaccida","Umbo","Cone of light"],
+    answer: 2,
+    explain: "Umbo — the conical peak formed by the manubrium pulling the TM inward at its tip. The annulus is the fibrous ring at the periphery. Pars flaccida (Shrapnell's membrane) is the small superior portion. Cone of light is the otoscope reflection off the TM surface in the anterior-inferior quadrant."
+  },
+  {
+    tag: "tm", tagLabel: "TM",
+    q: "The pars flaccida (Shrapnell's membrane) consists of all three layers of the tympanic membrane — epithelial, fibrous, and mucosal.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False. Pars flaccida has only TWO layers — it lacks the middle fibrous layer. Pars tensa (the main body of the TM) has all three layers: outer epithelial (ectoderm), middle fibrous (mesoderm), inner mucosal (endoderm). No fibrous layer = no structural stiffness = 'flaccid.'"
+  },
+  {
+    tag: "tm", tagLabel: "TM",
+    q: "On otoscopy of a healthy RIGHT ear, the cone of light is located at approximately which clock position?",
+    type: "mc",
+    options: ["1 o'clock","5 o'clock","7 o'clock","11 o'clock"],
+    answer: 1,
+    explain: "5 o'clock in the RIGHT ear (anterior-inferior quadrant). 7 o'clock in the LEFT ear. The TMs are mirror images: manubrium points toward 1 o'clock (R) or 11 o'clock (L), cone of light anterior-inferior to that. PE tubes are placed in the anterior-inferior quadrant for the same reason."
+  },
+  {
+    tag: "middle", tagLabel: "MUSCLES",
+    q: "The tensor tympani muscle is innervated by which cranial nerve?",
+    type: "mc",
+    options: ["CN V (trigeminal)","CN VII (facial)","CN VIII (vestibulocochlear)","CN IX (glossopharyngeal)"],
+    answer: 0,
+    explain: "CN V (trigeminal — mandibular branch V3) innervates the tensor tympani, which attaches to the MANUBRIUM OF MALLEUS. CN VII (facial) innervates the STAPEDIUS, which attaches to the NECK OF STAPES. Mixing these two up is a guaranteed exam trap — drill them together."
+  },
+  {
+    tag: "middle", tagLabel: "MUSCLES",
+    q: "The stapedius muscle is the smallest skeletal muscle in the human body and is innervated by CN VII (facial nerve).",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. Stapedius (~1 mm) is the smallest named muscle in the body. CN VII innervation means that facial nerve pathology (e.g., Bell's palsy) causes stapedius paralysis and absent acoustic reflexes on the affected side."
+  },
+  {
+    tag: "ossicle", tagLabel: "OSSICLES",
+    q: "The ossicles, in lateral-to-medial order, are:",
+    type: "mc",
+    options: [
+      "Stapes → Incus → Malleus",
+      "Incus → Malleus → Stapes",
+      "Malleus → Incus → Stapes",
+      "Malleus → Stapes → Incus"
+    ],
+    answer: 2,
+    explain: "Malleus (handle embedded in TM) → Incus (body articulates with malleus head) → Stapes (footplate seated in oval window). Lateral = closest to the TM; medial = closest to the cochlea."
+  },
+  {
+    tag: "middle", tagLabel: "EUSTACHIAN",
+    q: "The Eustachian tube connects the middle ear space to the:",
+    type: "mc",
+    options: ["Oropharynx","Nasopharynx","Laryngopharynx","Mastoid antrum"],
+    answer: 1,
+    explain: "Nasopharynx. The ET opens during swallowing, yawning, and Valsalva via the tensor and levator veli palatini muscles. In children, the ET is shorter, more horizontal, and wider — which facilitates retrograde bacterial migration from the nasopharynx and explains the dramatically higher rate of otitis media in pediatric populations."
+  },
+
+  // ═══════════════════════════════════════════════
+  // INNER EAR ANATOMY  (Q34–Q44)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "cochlea", tagLabel: "COCHLEA",
+    q: "The cochlea spirals approximately how many complete turns?",
+    type: "mc",
+    options: ["1.5 turns","2.5 turns","3.5 turns","4.5 turns"],
+    answer: 1,
+    explain: "2.5 turns. The basal turn forms the promontory visible on the medial wall of the middle ear. The cochlea is ~1 cm wide and ~5 mm from base to apex, roughly the size of a pea."
+  },
+  {
+    tag: "cochlea", tagLabel: "MEMBRANES",
+    q: "Which membrane separates scala vestibuli from scala media?",
+    type: "mc",
+    options: ["Basilar membrane","Tectorial membrane","Reissner's membrane","Round window membrane"],
+    answer: 2,
+    explain: "Reissner's membrane sits between scala VESTIBULI (above) and scala MEDIA (below). The basilar membrane separates scala MEDIA (above) from scala TYMPANI (below). Tectorial membrane is INSIDE scala media, sitting over the organ of Corti."
+  },
+  {
+    tag: "cochlea", tagLabel: "BM",
+    q: "The basilar membrane is wide and floppy at the base of the cochlea, and narrow and stiff at the apex.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — REVERSED. Base = NARROW and STIFF → codes HIGH frequencies (stiff membrane = fast vibration). Apex = WIDE and FLOPPY → codes LOW frequencies (compliant membrane = slow vibration). This tonotopic gradient is the physical basis for place coding in the cochlea."
+  },
+  {
+    tag: "imp", tagLabel: "OW/RW",
+    q: "The stapes footplate sits in the oval window, which opens into which fluid compartment of the cochlea?",
+    type: "mc",
+    options: ["Scala media (endolymph)","Scala vestibuli (perilymph)","Scala tympani (perilymph)","The helicotrema"],
+    answer: 1,
+    explain: "Scala vestibuli — filled with perilymph (high Na+). Stapes inward displacement pushes perilymph from scala vestibuli toward the apex and through the helicotrema into scala tympani, where it exits via the round window. Scala media sits between those two and contains endolymph."
+  },
+  {
+    tag: "imp", tagLabel: "OW/RW",
+    q: "The oval window and round window membrane move in phase with each other.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — 180° OUT OF PHASE. Cochlear fluids are essentially incompressible. When the stapes pushes the oval window INWARD, the round window membrane BULGES OUTWARD into the middle ear. Without this pressure-release valve, fluid motion inside the cochlea would be mechanically blocked."
+  },
+  {
+    tag: "hair", tagLabel: "HAIR CELLS",
+    q: "Which statement CORRECTLY describes the division of labor between inner hair cells (IHCs) and outer hair cells (OHCs)?",
+    type: "mc",
+    options: [
+      "OHCs are the primary sensory transducers; IHCs provide the cochlear amplifier function",
+      "IHCs are the primary sensory transducers; OHCs provide cochlear amplification via prestin-driven electromotility",
+      "IHC and OHC perform identical roles — only their position differs",
+      "IHCs generate OAEs; OHCs synapse directly onto the auditory nerve"
+    ],
+    answer: 1,
+    explain: "IHCs (one row, ~3,000) = SENSORY TRANSDUCERS — 90–95% of afferent CN VIII fibers synapse here. OHCs (3–5 rows, ~12,000–15,000) = COCHLEAR AMPLIFIER — prestin-driven electromotility sharpens the traveling wave peak and produces OAEs. Reversing this is the most reliable trap in audiology courses."
+  },
+  {
+    tag: "hair", tagLabel: "HAIR CELLS",
+    q: "Approximately how many INNER hair cells are present in a healthy human cochlea?",
+    type: "mc",
+    options: ["1,000","3,000","12,000","30,000"],
+    answer: 1,
+    explain: "~3,000 IHCs in a single row. OHCs: ~12,000–15,000 in 3–5 rows. CN VIII afferent fibers: ~30,000 total. Do not reverse IHC and OHC counts — both numbers appear as distractors for each other on multiple-choice items."
+  },
+  {
+    tag: "hair", tagLabel: "HAIR CELLS",
+    q: "OHC stereocilia tips are embedded in the tectorial membrane, while IHC stereocilia are free-standing and deflected by fluid motion.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. OHC stereocilia are physically embedded in the tectorial membrane — shearing motion between the basilar membrane and tectorial membrane deflects them directly. IHC stereocilia are free-standing in the subtectorial space and respond to the velocity of endolymph fluid displaced by that shearing motion."
+  },
+  {
+    tag: "hair", tagLabel: "PRESTIN",
+    q: "The motor protein responsible for OHC electromotility and cochlear amplification is:",
+    type: "mc",
+    options: ["Connexin 26","Otoferlin","Prestin","Myosin VIIa"],
+    answer: 2,
+    explain: "Prestin — unique to the lateral wall of OHCs. Voltage-driven conformational changes cause OHC length changes up to ~100,000 Hz. Prestin loss (from NIHL, ototoxicity, or genetic mutation) = loss of cochlear amplification = 40–60 dB SNHL with poor frequency resolution and degraded speech-in-noise ability."
+  },
+  {
+    tag: "fluid", tagLabel: "FLUIDS",
+    q: "Endolymph (the fluid filling scala media) has an unusually high concentration of:",
+    type: "mc",
+    options: ["Sodium (Na+)","Potassium (K+)","Calcium (Ca2+)","Chloride (Cl−)"],
+    answer: 1,
+    explain: "ENDOLYMPH = high K+ (like intracellular fluid). PERILYMPH = high Na+ (like extracellular fluid / CSF). When stereocilia deflect toward the tallest row, K+ tip-link channels open and K+ rushes INTO the hair cell from endolymph — depolarization. The stria vascularis maintains this gradient."
+  },
+  {
+    tag: "fluid", tagLabel: "STRIA",
+    q: "The +80 mV endocochlear potential ('cochlear battery') is generated and maintained by:",
+    type: "mc",
+    options: ["The basilar membrane","The spiral ganglion","The stria vascularis","The tectorial membrane"],
+    answer: 2,
+    explain: "Stria vascularis — the highly vascularized epithelium on the outer wall of scala media. It produces endolymph, actively pumps K+ to maintain high endolymph K+ concentration, and sustains the +80 mV electrical potential. Without stria vascularis function, cochlear transduction fails completely."
+  },
+
+  // ═══════════════════════════════════════════════
+  // SOUND PROPAGATION + EMBRYOLOGY  (Q45–Q49)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "prop", tagLabel: "PROPAGATION",
+    q: "The traveling wave on the basilar membrane:",
+    type: "mc",
+    options: [
+      "Starts at the apex and travels toward the base, peaking at the tonotopic frequency location",
+      "Starts at the base and travels toward the apex, peaking at the tonotopic frequency location, then rapidly damps",
+      "Starts in the middle of the cochlea and propagates bidirectionally",
+      "Does not have a directional component — it is a standing wave"
+    ],
+    answer: 1,
+    explain: "The traveling wave ALWAYS starts at the BASE and travels toward the APEX, regardless of stimulus frequency. It builds in amplitude until it reaches the tonotopic peak for that frequency, then damps rapidly. This is true for both air-conducted and bone-conducted sound. The direction trap (apex → base) is a favorite reversal question."
+  },
+  {
+    tag: "imp", tagLabel: "IMPEDANCE",
+    q: "Without the middle ear's impedance-matching mechanism, approximately how much acoustic energy would be lost at the air-cochlear fluid interface?",
+    type: "mc",
+    options: ["~10 dB","~20 dB","~30 dB","~50 dB"],
+    answer: 2,
+    explain: "~30 dB (~99.9% of energy reflects back at the air-fluid interface). The middle ear recovers this via: area ratio of TM to stapes footplate (~27.2 dB, the biggest contributor), lever action of ossicles (~2.2 dB), and TM buckling mode (~6 dB). Total ≈ 25–35 dB compensation."
+  },
+  {
+    tag: "embryo", tagLabel: "EMBRYO",
+    q: "The ossicles are the only bones in the human body that reach adult size before birth.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. The ossicles fully ossify by week 16 and reach adult size by the time of birth — they never grow further. The inner ear also reaches adult configuration by ~week 25. The outer ear canal and middle ear space continue to grow postnatally."
+  },
+  {
+    tag: "embryo", tagLabel: "EMBRYO",
+    q: "The malleus and incus are derived from which embryological structure?",
+    type: "mc",
+    options: [
+      "The 1st pharyngeal arch (Meckel's cartilage)",
+      "The 2nd pharyngeal arch (Reichert's cartilage)",
+      "The 1st pharyngeal pouch (endoderm)",
+      "The otic vesicle (otocyst)"
+    ],
+    answer: 0,
+    explain: "Malleus + incus = 1st pharyngeal arch (Meckel's cartilage). Stapes = 2nd pharyngeal arch (Reichert's cartilage). 1st pharyngeal POUCH (endoderm) = middle ear cavity + Eustachian tube. Membranous labyrinth = ectoderm (auditory placode → otocyst). Don't confuse arch (mesoderm) with pouch (endoderm)."
+  },
+  {
+    tag: "embryo", tagLabel: "EMBRYO",
+    q: "The membranous labyrinth of the inner ear is derived from which germ layer?",
+    type: "mc",
+    options: ["Endoderm","Mesoderm","Ectoderm (auditory placode → otocyst)","Neural crest"],
+    answer: 2,
+    explain: "Ectoderm → auditory placode → otocyst → membranous labyrinth. Bony labyrinth = mesoderm. Spiral ganglion (cochlear nerve cell bodies) = neural crest. Middle ear lining + ET = endoderm. Memorize this four-cell table — embryology is a reliable exam section."
+  },
+
+  // ═══════════════════════════════════════════════
+  // PATHOLOGY  (Q50–Q70)
+  // ═══════════════════════════════════════════════
+  {
+    tag: "pathMiddle", tagLabel: "OTOSCLEROSIS",
+    q: "A 34-year-old woman reports progressive bilateral hearing loss that worsened noticeably during both of her pregnancies. Audiogram shows bilateral mild-to-moderate flat conductive hearing loss. Tympanometry is Type As bilaterally. Acoustic reflexes are absent. OAEs are present. The MOST likely diagnosis is:",
+    type: "mc",
+    options: ["Otitis media with effusion","Otosclerosis","Ossicular discontinuity","Ménière's disease"],
+    answer: 1,
+    explain: "Otosclerosis: abnormal bone remodeling fixes the stapes footplate in the oval window. Classic fingerprint — female-dominant, 3rd–4th decade, exacerbated by pregnancy (hormonal), bilateral conductive loss, Type As (stiffness), ABSENT reflexes (stapes can't move), OAEs PRESENT (cochlea is fine). This is Sutherland's #1 landmine case."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "OTOSCLEROSIS",
+    q: "In otosclerosis, acoustic reflexes are absent because the stiffened stapes footplate cannot move in the oval window.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. The acoustic reflex requires the stapes to tilt/retract when the stapedius contracts. In otosclerosis, the fixed footplate cannot move — so even if the stapedius fires normally, there is no measurable impedance change at the probe. Reflexes absent bilaterally (since otosclerosis is typically bilateral), even at maximum stimulation level."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "OTOSCLEROSIS",
+    q: "The 'Carhart notch' associated with otosclerosis is best described as:",
+    type: "mc",
+    options: [
+      "A true sensorineural notch at 4,000 Hz caused by OHC damage from the disease process",
+      "A mechanical artifact in bone conduction thresholds near 2,000 Hz that resolves after surgical correction",
+      "A low-frequency bone conduction depression at 250–500 Hz seen in early-stage disease",
+      "A finding that confirms mixed hearing loss and rules out surgical candidacy"
+    ],
+    answer: 1,
+    explain: "The Carhart notch is a MECHANICAL artifact — the middle ear's bone-conducted resonance is disrupted by stapes fixation, causing apparent BC depression around 2,000 Hz. It is NOT true sensorineural damage. After stapedectomy, the notch typically disappears because the mechanical resonance is restored."
+  },
+  {
+    tag: "pathInner", tagLabel: "NIHL",
+    q: "A 48-year-old man has worked as a welder for 25 years without consistent hearing protection. He reports bilateral tinnitus and difficulty understanding speech in noisy environments. His audiogram most likely shows:",
+    type: "mc",
+    options: [
+      "Flat symmetric conductive hearing loss",
+      "Rising configuration — better thresholds at high frequencies",
+      "Bilateral symmetric SNHL with a notch at 4,000 Hz and partial recovery at 8,000 Hz",
+      "Asymmetric low-frequency sensorineural hearing loss"
+    ],
+    answer: 2,
+    explain: "NIHL hallmark: bilateral, symmetric SNHL, notch at 4,000 Hz with recovery at 8,000 Hz. The EAC resonance amplifies 2.5–4 kHz energy into the cochlea — the basal OHCs in the 3,000–4,000 Hz region receive the highest acoustic dose and are damaged first. After noise exposure stops, 8 kHz OHCs survive (less amplified region) — hence the recovery."
+  },
+  {
+    tag: "pathInner", tagLabel: "NIHL",
+    q: "Noise-induced hearing loss (NIHL) typically produces a rising audiometric configuration.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False. NIHL produces a NOTCHED configuration — thresholds are worst (most depressed) at 4,000 Hz with partial recovery at 8,000 Hz. Rising configurations are associated with Ménière's disease (early stage, low-frequency SNHL). Do not confuse these two patterns."
+  },
+  {
+    tag: "pathInner", tagLabel: "NIHL",
+    q: "In NIHL, which cochlear cells are damaged first, and in which cochlear region?",
+    type: "mc",
+    options: [
+      "Inner hair cells, at the cochlear apex",
+      "Outer hair cells, in the basal turn (approximately the 3,000–4,000 Hz region)",
+      "Inner hair cells, uniformly throughout the cochlea",
+      "Outer hair cells, at the cochlear apex (low-frequency region)"
+    ],
+    answer: 1,
+    explain: "OHCs in the BASAL TURN (3,000–4,000 Hz tonotopic region) are the first casualties. OHCs are far more vulnerable than IHCs — they lose their prestin-driven amplification, eliminating cochlear gain at that frequency and producing the 4 kHz notch. The apex (low-frequency OHCs) is relatively protected from typical occupational noise."
+  },
+  {
+    tag: "pathInner", tagLabel: "OTOTOXICITY",
+    q: "A patient is on a 6-week course of IV gentamicin for a serious gram-negative infection. Audiological monitoring is ordered. The EARLIEST sign of cochleotoxicity on audiological testing is typically:",
+    type: "mc",
+    options: [
+      "Loss of word recognition score on speech audiometry",
+      "Absent acoustic reflexes bilaterally",
+      "Reduced or absent OAEs at high frequencies before behavioral threshold shifts occur",
+      "Type C tympanogram bilaterally"
+    ],
+    answer: 2,
+    explain: "OAEs detect OHC damage early — before behavioral thresholds shift enough to be clinically apparent. This is the primary value of audiological monitoring during ototoxic drug therapy: catching OHC loss in ultra-high frequencies (8,000–16,000 Hz) before it encroaches on speech frequencies. OAEs are the canary in the cochlea."
+  },
+  {
+    tag: "pathInner", tagLabel: "OTOTOXICITY",
+    q: "Ototoxic drugs damage inner hair cells before outer hair cells.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False — REVERSED. Ototoxicity (aminoglycosides, cisplatin, loop diuretics) preferentially damages OHCs FIRST, typically beginning at the BASE (high-frequency region) and progressing apically toward lower frequencies. IHCs are more resistant. This basal-to-apical OHC progression explains why ototoxicity first presents as high-frequency SNHL."
+  },
+  {
+    tag: "pathInner", tagLabel: "OTOTOXICITY",
+    q: "Which class of antibiotics carries the greatest risk of cochleotoxicity?",
+    type: "mc",
+    options: ["NSAIDs (ibuprofen, aspirin)","Penicillin-based antibiotics (amoxicillin)","Aminoglycoside antibiotics (gentamicin, tobramycin)","Corticosteroids (prednisone)"],
+    answer: 2,
+    explain: "Aminoglycosides (gentamicin, tobramycin, amikacin, streptomycin) accumulate in cochlear endolymph, generate free radicals, and destroy OHCs starting at the cochlear base. Cisplatin (chemotherapy) is similarly cochleotoxic. Loop diuretics (furosemide) are ototoxic acutely but usually reversible. Aspirin causes reversible tinnitus and temporary threshold shift at high doses."
+  },
+  {
+    tag: "pathOuter", tagLabel: "OTITIS EXTERNA",
+    q: "A patient presents with a 3-day history of right ear pain that is severe when the pinna is tugged or the tragus is pressed. The ear canal appears swollen and erythematous, with a small amount of purulent discharge. Hearing in the right ear is mildly reduced. The MOST likely diagnosis is:",
+    type: "mc",
+    options: ["Otitis media with effusion","Otitis externa","Otosclerosis","Ménière's disease"],
+    answer: 1,
+    explain: "Otitis externa (OE) — 'swimmer's ear,' infection of the external auditory canal. Key exam features: tragus tenderness (canal infection vs. middle ear infection), erythematous/swollen canal, pain with pinna manipulation. The mild conductive loss is from canal swelling reducing transmission efficiency. Treatment: topical antibiotic +/− antifungal drops."
+  },
+  {
+    tag: "pathOuter", tagLabel: "OTITIS EXTERNA",
+    q: "Otitis externa produces sensorineural hearing loss because the infection damages the outer hair cells via the external auditory canal.",
+    type: "tf", options: ["True","False"], answer: 1,
+    explain: "False. Otitis externa is an OUTER EAR pathology — it produces CONDUCTIVE hearing loss by narrowing the canal lumen and impeding sound transmission to the TM. It does not reach the cochlea. Sensorineural loss would require inner ear involvement."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "OME",
+    q: "A 4-year-old is referred by her pediatrician for hearing evaluation. Mom reports the child does not respond to her name consistently and has had three ear infections in the past year. Tympanometry shows a flat (Type B) tracing with NORMAL ear canal volume bilaterally. Audiometry shows mild bilateral conductive hearing loss. The MOST likely diagnosis is:",
+    type: "mc",
+    options: [
+      "Bilateral tympanic membrane perforation",
+      "Cerumen impaction bilaterally",
+      "Otitis media with effusion (OME)",
+      "Otosclerosis"
+    ],
+    answer: 2,
+    explain: "OME (otitis media with effusion / 'glue ear'): fluid in the middle ear without signs of acute infection. Key fingerprint — Type B tympanogram with NORMAL ECV (canal is clear; pathology is medial to the TM). Bilateral mild conductive loss with flat/rising configuration. Common in children ages 2–5. ECV differentiates from perforation (high ECV)."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "TYMP TRAPS",
+    q: "A Type B tympanogram with a VERY HIGH ear canal volume (e.g., 4.2 mL in an adult) is most consistent with:",
+    type: "mc",
+    options: [
+      "Otitis media with effusion",
+      "Tympanic membrane perforation",
+      "Cerumen impaction or probe against canal wall",
+      "Eustachian tube dysfunction"
+    ],
+    answer: 1,
+    explain: "Type B + HIGH ECV = TM PERFORATION. When the TM is perforated, the probe is acoustically coupled to both the canal AND the middle ear space — the measured volume is larger than the canal alone. Normal adult ECV ≈ 0.6–2.0 mL. If Type B and ECV is 3–5 mL, the TM has a hole. Sutherland specifically calls this out as one of her favorite traps."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "TYMP TRAPS",
+    q: "A Type B tympanogram with a VERY LOW ear canal volume (e.g., 0.2 mL) most likely indicates:",
+    type: "mc",
+    options: [
+      "Tympanic membrane perforation",
+      "Otitis media with effusion",
+      "Probe occlusion — cerumen impaction or probe tip against the canal wall",
+      "Ossicular discontinuity"
+    ],
+    answer: 2,
+    explain: "Type B + VERY SMALL ECV = probe occlusion. The probe is physically blocked before it can couple to the canal space — cerumen impaction is the most common culprit, or the probe tip has been seated against the canal wall. This produces a flat trace with near-zero volume. The fix: reposition the probe or clear the cerumen. Don't mistake this for middle ear pathology."
+  },
+  {
+    tag: "pathMiddle", tagLabel: "OSSIC. DISCONT.",
+    q: "A patient suffered blunt head trauma in a motorcycle accident. Right ear evaluation shows: maximum conductive hearing loss (~50 dB air-bone gap), Type Ad tympanogram (excessively compliant), absent acoustic reflexes on the right (ipsilateral and contralateral), and PRESENT OAEs bilaterally. The MOST likely diagnosis is:",
+    type: "mc",
+    options: [
+      "Otosclerosis (stapes fixation)",
+      "Right-sided tympanic membrane perforation",
+      "Ossicular discontinuity (disruption of the ossicular chain)",
+      "Ménière's disease"
+    ],
+    answer: 2,
+    explain: "Ossicular discontinuity: the ossicular chain is disrupted (usually at the incudostapedial joint), creating a hypercompliant, mobile TM with nothing braking it → Type Ad. Maximum ABG (~50 dB) because sound reaches the cochlea only via bone conduction, not through the chain. OAEs present because the cochlea is intact. This is the trauma fingerprint — compare to otosclerosis (Type As, stiff system)."
+  },
+  {
+    tag: "pathInner", tagLabel: "PRESBYCUSIS",
+    q: "A 74-year-old retired teacher presents with gradual bilateral hearing loss over the past decade. He denies noise exposure history, ototoxic medication use, or family history of hearing loss. His audiogram shows bilateral symmetric sloping high-frequency SNHL with excellent word recognition at a suprathreshold level. Tympanometry and reflexes are within normal limits for his threshold levels. The MOST likely diagnosis is:",
+    type: "mc",
+    options: [
+      "Noise-induced hearing loss",
+      "Ototoxicity",
+      "Presbycusis (age-related sensorineural hearing loss)",
+      "Bilateral Ménière's disease"
+    ],
+    answer: 2,
+    explain: "Presbycusis: multifactorial age-related inner ear degeneration. Classic profile — bilateral, symmetric, gradually progressive, high-frequency sloping SNHL, preserved word recognition relative to pure-tone thresholds (contrast with retrocochlear). Schuknecht described four types: sensory, neural, strial (metabolic), and cochlear conductive. Age + bilateral symmetric sloping SNHL + no other etiology = presbycusis."
+  },
+  {
+    tag: "pathInner", tagLabel: "MENIERE'S",
+    q: "Ménière's disease is characterized by which CLASSIC set of four symptoms?",
+    type: "mc",
+    options: [
+      "Tinnitus, headache, visual disturbance, and facial numbness",
+      "Fluctuating sensorineural hearing loss, tinnitus, aural fullness, and episodic vertigo",
+      "Bilateral conductive hearing loss, tinnitus, aural fullness, and nystagmus",
+      "Progressive high-frequency SNHL, tinnitus, and difficulty understanding speech in noise"
+    ],
+    answer: 1,
+    explain: "Ménière's tetrad: (1) Fluctuating SNHL, (2) tinnitus, (3) aural fullness/pressure, (4) episodic vertigo lasting minutes to hours. Pathophysiology: endolymphatic hydrops — excess endolymph distends the membranous labyrinth. Episodes are episodic and fluctuating — NOT constant like NIHL or presbycusis."
+  },
+  {
+    tag: "pathInner", tagLabel: "MENIERE'S",
+    q: "In the early stages of Ménière's disease, the audiogram most characteristically shows a LOW-FREQUENCY sensorineural hearing loss.",
+    type: "tf", options: ["True","False"], answer: 0,
+    explain: "True. Early Ménière's characteristically affects the low frequencies first (250–1000 Hz), producing a rising or low-frequency-emphasis SNHL. The apex of the cochlea (low-frequency region) is thought to be more vulnerable to the increased endolymph pressure. As the disease progresses, it can spread to all frequencies, creating a flat SNHL."
+  },
+  {
+    tag: "pathReflex", tagLabel: "REFLEXES",
+    q: "A patient has a confirmed right-sided conductive hearing loss. Acoustic reflex testing would be expected to show:",
+    type: "mc",
+    options: [
+      "All four reflexes (ipsi R, ipsi L, contra R→L, contra L→R) completely absent",
+      "Absent reflexes for any condition involving the right ear as either probe or stimulus ear; left ipsilateral reflex present if left ear is normal",
+      "All reflexes present but at elevated sensation levels",
+      "Only the right ipsilateral reflex absent"
+    ],
+    answer: 1,
+    explain: "Conductive pathology on the right affects the reflex in two ways: (1) When the probe is in the RIGHT ear — compliance can't change → reflex absent (ipsi R, contra L stimulus). (2) When the RIGHT ear receives the stimulus — sound can't reach the cochlea at sufficient level → reflex absent (ipsi R, contra R stimulus). Left ipsilateral (probe L, stim L) is normal if the left ear is healthy. Pattern: anything involving right = absent."
+  },
+  {
+    tag: "pathReflex", tagLabel: "REFLEXES",
+    q: "Reduced acoustic reflex sensation levels — that is, reflexes present at lower-than-normal SLs above threshold — are a hallmark of which type of pathology?",
+    type: "mc",
+    options: [
+      "Conductive hearing loss",
+      "Retrocochlear pathology",
+      "Cochlear (sensorineural) hearing loss due to recruitment",
+      "Normal hearing in a quiet subject"
+    ],
+    answer: 2,
+    explain: "COCHLEAR SNHL → RECRUITMENT → REDUCED reflex SLs. Recruitment means loudness grows abnormally rapidly with increasing intensity. In recruited ears, the reflex threshold in dB HL may look elevated, but in dB SL (above the patient's elevated threshold) it is REDUCED. Retrocochlear pathology gives ELEVATED or ABSENT reflexes — the opposite direction. This distinction is high-stakes on pattern-recognition items."
+  },
+  {
+    tag: "pathInner", tagLabel: "ANSD",
+    q: "Auditory Neuropathy Spectrum Disorder (ANSD) produces which CHARACTERISTIC combination of audiological findings?",
+    type: "mc",
+    options: [
+      "Absent OAEs AND absent ABR",
+      "Present OAEs AND absent or severely abnormal ABR",
+      "Absent OAEs AND present ABR with normal morphology",
+      "Present OAEs AND present ABR with elevated thresholds"
+    ],
+    answer: 1,
+    explain: "ANSD = Present OAEs (OHCs intact and generating emissions) + Absent or severely distorted ABR (neural transmission from the cochlea to the brainstem is disrupted). The diagnosis requires BOTH components. OAE-only newborn screening WILL MISS ANSD — this is the entire rationale for AABR in NICU protocols."
+  }
+
+]; // end allQuestions
+
+// Sanity check
+if (allQuestions.length !== 70) {
+  console.warn('⚠ Expected 70 questions, got ' + allQuestions.length);
+}
+
+// Fisher-Yates shuffle
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const questions = shuffle(allQuestions);
+const TOTAL = questions.length;
+const container = document.getElementById('questionsContainer');
+let answered = 0, correct = 0, wrong = 0;
+const userAnswers = new Array(TOTAL).fill(-1);
+
+const tagClasses = {
+  peds: 'tag-peds', unhs: 'tag-unhs', age: 'tag-age', vra: 'tag-vra',
+  outer: 'tag-outer', tm: 'tag-tm', middle: 'tag-middle', ossicle: 'tag-ossicle',
+  imp: 'tag-imp', inner: 'tag-inner', cochlea: 'tag-cochlea',
+  hair: 'tag-hair', fluid: 'tag-fluid', prop: 'tag-prop', embryo: 'tag-embryo',
+  pathOuter:  'tag-pathOuter',
+  pathMiddle: 'tag-pathMiddle',
+  pathInner:  'tag-pathInner',
+  pathReflex: 'tag-pathReflex'
+};
+
+questions.forEach((q, i) => {
+  const card = document.createElement('div');
+  card.className = 'question-card';
+  card.id = `q${i}`;
+
+  const typeBadge = q.type === 'tf'
+    ? '<span class="q-type-badge badge-tf">T/F</span>'
+    : '<span class="q-type-badge badge-mc">MC</span>';
+
+  const topicTag = `<span class="topic-tag ${tagClasses[q.tag] || ''}">${q.tagLabel}</span>`;
+
+  let optionsHTML = q.options.map((opt, j) => {
+    const letter = q.type === 'tf' ? (j === 0 ? 'T' : 'F') : String.fromCharCode(65 + j);
+    return `<button class="option-btn" data-q="${i}" data-opt="${j}" onclick="selectAnswer(${i},${j})">
+      <span class="letter">${letter}</span>
+      <span>${opt}</span>
+    </button>`;
+  }).join('');
+
+  card.innerHTML = `
+    <span class="q-number">Q${i + 1} ${typeBadge} ${topicTag}</span>
+    <div class="q-text">${q.q}</div>
+    <div class="options">${optionsHTML}</div>
+    <div class="explanation" id="exp${i}">${q.explain}</div>
+  `;
+  container.appendChild(card);
+});
+
+function selectAnswer(qi, oi) {
+  const card = document.getElementById(`q${qi}`);
+  const btns = card.querySelectorAll('.option-btn');
+  const exp  = document.getElementById(`exp${qi}`);
+  if (btns[0].classList.contains('locked')) return;
+  const wasUnanswered = userAnswers[qi] === -1;
+  userAnswers[qi] = oi;
+  btns.forEach(b => { b.classList.remove('selected','correct-answer','wrong-answer'); b.classList.add('locked'); });
+  const isCorrect = oi === questions[qi].answer;
+  if (isCorrect) {
+    btns[oi].classList.add('correct-answer');
+    card.classList.add('answered-correct');
+    exp.className = 'explanation show correct-exp';
+    if (wasUnanswered) correct++;
+  } else {
+    btns[oi].classList.add('wrong-answer');
+    btns[questions[qi].answer].classList.add('correct-answer');
+    card.classList.add('answered-wrong');
+    exp.className = 'explanation show wrong-exp';
+    if (wasUnanswered) wrong++;
+  }
+  if (wasUnanswered) answered++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('correctCount').textContent  = correct + ' ✓';
+  document.getElementById('wrongCount').textContent    = wrong   + ' ✗';
+  document.getElementById('unansweredCount').textContent = (TOTAL - answered) + ' left';
+}
+
+function submitExam() {
+  const missedQs = [];
+  const topicStats = {};
+
+  questions.forEach((q, i) => {
+    if (!topicStats[q.tagLabel]) topicStats[q.tagLabel] = { total: 0, correct: 0 };
+    topicStats[q.tagLabel].total++;
+
+    if (userAnswers[i] === -1) {
+      const card = document.getElementById(`q${i}`);
+      const btns = card.querySelectorAll('.option-btn');
+      const exp  = document.getElementById(`exp${i}`);
+      btns.forEach(b => b.classList.add('locked'));
+      btns[q.answer].classList.add('correct-answer');
+      exp.className = 'explanation show wrong-exp';
+      exp.innerHTML = '⚠️ UNANSWERED — ' + q.explain;
+      card.classList.add('answered-wrong');
+      wrong++; answered++;
+      missedQs.push({ num: i + 1, topic: q.tagLabel, text: q.q.substring(0, 90) + '…' });
+    } else if (userAnswers[i] !== q.answer) {
+      missedQs.push({ num: i + 1, topic: q.tagLabel, text: q.q.substring(0, 90) + '…' });
+    } else {
+      topicStats[q.tagLabel].correct++;
+    }
+  });
+
+  updateScore();
+
+  const pct   = Math.round((correct / TOTAL) * 100);
+  const grade = pct >= 93 ? 'A' : pct >= 90 ? 'A-' : pct >= 87 ? 'B+' : pct >= 83 ? 'B' : pct >= 80 ? 'B-' : pct >= 77 ? 'C+' : pct >= 73 ? 'C' : 'Below C';
+  const verdicts = {
+    hi:   "Lock it in. You're walking into that exam ready to carve.",
+    mid:  "Solid — find the red topics below and pound them for another day.",
+    low:  "Real gaps. Hit the pathology section in your study guide, then run it again.",
+    ugly: "Start with the Professor DNA file and re-read pathology. One more full pass."
+  };
+  const v = pct >= 90 ? verdicts.hi : pct >= 80 ? verdicts.mid : pct >= 70 ? verdicts.low : verdicts.ugly;
+
+  const panel = document.getElementById('resultsPanel');
+  panel.style.display = 'block';
+  document.getElementById('finalScore').textContent = `${correct}/${TOTAL} — ${pct}%`;
+  document.getElementById('finalScore').style.color = pct >= 90 ? '#3fb950' : pct >= 80 ? '#58a6ff' : pct >= 70 ? '#d29922' : '#f85149';
+  document.getElementById('breakdown').innerHTML = `
+    Grade: <strong>${grade}</strong><br>
+    Correct: ${correct} &nbsp;|&nbsp; Wrong: ${wrong}<br><br>
+    ${v}
+  `;
+
+  // Sort topic breakdown worst → best
+  const topicHTML = Object.keys(topicStats)
+    .sort((a, b) => (topicStats[a].correct / topicStats[a].total) - (topicStats[b].correct / topicStats[b].total))
+    .map(t => {
+      const s    = topicStats[t];
+      const tpct = Math.round((s.correct / s.total) * 100);
+      const col  = tpct >= 80 ? '#3fb950' : tpct >= 60 ? '#d29922' : '#f85149';
+      return `<div class="topic-row">
+        <span class="topic-name">${t}</span>
+        <span class="topic-score" style="color:${col}">${s.correct}/${s.total} (${tpct}%)</span>
+      </div>`;
+    }).join('');
+  document.getElementById('topicBreakdown').innerHTML =
+    '<h3 style="margin-bottom:8px;color:#d580ff">WEAK SPOTS BY TOPIC (worst → best)</h3>' + topicHTML;
+
+  const missedDiv = document.getElementById('missedList');
+  if (missedQs.length > 0) {
+    missedDiv.innerHTML = `<h3>MISSED QUESTIONS (${missedQs.length})</h3>` +
+      missedQs.map(m => `<div class="missed-item"><strong>Q${m.num}</strong> [${m.topic}] — ${m.text}</div>`).join('');
+  } else {
+    missedDiv.innerHTML = '<h3 style="color:#3fb950">PERFECT SCORE. Not bad for a bag of bones.</h3>';
+  }
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
