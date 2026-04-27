@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMD 4190 Comprehensive Assessment Case Drill</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #0f1722;
+    --line: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #7c6cff;
+    --accent-2: #d2a8ff;
+    --good: #238636;
+    --bad: #da3633;
+    --warn: #d29922;
+    --paper: #fffef8;
+    --paper-line: #b7b0a2;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.45;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(13, 17, 23, .96);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+  }
+
+  .topbar {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .modebar, .casebar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  button, select {
+    font: inherit;
+  }
+
+  button {
+    border: 1px solid var(--line);
+    background: #21262d;
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  button:hover { border-color: #8b949e; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.good { background: var(--good); border-color: var(--good); color: #fff; }
+  button.bad { background: var(--bad); border-color: var(--bad); color: #fff; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+
+  select {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #0d1117;
+    color: var(--text);
+    padding: 9px 12px;
+    min-width: 280px;
+  }
+
+  main {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card-hd {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-hd h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(124, 108, 255, .16);
+    border: 1px solid rgba(124, 108, 255, .45);
+    color: #dcd7ff;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .card-body { padding: 16px; }
+
+  .norms {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .norms div {
+    background: #0d1117;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .paper {
+    background: var(--paper);
+    color: #111;
+    border-radius: 8px;
+    border: 1px solid #6b665c;
+    padding: 14px;
+  }
+
+  .paper-title {
+    border-bottom: 2px solid #111;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+  }
+
+  .paper-title strong {
+    display: block;
+    font-size: 15px;
+  }
+
+  .paper-title span, .meta-grid span {
+    font-size: 12px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    margin-bottom: 12px;
+  }
+
+  .meta-grid div {
+    border-bottom: 1px solid var(--paper-line);
+    min-height: 24px;
+  }
+
+  .section-label {
+    margin: 12px 0 6px;
+    background: #e3e0d8;
+    border: 1px solid #111;
+    padding: 3px 6px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 12px;
+  }
+
+  .paper-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  canvas {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    background: #fff;
+    border: 1px solid #111;
+    display: block;
+    margin: 0 auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  th, td {
+    border: 1px solid #222;
+    padding: 5px 6px;
+    text-align: center;
+    vertical-align: top;
+  }
+
+  th { background: #ece8dd; }
+
+  .clinical-note {
+    background: #f5f1e6;
+    border: 1px solid #b7b0a2;
+    padding: 9px 10px;
+    font-size: 12px;
+    white-space: pre-line;
+  }
+
+  .question {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  .question.correct { border-color: rgba(35, 134, 54, .85); }
+  .question.wrong { border-color: rgba(218, 54, 51, .85); }
+
+  .q-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-weight: 800;
+  }
+
+  .q-topic {
+    color: #9ecbff;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .options {
+    display: grid;
+    gap: 8px;
+  }
+
+  .option {
+    width: 100%;
+    text-align: left;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #0d1117;
+    padding: 10px 12px;
+    font-weight: 600;
+  }
+
+  .option.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .option.correct-choice { border-color: var(--good); background: rgba(35, 134, 54, .18); }
+  .option.wrong-choice { border-color: var(--bad); background: rgba(218, 54, 51, .18); }
+
+  .feedback {
+    display: none;
+    margin-top: 10px;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+    color: #c9d1d9;
+    font-size: 13px;
+  }
+
+  .feedback.visible { display: block; }
+
+  .section-score {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .score-tile {
+    border: 1px solid var(--line);
+    background: #0d1117;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .score-tile strong { display: block; font-size: 18px; }
+  .score-tile span { color: var(--muted); font-size: 12px; }
+
+  .hidden { display: none !important; }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .answer-key {
+    display: grid;
+    gap: 10px;
+  }
+
+  .answer-block {
+    border: 1px solid var(--line);
+    background: #0d1117;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .answer-block strong {
+    display: block;
+    color: var(--accent-2);
+    margin-bottom: 4px;
+  }
+
+  .answer-block p {
+    margin: 0;
+    color: #c9d1d9;
+    font-size: 13px;
+  }
+
+  @media (max-width: 980px) {
+    .topbar { grid-template-columns: 1fr; }
+    .layout { grid-template-columns: 1fr; }
+    .paper-grid { grid-template-columns: 1fr; }
+    .norms { grid-template-columns: 1fr; }
+    .section-score { grid-template-columns: 1fr; }
+    select { min-width: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div>
+      <h1>Comprehensive Audiological Assessment Case Drill</h1>
+      <div class="subtitle">Professor 5 only. Practice the exact interpretation path: audiogram, speech, tymps, reflexes, OAEs, diagnosis.</div>
+    </div>
+    <div class="modebar">
+      <button id="practiceBtn" class="primary" type="button">Practice Mode</button>
+      <button id="examBtn" type="button">Exam Mode</button>
+      <button id="randomBtn" type="button">Random Case</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-body">
+      <div class="casebar">
+        <label for="caseSelect" style="font-weight:800">Case:</label>
+        <select id="caseSelect"></select>
+        <span id="modeBadge" class="badge">Practice: instant feedback</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <div class="card-hd">
+        <h2 id="caseName">Case</h2>
+        <span class="badge">Source: professor in-class set</span>
+      </div>
+      <div class="card-body">
+        <div class="paper">
+          <div class="paper-title">
+            <div>
+              <strong>LSU Speech, Language, Hearing Clinic</strong>
+              <span>Comprehensive Audiological Assessment</span>
+            </div>
+            <div style="text-align:right">
+              <strong id="paperCaseNumber">Case</strong>
+              <span id="caseShortDx">Assessment form</span>
+            </div>
+          </div>
+
+          <div class="meta-grid">
+            <div><b>Patient:</b> <span id="patientName"></span></div>
+            <div><b>Age:</b> <span id="patientAge"></span></div>
+            <div><b>Otoscopy R:</b> <span id="otoR"></span></div>
+            <div><b>Otoscopy L:</b> <span id="otoL"></span></div>
+          </div>
+
+          <div class="section-label">Audiogram</div>
+          <canvas id="audiogram" width="600" height="430" aria-label="Audiogram"></canvas>
+
+          <div class="paper-grid">
+            <div>
+              <div class="section-label">Speech</div>
+              <table>
+                <thead><tr><th>Ear</th><th>PTA</th><th>SRT</th><th>WRS</th><th>Level</th></tr></thead>
+                <tbody id="speechRows"></tbody>
+              </table>
+            </div>
+            <div>
+              <div class="section-label">Tympanometry</div>
+              <table>
+                <thead><tr><th>Ear</th><th>ECV</th><th>Comp</th><th>Press</th></tr></thead>
+                <tbody id="tympRows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section-label">Tympanogram</div>
+          <canvas id="tympCanvas" width="560" height="230" aria-label="Tympanogram"></canvas>
+
+          <div class="paper-grid">
+            <div>
+              <div class="section-label">Acoustic Reflexes</div>
+              <table>
+                <thead><tr><th>Condition</th><th>500</th><th>1k</th><th>2k</th><th>4k</th></tr></thead>
+                <tbody id="reflexRows"></tbody>
+              </table>
+            </div>
+            <div>
+              <div class="section-label">OAE / Notes</div>
+              <table>
+                <tbody id="oaeRows"></tbody>
+              </table>
+              <div class="clinical-note" style="margin-top:8px">Interpret this case from the measured results. Professor-side notes are hidden until the answer key.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <section class="card" style="margin-bottom:18px">
+        <div class="card-hd">
+          <h2>Norms Strip</h2>
+        </div>
+        <div class="card-body">
+          <div class="norms">
+            <div><b>Degree:</b> 0-25 WNL, 26-40 mild, 41-55 moderate, 56-70 mod-severe, 71-90 severe, 91+ profound.</div>
+            <div><b>SRT-PTA:</b> agreement is within +/-10 dB. Larger gaps need an explanation.</div>
+            <div><b>WRS:</b> 90-100 WNL, 75-90 slight, 60-75 moderate, 50-60 poor, under 50 very poor.</div>
+            <div><b>Type B + ECV:</b> normal = middle ear pathology; large = perforation/patent tube; small = occlusion/probe issue.</div>
+            <div><b>Reflex SL:</b> reduced points cochlear/recruitment; absent often conductive barrier; elevated can be conductive or retrocochlear.</div>
+            <div><b>Cross-check:</b> do not diagnose from one measure. Make every measure fit the same site of lesion.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-hd">
+          <h2 id="quizTitle">Practice Questions</h2>
+          <span id="progressBadge" class="badge">0/0</span>
+        </div>
+        <div class="card-body">
+          <div id="questions"></div>
+          <div class="actions">
+            <button id="submitExam" class="good hidden" type="button">Submit Exam Case</button>
+            <button id="resetCase" type="button">Reset Case</button>
+            <button id="showKey" type="button">Show Full Answer Key</button>
+          </div>
+          <div id="scorePanel" class="section-score hidden"></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="answerKeyCard" class="card hidden" style="margin-top:18px">
+    <div class="card-hd">
+      <h2>Full Professor-Style Answer Key</h2>
+      <button id="hideKey" type="button">Hide</button>
+    </div>
+    <div id="answerKey" class="card-body answer-key"></div>
+  </section>
+</main>
+
+<script>
+const FREQS = [125, 250, 500, 1000, 2000, 4000, 8000];
+const FREQ_LABELS = ["125", "250", "500", "1k", "2k", "4k", "8k"];
+const REFLEX_FREQS = ["500", "1k", "2k", "4k"];
+
+const CASES = [
+  {
+    id: "case1",
+    name: "Case 1 - Susy Mae, Child Age 3",
+    displayName: "Case 1 - Susy Mae, Child Age 3",
+    patient: { name: "Susy Mae", age: "3" },
+    otoscopy: { right: "-", left: "-" },
+    audiogram: {
+      rightAC: [null, 60, 55, 45, 35, 25, 20],
+      leftAC:  [null, 60, 55, 50, 45, 30, 20],
+      rightBC: [null, 25, 25, 20, 15, 10, null],
+      leftBC:  [null, 25, 25, 20, 15, 10, null]
+    },
+    speech: { ptaR: 45, srtR: 50, wrsR: "100%", wrsLvR: 90, ptaL: 50, srtL: 45, wrsL: "96%", wrsLvL: 85 },
+    tymp: {
+      right: { type: "B", ecv: "1.2", comp: "/", press: "/", shape: "flat", adult: false },
+      left:  { type: "B", ecv: "0.9", comp: "/", press: "/", shape: "flat", adult: false }
+    },
+    reflexes: null,
+    oae: { type: "Not tested", right: "No OAE data", left: "No OAE data" },
+    answers: {
+      audiogram: "Conductive bilateral. BC is within or near normal limits, AC is elevated, and there is a significant air-bone gap. Degree is moderate rising to WNL. Configuration is rising. Bilateral and symmetrical. PTA: R=(55+45+35)/3=45, L=(55+50+45)/3=50.",
+      speech: "PTA-SRT agreement is good in both ears: R 45 vs 50, L 50 vs 45. WRS is excellent, which fits a conductive loss because the cochlea is intact.",
+      tymp: "Type B bilaterally with child-normal/near-normal ECV. Type B + normal ECV means middle ear pathology, most likely effusion.",
+      reflexes: "No reflex data recorded on this case.",
+      oae: "No OAE data recorded on this case.",
+      summary: "Rising bilateral conductive loss in a 3-year-old with Type B tymps and excellent WRS. Everything points to middle ear effusion."
+    },
+    questions: [
+      q("audiogram", "What is the primary hearing loss type?", ["Bilateral conductive", "Bilateral sensorineural", "Mixed bilateral", "Normal hearing"], 0, "BC is near normal while AC is elevated, creating an air-bone gap."),
+      q("audiogram", "What is the audiogram configuration?", ["Sloping", "Rising", "Cookie-bite", "Corner"], 1, "Thresholds are worse in the lows and improve toward the highs."),
+      q("speech", "How do PTA and SRT relate?", ["Both ears show good agreement", "Right only is in agreement", "Left only is in agreement", "Neither ear is in agreement"], 0, "R differs by 5 dB and L differs by 5 dB, both within +/-10 dB."),
+      q("tymp", "Type B tymps with normal child ECV most strongly indicate:", ["TM perforation", "Middle ear pathology/effusion", "Sensorineural loss", "Patent PE tubes"], 1, "Type B + normal ECV means the TM is intact but the middle ear system is not moving."),
+      q("diagnosis", "Best cross-measure summary:", ["Cochlear SNHL with OHC damage", "Middle ear effusion causing bilateral conductive loss", "Retrocochlear disorder", "Left tube patent, right tube blocked"], 1, "Conductive audiogram + Type B normal ECV + excellent WRS fits effusion.")
+    ]
+  },
+  {
+    id: "case2",
+    name: "Case 2 - Adult Sloping SNHL",
+    displayName: "Case 2 - Adult Assessment",
+    patient: { name: "-", age: "Adult" },
+    otoscopy: { right: "-", left: "-" },
+    audiogram: {
+      rightAC: [null, 5, 10, 15, 25, 40, 55],
+      leftAC:  [null, 10, 10, 20, 30, 45, 60],
+      rightBC: [null, 5, 10, 10, 20, 35, null],
+      leftBC:  [null, 10, 10, 15, 25, 40, null]
+    },
+    speech: { ptaR: 20, srtR: 30, wrsR: "88%", wrsLvR: 70, ptaL: 20, srtL: 35, wrsL: "84%", wrsLvL: 75 },
+    tymp: {
+      right: { type: "A", ecv: "1.0", comp: "0.7", press: "-5", shape: "normal", pp: -5, pc: 0.7, adult: true },
+      left:  { type: "C", ecv: "1.3", comp: "0.9", press: "-200", shape: "shifted", pp: -200, pc: 0.9, adult: true }
+    },
+    reflexes: null,
+    oae: { type: "Not tested", right: "No OAE data", left: "No OAE data" },
+    answers: {
+      audiogram: "Bilateral sensorineural loss. AC and BC overlap with no significant ABG. Configuration is sloping: WNL in lows, worse in highs.",
+      speech: "Right PTA-SRT is within 10 dB. Left is borderline/outside agreement at about 15 dB. WRS is in slight difficulty range bilaterally.",
+      tymp: "Right Type A is normal. Left Type C means negative middle ear pressure/ET dysfunction, but it does not explain the SNHL.",
+      reflexes: "No reflex data recorded.",
+      oae: "No OAE data recorded.",
+      summary: "Bilateral sloping SNHL with mostly normal middle ear function; Type C left is incidental ET dysfunction."
+    },
+    questions: [
+      q("audiogram", "What is the hearing loss type?", ["Conductive", "Sensorineural", "Mixed", "Functional/nonorganic"], 1, "AC and BC overlap with no meaningful ABG."),
+      q("audiogram", "What configuration is shown?", ["Flat", "Rising", "Sloping", "Notched"], 2, "Thresholds worsen from low to high frequency."),
+      q("tymp", "What does the left Type C tympanogram mean?", ["Patent PE tube", "Eustachian tube dysfunction/negative pressure", "Otosclerosis", "Cerumen occlusion"], 1, "Type C is negative middle-ear pressure."),
+      q("tymp", "Does the Type C explain the bilateral SNHL?", ["Yes, it explains all findings", "No, it is an incidental conductive-side finding", "Yes, Type C causes cochlear loss", "Only if WRS is 100%"], 1, "The audiogram is sensorineural; Type C is a middle-ear pressure finding."),
+      q("speech", "WRS of 88% and 84% is best classified as:", ["WNL to slight difficulty", "Profoundly poor", "Impossible with SNHL", "Only conductive"], 0, "75-90% is slight difficulty, while 90-100% is WNL.")
+    ]
+  },
+  {
+    id: "case3",
+    name: "Case 3 - Adult Rising SNHL",
+    displayName: "Case 3 - Adult Assessment",
+    patient: { name: "Adult", age: "Adult" },
+    otoscopy: { right: "Unremarkable", left: "Unremarkable" },
+    audiogram: {
+      rightAC: [null, 55, 50, 45, 35, 25, 20],
+      leftAC:  [null, 65, 60, 50, 45, 25, 20],
+      rightBC: [null, 50, 45, 40, 30, 20, null],
+      leftBC:  [null, 60, 55, 45, 40, 20, null]
+    },
+    speech: { ptaR: 45, srtR: 35, wrsR: "80%", wrsLvR: 60, ptaL: 53, srtL: 35, wrsL: "76%", wrsLvL: 60 },
+    tymp: {
+      right: { type: "C", ecv: "1.6", comp: "0.5", press: "-200", shape: "shifted", pp: -200, pc: 0.5, adult: true },
+      left:  { type: "A", ecv: "1.5", comp: "0.9", press: "-100", shape: "normal", pp: -100, pc: 0.9, adult: true }
+    },
+    reflexes: { ipsiR: ["90", "95", "90", "90"], ipsiRs: ["45", "45", "50", "60"], ipsiL: ["100", "100", "95", "90"], ipsiLs: ["35", "45", "65", "60"] },
+    oae: { type: "TEOAE", right: "Absent", left: "Absent" },
+    answers: {
+      audiogram: "Bilateral SNHL. AC and BC overlap. Degree is moderate/mod-severe rising to WNL/mild. Configuration is rising.",
+      speech: "Right PTA-SRT is within 10 dB. Left is outside agreement by roughly 18 dB. WRS is slight difficulty bilaterally. Presentation was only 25 dB SL for speech.",
+      tymp: "Right Type C indicates ET dysfunction. Left Type A is normal. These middle-ear findings do not explain the SNHL.",
+      reflexes: "Ipsi reflexes are present but several SL values are low/reduced. Reduced SL supports cochlear recruitment.",
+      oae: "TEOAEs absent bilaterally, consistent with OHC/cochlear involvement for thresholds over about 30 dB HL.",
+      summary: "Bilateral rising SNHL with cochlear signs: absent OAEs, reduced/borderline reflex SLs, and slightly reduced WRS."
+    },
+    questions: [
+      q("audiogram", "What type of hearing loss is this?", ["Conductive", "Sensorineural", "Mixed", "Normal"], 1, "AC and BC overlap; no meaningful ABG."),
+      q("audiogram", "What is the configuration?", ["Rising", "Sloping", "Flat", "Notched"], 0, "Worse in low frequencies, improving toward highs."),
+      q("speech", "Which PTA-SRT statement is most accurate?", ["Both ears agree perfectly", "Right agrees; left is outside/borderline", "Left agrees; right is outside", "Neither ear has SRT data"], 1, "Right differs by about 10 dB; left differs by about 18 dB."),
+      q("reflexes", "Reduced reflex SLs point most directly to:", ["Middle ear effusion only", "Cochlear recruitment", "Normal hearing", "Patent PE tubes"], 1, "Reduced SL is the cochlear/recruitment pattern."),
+      q("oae", "Absent TEOAEs here are best explained by:", ["Outer hair cell/cochlear involvement", "Normal middle ear only", "A patent PE tube", "Speech reception threshold"], 0, "The loss is SNHL and thresholds exceed the range where OAEs are usually present.")
+    ]
+  },
+  {
+    id: "case4",
+    name: "Case 4 - Adult Bilateral Conductive Loss",
+    displayName: "Case 4 - Adult Assessment",
+    patient: { name: "Adult", age: "Adult" },
+    otoscopy: { right: "Bulging / cloudy TM", left: "Bulging / cloudy TM" },
+    audiogram: {
+      rightAC: [null, 25, 35, 45, 50, 50, 50],
+      leftAC:  [null, 30, 40, 45, 55, 60, 60],
+      rightBC: [null, 0, 5, 10, 10, 10, null],
+      leftBC:  [null, 5, 10, 10, 15, 10, null]
+    },
+    speech: { ptaR: 43, srtR: 50, wrsR: "92%", wrsLvR: 90, ptaL: 48, srtL: 50, wrsL: "96%", wrsLvL: 90 },
+    tymp: {
+      right: { type: "B", ecv: "1.0", comp: "/", press: "/", shape: "flat", adult: true },
+      left:  { type: "B", ecv: "1.2", comp: "/", press: "/", shape: "flat", adult: true }
+    },
+    reflexes: { ipsiR: ["A", "A", "A", "A"], ipsiRs: ["", "", "", ""], ipsiL: ["A", "A", "A", "A"], ipsiLs: ["", "", "", ""] },
+    oae: { type: "DPOAE", right: "Absent", left: "Absent" },
+    answers: {
+      audiogram: "Bilateral conductive loss. BC is WNL, AC is elevated, and there is a large ABG. Configuration is sloping. Degree is mild/moderate to mod-severe.",
+      speech: "PTA-SRT agreement is good in both ears. WRS is WNL/excellent, as expected in conductive loss.",
+      tymp: "Type B bilaterally with normal adult ECV. That means middle ear pathology/effusion behind intact TMs, not perforation or cerumen.",
+      reflexes: "All reflexes absent. Conductive pathology attenuates the stimulus and Type B tymps prevent a measurable compliance change.",
+      oae: "DPOAEs absent, but this does not prove cochlear damage. The middle-ear effusion blocks the forward stimulus and reverse emission.",
+      summary: "Bulging/cloudy TMs + bilateral conductive audiogram + Type B normal ECV + absent reflexes + excellent WRS = middle ear effusion."
+    },
+    questions: [
+      q("audiogram", "What hearing loss type is shown?", ["Bilateral conductive", "Bilateral SNHL", "Retrocochlear", "Normal"], 0, "BC is normal while AC is elevated, creating an ABG."),
+      q("tymp", "Type B with normal adult ECV means:", ["TM perforation", "Middle ear pathology/effusion", "Cerumen/probe block", "Normal middle ear"], 1, "Normal ECV rules out perforation and small-volume occlusion."),
+      q("reflexes", "Why are all acoustic reflexes absent?", ["Conductive barrier and immobile middle ear", "The cochlea is definitely destroyed", "Reflexes are never tested with Type B", "WRS is too high"], 0, "Conductive pathology blocks sufficient stimulus and measurement."),
+      q("oae", "Absent DPOAEs in this case most likely mean:", ["Middle ear fluid blocked the OAE pathway", "Pure cochlear ototoxicity", "Normal cochlea cannot emit OAEs", "The patient has Type C tymps"], 0, "Conductive pathology can cause absent OAEs even when cochlea is intact."),
+      q("diagnosis", "Best final interpretation:", ["Middle ear effusion causing bilateral conductive loss", "Noise-induced SNHL", "Patent PE tube bilaterally", "Meniere's disease"], 0, "Every measure fits middle ear effusion.")
+    ]
+  },
+  {
+    id: "case5",
+    name: "Case 5 - Child with PE Tubes",
+    displayName: "Case 5 - Child Assessment",
+    patient: { name: "Child", age: "Child" },
+    otoscopy: { right: "PE tube", left: "PE tube" },
+    audiogram: {
+      rightAC: [null, 50, 45, 50, 45, 50, 50],
+      leftAC:  [null, 5, 10, 5, 10, 5, 10],
+      rightBC: [null, 20, 20, 20, 20, 20, null],
+      leftBC:  [null, 5, 10, 5, 10, 5, null]
+    },
+    speech: { ptaR: 47, srtR: 50, wrsR: "100%", wrsLvR: 80, ptaL: 8, srtL: 30, wrsL: "100%", wrsLvL: 60 },
+    tymp: {
+      right: { type: "B", ecv: "0.8", comp: "/", press: "/", shape: "flat", adult: false },
+      left:  { type: "B", ecv: "4.0", comp: "/", press: "/", shape: "flat", adult: false }
+    },
+    reflexes: { ipsiR: ["A", "A", "A", "A"], ipsiRs: ["", "", "", ""], ipsiL: ["85", "85", "85", "85"], ipsiLs: ["80", "80", "70", "75"] },
+    oae: { type: "DNT", right: "DNT", left: "DNT" },
+    answers: {
+      audiogram: "Right ear conductive loss: AC around 45-50 with BC near 20 creates an ABG. Left ear WNL. Configuration is flat. Unilateral/asymmetrical.",
+      speech: "Right PTA-SRT agrees: 47 vs 50. Left does not agree: PTA 8 vs SRT 30, likely child/instruction issue. WRS is perfect bilaterally.",
+      tymp: "Both are Type B but mean different things. Right ECV 0.8 is normal child volume, so the tube is likely blocked/nonfunctional and middle ear pathology remains. Left ECV 4.0 is huge, meaning patent PE tube.",
+      reflexes: "Right ipsi reflexes absent because of conductive loss/blocked tube. Left ipsi reflexes are present with normal SLs, matching normal left hearing and patent tube.",
+      oae: "DNT. OAEs were not tested.",
+      summary: "Child with PE tubes: left tube is working/patent, right tube appears blocked with right conductive loss."
+    },
+    questions: [
+      q("audiogram", "What is the main audiogram finding?", ["Right unilateral conductive loss; left WNL", "Left unilateral SNHL; right WNL", "Bilateral severe SNHL", "Normal hearing bilaterally"], 0, "Right has AC elevated over BC; left thresholds are WNL."),
+      q("tymp", "Both tymps are Type B. What separates the ears?", ["The right has larger WRS", "The ECV values", "The left has worse BC", "The right has Type C"], 1, "ECV tells whether Type B means blocked/effusion vs patent tube."),
+      q("tymp", "Left Type B with ECV 4.0 in a child with PE tubes means:", ["Patent PE tube", "Cerumen occlusion", "Otosclerosis", "Normal Type A"], 0, "Huge ECV means the probe sees through the tube into the middle ear space."),
+      q("speech", "What is the speech red flag?", ["Right WRS is poor", "Left PTA-SRT is not in agreement", "Both WRS scores are absent", "Right SRT is better than PTA by 80 dB"], 1, "Left PTA is 8 but SRT is 30, outside the 10 dB window."),
+      q("diagnosis", "Best final interpretation:", ["Right tube blocked/nonfunctional; left tube patent", "Bilateral cochlear loss", "Left middle ear effusion only", "Retrocochlear disorder"], 0, "Right normal ECV with tube suggests blockage; left huge ECV means patent tube.")
+    ]
+  }
+];
+
+function q(topic, text, options, answer, explanation) {
+  return { topic, text, options, answer, explanation };
+}
+
+let state = {
+  mode: "practice",
+  caseIndex: 0,
+  answers: {},
+  checked: {},
+  submitted: false
+};
+
+const $ = id => document.getElementById(id);
+
+function init() {
+  CASES.forEach((c, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = c.displayName || `Case ${i + 1}`;
+    $("caseSelect").appendChild(opt);
+  });
+
+  $("practiceBtn").addEventListener("click", () => setMode("practice"));
+  $("examBtn").addEventListener("click", () => setMode("exam"));
+  $("randomBtn").addEventListener("click", randomCase);
+  $("caseSelect").addEventListener("change", e => loadCase(Number(e.target.value)));
+  $("submitExam").addEventListener("click", submitExam);
+  $("resetCase").addEventListener("click", () => loadCase(state.caseIndex));
+  $("showKey").addEventListener("click", showKey);
+  $("hideKey").addEventListener("click", hideKey);
+
+  loadCase(0);
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  $("practiceBtn").classList.toggle("primary", mode === "practice");
+  $("examBtn").classList.toggle("primary", mode === "exam");
+  $("modeBadge").textContent = mode === "practice" ? "Practice: instant feedback" : "Exam: feedback after submit";
+  loadCase(state.caseIndex);
+}
+
+function randomCase() {
+  let next = Math.floor(Math.random() * CASES.length);
+  if (CASES.length > 1 && next === state.caseIndex) next = (next + 1) % CASES.length;
+  $("caseSelect").value = String(next);
+  loadCase(next);
+}
+
+function loadCase(index) {
+  state.caseIndex = index;
+  state.answers = {};
+  state.checked = {};
+  state.submitted = false;
+  hideKey();
+
+  const c = CASES[index];
+  $("caseName").textContent = c.displayName || `Case ${index + 1}`;
+  $("paperCaseNumber").textContent = "Case " + (index + 1);
+  $("caseShortDx").textContent = "Assessment form";
+  $("patientName").textContent = c.patient.name;
+  $("patientAge").textContent = c.patient.age;
+  $("otoR").textContent = c.otoscopy.right;
+  $("otoL").textContent = c.otoscopy.left;
+
+  renderSpeech(c);
+  renderTympTable(c);
+  renderReflexes(c);
+  renderOae(c);
+  drawAudiogram($("audiogram"), c.audiogram);
+  drawTympanogram($("tympCanvas"), c.tymp.right, c.tymp.left);
+  renderQuestions(c);
+  renderScorePanel(null);
+}
+
+function renderSpeech(c) {
+  $("speechRows").innerHTML = `
+    <tr><td>Right</td><td>${c.speech.ptaR}</td><td>${c.speech.srtR}</td><td>${c.speech.wrsR}</td><td>${c.speech.wrsLvR}</td></tr>
+    <tr><td>Left</td><td>${c.speech.ptaL}</td><td>${c.speech.srtL}</td><td>${c.speech.wrsL}</td><td>${c.speech.wrsLvL}</td></tr>
+  `;
+}
+
+function renderTympTable(c) {
+  $("tympRows").innerHTML = `
+    <tr><td>Right</td><td>${c.tymp.right.ecv}</td><td>${c.tymp.right.comp}</td><td>${c.tymp.right.press}</td></tr>
+    <tr><td>Left</td><td>${c.tymp.left.ecv}</td><td>${c.tymp.left.comp}</td><td>${c.tymp.left.press}</td></tr>
+  `;
+}
+
+function renderReflexes(c) {
+  if (!c.reflexes) {
+    $("reflexRows").innerHTML = `<tr><td colspan="5">No reflex data recorded on this case.</td></tr>`;
+    return;
+  }
+  const rows = [];
+  if (c.reflexes.ipsiR) rows.push(row("Ipsi R HL", c.reflexes.ipsiR), row("Ipsi R SL", c.reflexes.ipsiRs));
+  if (c.reflexes.ipsiL) rows.push(row("Ipsi L HL", c.reflexes.ipsiL), row("Ipsi L SL", c.reflexes.ipsiLs));
+  $("reflexRows").innerHTML = rows.join("");
+
+  function row(label, arr) {
+    return `<tr><td>${label}</td>${REFLEX_FREQS.map((_, i) => `<td>${arr[i] || "-"}</td>`).join("")}</tr>`;
+  }
+}
+
+function renderOae(c) {
+  $("oaeRows").innerHTML = `
+    <tr><th>Type</th><td>${c.oae.type}</td></tr>
+    <tr><th>Right</th><td>${c.oae.right}</td></tr>
+    <tr><th>Left</th><td>${c.oae.left}</td></tr>
+  `;
+}
+
+function renderQuestions(c) {
+  $("quizTitle").textContent = state.mode === "practice" ? "Practice Questions" : "Exam Case Questions";
+  $("submitExam").classList.toggle("hidden", state.mode !== "exam");
+  $("submitExam").disabled = false;
+  $("progressBadge").textContent = `0/${c.questions.length}`;
+  $("questions").innerHTML = c.questions.map((item, qi) => questionHtml(item, qi)).join("");
+}
+
+function questionHtml(item, qi) {
+  return `
+    <div class="question" id="q-${qi}">
+      <div class="q-top">
+        <div class="q-text">${qi + 1}. ${item.text}</div>
+        <div class="q-topic">${item.topic}</div>
+      </div>
+      <div class="options">
+        ${item.options.map((opt, oi) => `<button class="option" id="q-${qi}-o-${oi}" type="button" onclick="selectAnswer(${qi}, ${oi})">${opt}</button>`).join("")}
+      </div>
+      <div class="feedback" id="fb-${qi}"></div>
+    </div>
+  `;
+}
+
+function selectAnswer(qi, oi) {
+  if (state.submitted) return;
+  if (state.mode === "practice" && state.checked[qi]) return;
+
+  state.answers[qi] = oi;
+  const c = CASES[state.caseIndex];
+  c.questions[qi].options.forEach((_, i) => {
+    $(`q-${qi}-o-${i}`).classList.toggle("selected", i === oi);
+  });
+
+  if (state.mode === "practice") checkPracticeQuestion(qi);
+  updateProgress();
+}
+
+function checkPracticeQuestion(qi) {
+  const c = CASES[state.caseIndex];
+  const item = c.questions[qi];
+  const selected = state.answers[qi];
+  state.checked[qi] = true;
+  const correct = selected === item.answer;
+  const qEl = $(`q-${qi}`);
+  qEl.classList.add(correct ? "correct" : "wrong");
+
+  item.options.forEach((_, oi) => {
+    const btn = $(`q-${qi}-o-${oi}`);
+    btn.disabled = true;
+    if (oi === item.answer) btn.classList.add("correct-choice");
+    if (oi === selected && oi !== item.answer) btn.classList.add("wrong-choice");
+  });
+
+  const fb = $(`fb-${qi}`);
+  fb.classList.add("visible");
+  fb.innerHTML = `<b>${correct ? "Correct." : "Not quite."}</b> ${item.explanation}`;
+  updateProgress();
+}
+
+function submitExam() {
+  if (state.submitted) return;
+  state.submitted = true;
+  $("submitExam").disabled = true;
+  const c = CASES[state.caseIndex];
+  let correct = 0;
+  const byTopic = {};
+
+  c.questions.forEach((item, qi) => {
+    const selected = state.answers[qi];
+    const isCorrect = selected === item.answer;
+    if (isCorrect) correct++;
+    byTopic[item.topic] ||= { correct: 0, total: 0 };
+    byTopic[item.topic].total++;
+    if (isCorrect) byTopic[item.topic].correct++;
+
+    const qEl = $(`q-${qi}`);
+    qEl.classList.add(isCorrect ? "correct" : "wrong");
+    item.options.forEach((_, oi) => {
+      const btn = $(`q-${qi}-o-${oi}`);
+      btn.disabled = true;
+      if (oi === item.answer) btn.classList.add("correct-choice");
+      if (oi === selected && oi !== item.answer) btn.classList.add("wrong-choice");
+    });
+    const fb = $(`fb-${qi}`);
+    fb.classList.add("visible");
+    fb.innerHTML = `<b>${isCorrect ? "Correct." : "Missed."}</b> ${item.explanation}`;
+  });
+
+  renderScorePanel({ correct, total: c.questions.length, byTopic });
+  updateProgress();
+}
+
+function updateProgress() {
+  const c = CASES[state.caseIndex];
+  const answered = Object.keys(state.answers).length;
+  $("progressBadge").textContent = `${answered}/${c.questions.length}`;
+}
+
+function renderScorePanel(result) {
+  const panel = $("scorePanel");
+  if (!result) {
+    panel.classList.add("hidden");
+    panel.innerHTML = "";
+    return;
+  }
+  const pct = Math.round((result.correct / result.total) * 100);
+  const topics = Object.entries(result.byTopic).map(([topic, v]) => `
+    <div class="score-tile"><strong>${v.correct}/${v.total}</strong><span>${topic}</span></div>
+  `).join("");
+  panel.classList.remove("hidden");
+  panel.innerHTML = `<div class="score-tile"><strong>${pct}%</strong><span>${result.correct}/${result.total} correct</span></div>${topics}`;
+}
+
+function showKey() {
+  const c = CASES[state.caseIndex];
+  const blocks = [
+    ["Audiogram", c.answers.audiogram],
+    ["Speech", c.answers.speech],
+    ["Tympanometry", c.answers.tymp],
+    ["Acoustic Reflexes", c.answers.reflexes],
+    ["OAEs", c.answers.oae],
+    ["Cross-Measure Summary", c.answers.summary]
+  ];
+  $("answerKey").innerHTML = blocks.map(([title, body]) => `
+    <div class="answer-block"><strong>${title}</strong><p>${body}</p></div>
+  `).join("");
+  $("answerKeyCard").classList.remove("hidden");
+  $("answerKeyCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function hideKey() {
+  $("answerKeyCard").classList.add("hidden");
+}
+
+function drawAudiogram(canvas, data) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, W, H);
+
+  const L = 62, R = W - 24, T = 42, B = H - 38;
+  const pW = R - L, pH = B - T;
+  const dbMin = -10, dbMax = 110;
+  const x = i => L + (i / (FREQS.length - 1)) * pW;
+  const y = db => T + ((db - dbMin) / (dbMax - dbMin)) * pH;
+
+  ctx.strokeStyle = "#bbb";
+  ctx.lineWidth = 1;
+  for (let db = -10; db <= 110; db += 10) {
+    line(L, y(db), R, y(db));
+    ctx.fillStyle = "#111";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText(String(db), L - 7, y(db) + 4);
+  }
+  for (let i = 0; i < FREQS.length; i++) {
+    line(x(i), T, x(i), B);
+    ctx.fillStyle = "#111";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(FREQ_LABELS[i], x(i), T - 10);
+  }
+  ctx.strokeStyle = "#111";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(L, T, pW, pH);
+  ctx.fillStyle = "#111";
+  ctx.font = "bold 13px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Frequency (Hz)", L + pW / 2, 20);
+  ctx.save();
+  ctx.translate(18, T + pH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText("Hearing Level (dB HL)", 0, 0);
+  ctx.restore();
+
+  drawLine(data.rightAC, "#c1121f");
+  drawLine(data.leftAC, "#0b57d0");
+  data.rightAC.forEach((v, i) => v != null && drawO(x(i), y(v)));
+  data.leftAC.forEach((v, i) => v != null && drawX(x(i), y(v)));
+  data.rightBC.forEach((v, i) => v != null && drawBracket(x(i), y(v), "#c1121f", "right"));
+  data.leftBC.forEach((v, i) => v != null && drawBracket(x(i), y(v), "#0b57d0", "left"));
+
+  function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function drawLine(vals, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    let started = false;
+    vals.forEach((v, i) => {
+      if (v == null) return;
+      if (!started) { ctx.moveTo(x(i), y(v)); started = true; }
+      else ctx.lineTo(x(i), y(v));
+    });
+    ctx.stroke();
+  }
+
+  function drawO(cx, cy) {
+    ctx.strokeStyle = "#c1121f";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawX(cx, cy) {
+    ctx.strokeStyle = "#0b57d0";
+    ctx.lineWidth = 3;
+    line(cx - 8, cy - 8, cx + 8, cy + 8);
+    line(cx + 8, cy - 8, cx - 8, cy + 8);
+  }
+
+  function drawBracket(cx, cy, color, dir) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    const h = 9, v = 9, s = dir === "right" ? 1 : -1;
+    line(cx, cy - v, cx + s * h, cy - v);
+    line(cx, cy - v, cx, cy + v);
+  }
+}
+
+function drawTympanogram(canvas, right, left) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, W, H);
+
+  const L = 56, R = W - 18, T = 22, B = H - 34;
+  const pW = R - L, pH = B - T;
+  const x = p => L + ((p + 400) / 600) * pW;
+  const y = c => B - (c / 1.5) * pH;
+
+  ctx.strokeStyle = "#bbb";
+  ctx.lineWidth = 1;
+  [-400, -300, -200, -100, 0, 100, 200].forEach(p => line(x(p), T, x(p), B));
+  for (let c = 0; c <= 1.5; c += .3) line(L, y(c), R, y(c));
+  ctx.strokeStyle = "#111";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(L, T, pW, pH);
+
+  ctx.fillStyle = "#111";
+  ctx.font = "12px Arial";
+  ctx.textAlign = "center";
+  [-200, -100, 0, 100].forEach(p => ctx.fillText(String(p), x(p), B + 17));
+  ctx.font = "bold 13px Arial";
+  ctx.fillText("Pressure (daPa)", L + pW / 2, H - 8);
+  ctx.save();
+  ctx.translate(18, T + pH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText("Compliance", 0, 0);
+  ctx.restore();
+
+  curve(right, "#c1121f");
+  curve(left, "#0b57d0");
+
+  function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function curve(ear, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    if (ear.shape === "flat") {
+      for (let p = -380; p <= 200; p += 5) {
+        const c = 0.04 + 0.02 * Math.exp(-(p * p) / 70000);
+        p === -380 ? ctx.moveTo(x(p), y(c)) : ctx.lineTo(x(p), y(c));
+      }
+    } else {
+      const pp = Number(ear.pp || 0);
+      const pc = Number(ear.pc || .7);
+      const sigma = ear.shape === "shifted" ? 46 : 52;
+      for (let p = -380; p <= 200; p += 4) {
+        const c = 0.04 + (pc - 0.04) * Math.exp(-((p - pp) * (p - pp)) / (2 * sigma * sigma));
+        p === -380 ? ctx.moveTo(x(p), y(c)) : ctx.lineTo(x(p), y(c));
+      }
+    }
+    ctx.stroke();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
