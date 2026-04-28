@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kahoot Style Exam V2 - COMD 4190 Final Prep</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f0f1a;--card:#1a1a2e;--accent:#4a9eff;--orange:#e67e22;
+    --green:#27ae60;--red:#e74c3c;--text:#e0e0e0;--dim:#9aa0ad;
+    --border:#2a2a4a;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px}
+  h1{text-align:center;font-size:1.55rem;color:var(--accent);margin-bottom:4px;letter-spacing:0}
+  .subtitle{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:20px}
+  #progress-bar-wrap{background:var(--border);border-radius:4px;height:6px;margin-bottom:10px;max-width:820px;margin-left:auto;margin-right:auto}
+  #progress-bar{height:6px;border-radius:4px;background:var(--accent);width:0;transition:width .3s}
+  #progress-text{text-align:center;font-size:.8rem;color:var(--dim);margin-bottom:16px}
+  #header-nav{max-width:820px;margin:0 auto 16px auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .filter-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--dim);font-size:.78rem;cursor:pointer;transition:all .15s}
+  .filter-btn.active{border-color:var(--accent);color:var(--accent);background:#0d1a2a}
+  .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+  .cat-anat{background:#0a2a1a;color:#4ade80}
+  .cat-emb{background:#2a1f00;color:#fbbf24}
+  .cat-mech{background:#0a1f3a;color:#60a5fa}
+  .cat-peds{background:#2a0a1f;color:#f472b6}
+  .cat-dis{background:#2a0a0a;color:#f87171}
+  .cat-case{background:#20133a;color:#c4b5fd}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;max-width:820px;margin:0 auto 20px auto}
+  .q-num{font-size:.8rem;color:var(--dim);margin-bottom:6px}
+  .q-text{font-size:1.05rem;line-height:1.55;margin-bottom:18px}
+  .topic{float:right;font-size:.75rem;color:var(--dim);margin-top:3px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{background:#12122a;border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.95rem;line-height:1.4;transition:border-color .15s,background .15s}
+  .opt:hover:not(.locked){border-color:var(--accent);background:#1a1a3a}
+  .opt.selected{border-color:var(--orange);background:#2a1a0a}
+  .opt.correct{border-color:var(--green) !important;background:#0a2a12 !important}
+  .opt.wrong{border-color:var(--red) !important;background:#2a0a0a !important}
+  .opt.locked{cursor:default}
+  .explanation{margin-top:14px;padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);background:#0d1a2a;font-size:.9rem;line-height:1.55;display:none;color:#c5d8f0}
+  .explanation.show{display:block}
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px auto;max-width:820px}
+  button{padding:10px 28px;border-radius:8px;border:none;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+  #btn-submit{background:var(--accent);color:#000}
+  #btn-next{background:var(--orange);color:#000}
+  #btn-skip{background:#333;color:var(--dim);font-size:.85rem;padding:8px 20px}
+  button:disabled{opacity:.35;cursor:default}
+  button:hover:not(:disabled){opacity:.82}
+  #final{display:none;max-width:820px;margin:0 auto;text-align:center}
+  #final h2{font-size:2rem;color:var(--accent);margin-bottom:10px}
+  .score-big{font-size:3.2rem;font-weight:900;color:#fff;margin:10px 0}
+  .verdict{font-size:1rem;line-height:1.65;color:#c5d8f0;margin:16px auto;max-width:640px;text-align:left;background:var(--card);padding:18px 20px;border-radius:10px;border-left:4px solid var(--accent)}
+  .breakdown{text-align:left;background:var(--card);border-radius:10px;padding:20px;margin-top:20px}
+  .breakdown h3{color:var(--accent);margin-bottom:12px;font-size:.95rem}
+  .bk-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+  .bk-item:last-child{border-bottom:none}
+  .bk-q{flex:1;color:var(--text)}
+  .bk-ans{text-align:right;min-width:170px}
+  .bk-you{color:var(--red)}
+  .bk-correct{color:var(--green)}
+  #btn-restart{background:var(--accent);color:#000;margin-top:22px;font-size:1rem;padding:12px 36px}
+  @media (max-width:640px){
+    body{padding:14px}
+    .q-card{padding:18px 16px}
+    .topic{float:none;display:block;margin:-2px 0 8px}
+    .bk-item{display:block}
+    .bk-ans{text-align:left;margin-top:6px}
+  }
+</style>
+</head>
+<body>
+
+<h1>Kahoot Style Exam V2 - 50 Original Questions</h1>
+<p class="subtitle">COMD 4190 Final Prep | Same professor brain, new traps | No repeated Kahoot questions</p>
+
+<div id="quiz-wrap">
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <div id="progress-text"></div>
+
+  <div id="header-nav">
+    <button type="button" class="filter-btn active" onclick="setFilter('all',this)">All 50</button>
+    <button type="button" class="filter-btn" onclick="setFilter('anat',this)">Anatomy</button>
+    <button type="button" class="filter-btn" onclick="setFilter('emb',this)">Embryology</button>
+    <button type="button" class="filter-btn" onclick="setFilter('mech',this)">Mechanics</button>
+    <button type="button" class="filter-btn" onclick="setFilter('peds',this)">Peds</button>
+    <button type="button" class="filter-btn" onclick="setFilter('dis',this)">Disorders</button>
+    <button type="button" class="filter-btn" onclick="setFilter('case',this)">Cases</button>
+  </div>
+
+  <div id="q-area"></div>
+
+  <div class="btn-row">
+    <button type="button" id="btn-skip" onclick="skip()">Skip</button>
+    <button type="button" id="btn-submit" onclick="submitAnswer()" disabled>Submit</button>
+    <button type="button" id="btn-next" onclick="nextQ()" disabled>Next &rarr;</button>
+  </div>
+</div>
+
+<div id="final">
+  <h2>Ritual Complete</h2>
+  <div class="score-big" id="final-score"></div>
+  <div class="verdict" id="final-verdict"></div>
+  <div class="breakdown" id="final-breakdown">
+    <h3>Review - Incorrect &amp; Skipped</h3>
+    <div id="breakdown-list"></div>
+  </div>
+  <button type="button" id="btn-restart" onclick="restart()">Retry</button>
+</div>
+
+<script>
+var ALL_QUESTIONS = [
+{cat:"anat",topic:"Pars Flaccida",q:"Which part of the tympanic membrane lacks the strong fibrous middle layer and is therefore prone to retraction pockets?",opts:["Pars tensa","Pars flaccida","Annulus","Umbo"],ans:1,exp:"The pars flaccida is the loose superior portion of the TM and lacks the full fibrous layer. Retraction pockets here can collect keratin and become cholesteatoma. Pars tensa is the larger, tighter portion used for most sound transmission."},
+{cat:"anat",topic:"Perilymph",q:"Perilymph has the opposite ionic pattern from endolymph. Which description fits perilymph?",opts:["High potassium, low sodium","High sodium, low potassium","High glucose, low calcium","No electrolytes"],ans:1,exp:"Perilymph is extracellular-fluid-like: high Na+ and low K+. Endolymph is the weird one: high K+ and low Na+. If a question swaps those, slow down."},
+{cat:"anat",topic:"Scala Media",q:"The scala media contains which fluid and which major hearing structure?",opts:["Perilymph and the ossicles","Endolymph and the organ of Corti","Cerebrospinal fluid and the vestibular nerve","Air and the tympanic membrane"],ans:1,exp:"Scala media, also called the cochlear duct, contains endolymph and houses the organ of Corti. Scala vestibuli and scala tympani contain perilymph."},
+{cat:"anat",topic:"Helicotrema",q:"The helicotrema is best described as the:",opts:["Opening at the apex connecting scala vestibuli and scala tympani","Opening where CN VIII leaves the cochlea","Vascular strip that maintains endolymph","Muscle that stiffens the ossicular chain"],ans:0,exp:"Helicotrema = apical connection between scala vestibuli and scala tympani. Do not confuse it with the habenula perforata, which is where auditory nerve fibers leave the cochlea."},
+{cat:"anat",topic:"Hair Cell Jobs",q:"Which statement correctly separates inner and outer hair cell function?",opts:["Inner hair cells amplify; outer hair cells send nearly all afferent input","Inner hair cells carry most afferent signal; outer hair cells amplify and sharpen tuning","Both cell types do the same job","Outer hair cells maintain middle ear pressure"],ans:1,exp:"Inner hair cells are the main sensory receptors for afferent hearing input. Outer hair cells are active mechanical amplifiers. This distinction explains why OHC damage shows up in OAEs and cochlear sensitivity."},
+{cat:"anat",topic:"Ossicular Order",q:"Sound moves through the ossicular chain in which order?",opts:["Incus - malleus - stapes","Malleus - incus - stapes","Stapes - incus - malleus","Malleus - stapes - incus"],ans:1,exp:"TM drives the malleus, malleus drives incus, incus drives stapes, stapes pushes on the oval window. Chain order questions are easy points if you do not rush."},
+{cat:"anat",topic:"Round Window",q:"The round window primarily allows:",opts:["Pressure release for cochlear fluid movement","Endolymph drainage through the Eustachian tube","The stapedius muscle to contract","Sound to enter the middle ear"],ans:0,exp:"The oval window receives stapes motion; the round window bulges in the opposite direction so incompressible cochlear fluids can move. Without that pressure release, the traveling wave cannot work normally."},
+{cat:"anat",topic:"Binaural Processing",q:"Interaural time and intensity comparisons for sound localization first become possible at the:",opts:["External auditory canal","Cochlear nucleus","Superior olivary complex","Tympanic membrane"],ans:2,exp:"The superior olivary complex is the first major binaural processing station. The cochlear nucleus is still ipsilateral-only, so do not give it binaural powers it does not have."},
+{cat:"emb",topic:"Otic Placode",q:"Which ear region starts developing earliest?",opts:["Inner ear from the otic placode","Pinna from hillocks of His","Ossicles from arch cartilage","Eustachian tube from the first pouch"],ans:0,exp:"The inner ear starts first from the otic placode, which invaginates into the otocyst. Early embryologic injury therefore tends to threaten sensorineural structures."},
+{cat:"emb",topic:"Ossicle Size",q:"By about 16 weeks gestation, the ossicles are generally:",opts:["Still absent","Present but only half adult size","Near adult size","Replaced by cartilage after birth"],ans:2,exp:"The ossicles differentiate early and reach near adult size in utero. This is why the newborn middle ear already has tiny adult-sized bones even though the canal and mastoid keep changing."},
+{cat:"emb",topic:"External Canal",q:"The external auditory canal primarily develops from the:",opts:["First branchial cleft","Second pharyngeal pouch","Otic placode","Neural tube"],ans:0,exp:"The EAC comes from the first branchial cleft. First pouch structures make the middle ear space and Eustachian tube. Cleft versus pouch is exactly the kind of small polarity swap that burns points."},
+{cat:"emb",topic:"Middle Ear Space",q:"The middle ear cavity and Eustachian tube primarily develop from the:",opts:["First branchial cleft","First pharyngeal pouch","Second branchial cleft","Otic capsule"],ans:1,exp:"First pouch gives rise to the tympanic cavity and Eustachian tube. First cleft gives EAC. The TM sits at the meeting zone between external canal and middle ear space."},
+{cat:"emb",topic:"Arch Derivatives",q:"Which pairing is correct?",opts:["Malleus/incus - first arch; stapes - second arch","Malleus/incus - second arch; stapes - first arch","All ossicles - otic placode","All ossicles - third arch"],ans:0,exp:"Malleus and incus arise mainly from first arch cartilage; stapes is second arch. First/second arch syndromes can therefore produce conductive hearing problems through pinna, canal, and ossicular malformation."},
+{cat:"emb",topic:"TM Origins",q:"Why is the tympanic membrane often described as having three embryologic layers?",opts:["It forms from ectoderm, mesoderm, and endoderm","It contains endolymph, perilymph, and air","It is made of cartilage, bone, and skin","It has three ossicles embedded in it"],ans:0,exp:"TM has an outer ectodermal layer, middle mesodermal fibrous layer, and inner endodermal mucosal layer. That maps cleanly onto outer, middle, and inner TM surfaces."},
+{cat:"emb",topic:"Congenital Loss",q:"A first-trimester viral insult is more likely to cause severe sensorineural loss because:",opts:["The Eustachian tube is fully mature first","The inner ear begins developing very early","The pinna is the only structure present","The ossicles do not form until after birth"],ans:1,exp:"Early insults can hit the otic placode/otocyst and developing cochlea. That is why congenital infections such as rubella or CMV are classically associated with sensorineural loss."},
+{cat:"mech",topic:"High Frequencies",q:"A 6000 Hz tone reaches maximum basilar membrane displacement closest to the:",opts:["Apex","Base","Helicotrema","Round window membrane only"],ans:1,exp:"High frequencies peak at the base because the basal basilar membrane is narrow and stiff. Low frequencies travel farther toward the apex."},
+{cat:"mech",topic:"Low Frequencies",q:"A 250 Hz tone reaches its peak displacement closest to the:",opts:["Base","Apex","Middle ear cavity","Cochlear nucleus"],ans:1,exp:"Low frequencies peak toward the apex where the basilar membrane is wider and more flexible. Base = high; apex = low. That pair must be automatic."},
+{cat:"mech",topic:"Intensity Trap",q:"If the same 1000 Hz tone is made louder, what changes most directly on the basilar membrane?",opts:["The peak shifts from base to apex","The amplitude of motion increases at the same frequency place","The cochlear nucleus becomes contralateral","The traveling wave begins at the apex"],ans:1,exp:"Frequency determines place. Intensity determines amplitude. This is the polished version of the trap that cost people points."},
+{cat:"mech",topic:"Middle Ear Gain",q:"The area ratio works because the:",opts:["TM is much larger than the stapes footplate, concentrating force","Stapes footplate is larger than the TM, spreading force out","Eustachian tube adds air pressure to the cochlea","Round window amplifies sound by itself"],ans:0,exp:"A large TM collects force and a small stapes footplate concentrates it into greater pressure at the oval window. That is the big middle-ear impedance matching advantage."},
+{cat:"mech",topic:"Lever Action",q:"The ossicular lever advantage comes mainly from:",opts:["The malleus handle being longer than the incus long process","The incus being longer than the malleus","The stapes being the largest ossicle","The TM having no fibrous layer"],ans:0,exp:"The malleus arm is longer than the incus arm, giving a small lever advantage. It is much smaller than area ratio, but it still contributes."},
+{cat:"mech",topic:"OAE Logic",q:"If outer hair cells are damaged but the middle ear is clear, OAEs are expected to be:",opts:["Present and robust","Absent or reduced","Louder than normal","Impossible to interpret because OAEs never test OHCs"],ans:1,exp:"OAEs are generated by healthy outer hair cells and recorded back through the middle ear. OHC damage reduces or abolishes them, assuming the conductive pathway is open."},
+{cat:"mech",topic:"Conductive OAE Trap",q:"A child has middle ear effusion and normal cochlear function. OAEs may still be absent because:",opts:["The OHCs must be destroyed","Middle ear fluid blocks forward and reverse sound transmission","The auditory nerve cannot fire","The SAT is always abnormal"],ans:1,exp:"Conductive pathology can create a false absent OAE by blocking sound in and emissions out. Absent OAEs do not automatically mean cochlear damage unless the middle ear path is normal."},
+{cat:"mech",topic:"Acoustic Reflex",q:"The stapedius reflex most directly:",opts:["Increases transmission of soft high-frequency sounds","Stiffens the ossicular chain in response to loud sound","Opens the Eustachian tube","Creates the endocochlear potential"],ans:1,exp:"The acoustic reflex stiffens the ossicular chain, especially reducing intense low-frequency transmission. It is not a high-frequency amplifier."},
+{cat:"mech",topic:"Conductive ABR",q:"A purely conductive hearing loss usually affects ABR by:",opts:["Delaying absolute wave latencies because the cochlea receives a softer effective stimulus","Destroying interwave intervals from brainstem disease","Creating present OAEs at maximum amplitude","Making bone conduction thresholds worse than air conduction"],ans:0,exp:"Conductive loss attenuates the signal before it reaches the cochlea. ABR waves can be delayed in absolute latency, while neural interwave timing may remain normal."},
+{cat:"mech",topic:"Tonotopy",q:"Tonotopic organization means:",opts:["Every frequency peaks at the same cochlear place","Different frequencies map to different places along the basilar membrane","Only intensity is coded by cochlear place","The middle ear decides pitch"],ans:1,exp:"Tonotopy = frequency-place mapping along the basilar membrane. Base handles high frequencies; apex handles low frequencies."},
+{cat:"peds",topic:"Pass/Refer",q:"A newborn hearing screen result should be reported as:",opts:["Pass or refer","Normal or deaf","Healthy or failed","Conductive or sensorineural"],ans:0,exp:"Screening gives pass/refer, not diagnosis. A refer means diagnostic follow-up is needed. It does not mean the infant has confirmed hearing loss."},
+{cat:"peds",topic:"OAE vs ABR",q:"A baby has present OAEs but absent/abnormal ABR. Which concern jumps highest?",opts:["Auditory neuropathy spectrum disorder","Cerumen impaction only","Normal hearing with no follow-up needed","Otitis externa"],ans:0,exp:"Present OAEs show OHC function can be intact. Abnormal ABR points to neural synchrony or auditory nerve/brainstem transmission trouble, which is why ANSD is a classic OAE-present/ABR-abnormal pattern."},
+{cat:"peds",topic:"High-Risk Registry",q:"Relying only on a high-risk registry for newborn hearing screening is weak because it:",opts:["Identifies all congenital hearing loss","Misses many infants with hearing loss who have no listed risk factor","Can only be performed by surgeons","Diagnoses vestibular disease"],ans:1,exp:"Universal screening replaced high-risk-only screening because many infants with congenital hearing loss have no obvious risk factor. Risk-based screening misses too much."},
+{cat:"peds",topic:"Sound Field",q:"A VRA response obtained through speakers in sound field tells you:",opts:["Exactly which ear heard the signal","The better ear or aided listening response, not ear-specific thresholds","Bone conduction thresholds only","Middle ear pressure"],ans:1,exp:"Sound-field VRA is not ear-specific. The better ear can drive the response. Earphones or inserts are needed when you need ear-specific air-conduction data."},
+{cat:"peds",topic:"Bone Oscillator",q:"In pediatric behavioral testing, adding a bone oscillator helps determine whether a loss has a:",opts:["Conductive component","Vestibular component","Speech-recognition component only","Genetic cause"],ans:0,exp:"Bone conduction bypasses outer and middle ear. Comparing air and bone thresholds tells you whether an air-bone gap exists, which identifies a conductive component."},
+{cat:"peds",topic:"CPA Task",q:"In conditioned play audiometry, the child is trained to:",opts:["Turn toward an animated toy after every sound","Drop a block or perform a play action when a sound is heard","Repeat spondee words only","Ignore the sound until the parent responds"],ans:1,exp:"CPA turns the hearing response into a play routine: hear tone, drop block. VRA is the head-turn-to-reinforcer method. Do not swap those procedures."},
+{cat:"peds",topic:"MRL Meaning",q:"In infant testing, an MRL is best understood as:",opts:["The softest level the child reliably responds to, not necessarily true adult-like threshold","A guaranteed exact threshold","A speech-recognition score","A tympanogram pressure value"],ans:0,exp:"Minimum response level is behavioral and developmental. Young children often respond above true threshold because attention, conditioning, and motivation are still developing."},
+{cat:"peds",topic:"Late-Onset Risk",q:"Passing newborn hearing screening means:",opts:["The child can never develop hearing loss later","Hearing is adequate at screening, but monitoring is still needed when risk factors or concerns appear","No speech-language monitoring is needed","The child has normal vestibular function"],ans:1,exp:"A pass is not a lifetime guarantee. Progressive, delayed-onset, or acquired hearing losses can occur after a newborn screen."},
+{cat:"peds",topic:"VRA Starting Frequency",q:"Compared with adult pure-tone testing, VRA commonly starts at 2000 Hz because:",opts:["Infants cannot hear 1000 Hz","It is usually a reliable attention-getting frequency before the child fatigues","Low frequencies are never tested in VRA","The equipment cannot produce 1000 Hz"],ans:1,exp:"Adult testing often starts at 1000 Hz; pediatric VRA often starts around 2000 Hz to get reliable data quickly before attention fades."},
+{cat:"peds",topic:"Screening Oversight",q:"A trained technician may run newborn screens, but the screening program should be overseen by:",opts:["An audiologist","A cafeteria manager","Only the parent","No one, because screening is automatic"],ans:0,exp:"Support personnel can perform screenings, but audiologists oversee protocols, equipment, follow-up, and interpretation boundaries."},
+{cat:"dis",topic:"Atresia",q:"Complete absence or closure of the external auditory canal is:",opts:["Stenosis","Atresia","Microtia","Exostosis"],ans:1,exp:"Atresia = absent or closed canal. Stenosis = narrowed canal. The distinction is small but exam-friendly."},
+{cat:"dis",topic:"Osteoma vs Exostosis",q:"A solitary, pedunculated bony growth in one EAC with no cold-water history is more consistent with:",opts:["Exostosis","Osteoma","Otitis externa","Meniere disease"],ans:1,exp:"Osteoma is typically solitary and unilateral. Exostoses are more often multiple, bilateral, and associated with chronic cold water or wind exposure."},
+{cat:"dis",topic:"Otitis Externa",q:"Pain when pulling the pinna or pressing the tragus points most strongly toward:",opts:["Otitis externa","Otosclerosis","Meniere disease","Presbycusis"],ans:0,exp:"Otitis externa is an infection/inflammation of EAC skin. Pinna/tragus manipulation hurts because you are moving the inflamed canal."},
+{cat:"dis",topic:"OME",q:"Otitis media with effusion means:",opts:["Fluid behind the TM without acute infection signs","A fungal infection of the EAC","A fixed stapes footplate","A keratin cyst eroding the ossicles"],ans:0,exp:"OME is middle ear fluid without acute fever/pain/infection signs. It commonly creates conductive hearing loss and a Type B tympanogram with normal ear canal volume."},
+{cat:"dis",topic:"Type B Normal ECV",q:"A flat Type B tympanogram with normal ear canal volume most strongly suggests:",opts:["Middle ear effusion","TM perforation","Patent PE tube","Normal middle ear function"],ans:0,exp:"Type B + normal ECV = fluid or other middle ear pathology behind an intact TM. ECV is the clue that separates effusion from perforation/tube or canal occlusion."},
+{cat:"dis",topic:"Type B Large ECV",q:"A flat Type B tympanogram with unusually large ear canal volume suggests:",opts:["Middle ear effusion behind an intact TM","TM perforation or patent PE tube","Otosclerosis","Normal tympanic membrane mobility"],ans:1,exp:"Large ECV means the probe is measuring canal plus middle ear/mastoid space because the TM is open through a perforation or patent tube."},
+{cat:"dis",topic:"Otosclerosis Fingerprint",q:"A young adult woman has gradual conductive loss, normal otoscopy, absent acoustic reflexes, and a stiff Type As tympanogram. Think:",opts:["Otosclerosis","Otitis externa","Auditory neuropathy","Presbycusis"],ans:0,exp:"Otosclerosis fixes the stapes footplate. Classic fingerprint: progressive conductive loss, normal-looking TM, absent reflexes, often Type As, sometimes worse around pregnancy."},
+{cat:"dis",topic:"Cholesteatoma Fingerprint",q:"Foul-smelling otorrhea with a retraction pocket and conductive loss should raise concern for:",opts:["Cholesteatoma","Simple presbycusis","Noise notch only","Auditory neuropathy"],ans:0,exp:"Cholesteatoma is trapped keratinizing epithelium that can erode ossicles and bone. Foul drainage plus retraction pocket is the warning pattern."},
+{cat:"case",topic:"Conductive Pattern",q:"Audiogram: AC thresholds are elevated, BC thresholds are normal, and there is a clear air-bone gap. Type of loss?",opts:["Conductive","Sensorineural","Mixed","Normal"],ans:0,exp:"Normal bone with elevated air equals conductive loss. The cochlea can respond through bone; the outer/middle ear pathway is blocking air conduction."},
+{cat:"case",topic:"SNHL Pattern",q:"Audiogram: AC and BC thresholds are both elevated and overlap with no significant air-bone gap. Type of loss?",opts:["Conductive","Sensorineural","Mixed","Functional only"],ans:1,exp:"When air and bone are both abnormal but essentially equal, the problem is sensorineural. There is no conductive gap to explain it."},
+{cat:"case",topic:"Mixed Pattern",q:"Audiogram: AC thresholds are elevated, BC thresholds are also elevated, and AC is still worse than BC by more than 10 dB. Type of loss?",opts:["Conductive only","Sensorineural only","Mixed","Normal"],ans:2,exp:"Mixed loss requires both pieces: abnormal bone thresholds show sensorineural involvement, and the air-bone gap shows an added conductive component."},
+{cat:"case",topic:"PTA-SRT Agreement",q:"A good SRT should usually agree with the pure-tone average within about:",opts:["2 dB","10 dB","30 dB","60 dB"],ans:1,exp:"SRT should usually be within plus or minus 10 dB of the PTA. Poor agreement means reliability, attention, language, or test-procedure issues need checking."},
+{cat:"case",topic:"WRS in Conductive Loss",q:"A patient with purely conductive loss often has excellent WRS when speech is presented loud enough because:",opts:["The cochlea and nerve are still working","The middle ear improves word recognition","Bone conduction cannot carry speech","The loss is always fake"],ans:0,exp:"Conductive pathology reduces audibility but does not usually distort cochlear/neural processing. Turn the signal up enough and word recognition can be excellent."},
+{cat:"case",topic:"Reflex Barrier",q:"Absent acoustic reflexes in a conductive loss are often explained by:",opts:["The conductive barrier attenuates the stimulus before it reaches the cochlea/stapedius reflex arc","The cochlea is always destroyed","The facial nerve is always paralyzed","The patient cannot understand words"],ans:0,exp:"A conductive component can prevent enough sound from reaching the cochlea to trigger the reflex and can also block measurement of the response. Absence does not automatically mean retrocochlear disease."},
+{cat:"case",topic:"Cross-Check",q:"Which result combination best fits middle ear effusion?",opts:["Normal tymps, present OAEs, no air-bone gap","Type B tymps with normal ECV, conductive air-bone gaps, absent reflexes","Type A tymps, no air-bone gap, poor WRS only","Present OAEs with abnormal ABR"],ans:1,exp:"Effusion mass-loads the middle ear: Type B normal ECV, conductive gap, absent reflexes, and often absent OAEs from blocked transmission. The measures should tell the same story."}
+];
+
+var filter = "all";
+var questions = [];
+var idx = 0;
+var userAnswers = [];
+var locked = [];
+var answerHistory = [];
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
+}
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll(".filter-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  restart();
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function shuffleQuestionOptions(question) {
+  var optionMeta = question.opts.map(function(opt, index) {
+    return { text: opt, isCorrect: index === question.ans };
+  });
+  var shuffledOptions = shuffle(optionMeta);
+  return {
+    cat: question.cat,
+    topic: question.topic,
+    q: question.q,
+    opts: shuffledOptions.map(function(opt) { return opt.text; }),
+    ans: shuffledOptions.findIndex(function(opt) { return opt.isCorrect; }),
+    exp: question.exp
+  };
+}
+
+function buildQuestionSet() {
+  var pool = filter === "all" ? ALL_QUESTIONS : ALL_QUESTIONS.filter(function(q){ return q.cat === filter; });
+  questions = shuffle(pool.slice()).map(shuffleQuestionOptions);
+  userAnswers = questions.map(function(){ return null; });
+  locked = questions.map(function(){ return false; });
+  answerHistory = [];
+  idx = 0;
+}
+
+function catLabel(c){
+  return c==="anat" ? "Anatomy"
+       : c==="emb" ? "Embryology"
+       : c==="mech" ? "Mechanics"
+       : c==="peds" ? "Pediatric"
+       : c==="dis" ? "Disorders"
+       : "Cases";
+}
+
+function render() {
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  var isLocked = locked[idx];
+  var pct = Math.round(idx / questions.length * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-text").textContent = "Question " + (idx + 1) + " of " + questions.length;
+
+  var optsHTML = "";
+  for(var i = 0; i < Q.opts.length; i++) {
+    var cls = "opt";
+    if(isLocked) {
+      cls += " locked";
+      if(i === Q.ans) cls += " correct";
+      else if(i === chosen) cls += " wrong";
+    } else if(i === chosen) {
+      cls += " selected";
+    }
+    var clickAttr = isLocked ? "" : "onclick=\"selectOpt(" + i + ")\"";
+    optsHTML += "<div class=\"" + cls + "\" " + clickAttr + ">" + escapeHTML(Q.opts[i]) + "</div>";
+  }
+
+  document.getElementById("q-area").innerHTML =
+    "<div class=\"q-card\">" +
+      "<span class=\"cat-badge cat-" + Q.cat + "\">" + catLabel(Q.cat) + "</span>" +
+      "<span class=\"topic\">" + escapeHTML(Q.topic) + "</span>" +
+      "<div class=\"q-num\">Q" + (idx + 1) + ".</div>" +
+      "<div class=\"q-text\">" + escapeHTML(Q.q) + "</div>" +
+      "<div class=\"options\">" + optsHTML + "</div>" +
+      "<div class=\"" + (isLocked ? "explanation show" : "explanation") + "\"><strong>Why:</strong> " + escapeHTML(Q.exp) + "</div>" +
+    "</div>";
+
+  var submitBtn = document.getElementById("btn-submit");
+  var nextBtn = document.getElementById("btn-next");
+  var skipBtn = document.getElementById("btn-skip");
+  nextBtn.textContent = idx < questions.length - 1 ? "Next ->" : "Finish ->";
+
+  if(isLocked) {
+    submitBtn.style.display = "none";
+    skipBtn.style.display = "none";
+    nextBtn.style.display = "inline-block";
+    nextBtn.disabled = false;
+  } else {
+    submitBtn.style.display = "inline-block";
+    submitBtn.disabled = (chosen === null);
+    skipBtn.style.display = "inline-block";
+    nextBtn.style.display = "inline-block";
+    nextBtn.disabled = true;
+  }
+}
+
+function selectOpt(i) {
+  if(locked[idx]) return;
+  userAnswers[idx] = i;
+  document.getElementById("btn-submit").disabled = false;
+  var opts = document.querySelectorAll(".opt");
+  for(var k = 0; k < opts.length; k++) {
+    opts[k].className = "opt" + (k === i ? " selected" : "");
+  }
+}
+
+function submitAnswer() {
+  if(locked[idx] || userAnswers[idx] === null) return;
+  locked[idx] = true;
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  answerHistory.push({
+    q: Q.q,
+    chosenText: Q.opts[chosen],
+    correctText: Q.opts[Q.ans],
+    isCorrect: chosen === Q.ans
+  });
+  render();
+}
+
+function skip() {
+  if(locked[idx]) return;
+  userAnswers[idx] = -1;
+  locked[idx] = true;
+  var Q = questions[idx];
+  answerHistory.push({ q: Q.q, chosenText: "[Skipped]", correctText: Q.opts[Q.ans], isCorrect: false });
+  render();
+  setTimeout(function(){
+    if(idx < questions.length - 1) { idx++; render(); }
+    else showFinal();
+  }, 300);
+}
+
+function nextQ() {
+  if(idx < questions.length - 1) {
+    idx++;
+    render();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  document.getElementById("quiz-wrap").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  var total = questions.length;
+  var correct = answerHistory.filter(function(h){ return h.isCorrect; }).length;
+  var pct = Math.round(correct / total * 100);
+  document.getElementById("final-score").textContent = correct + " / " + total + " (" + pct + "%)";
+
+  var verdict;
+  if(pct >= 90)
+    verdict = "A-range. The polarity swaps are no longer eating your points. Now protect the case-study chain: audiogram, speech, tymps, reflexes, OAEs, diagnosis.";
+  else if(pct >= 80)
+    verdict = "Still dangerous but not finished. This is the high-B-plus borderland. Review every miss and name the trap: place/intensity, base/apex, screen/diagnose, conductive/SNHL/mixed.";
+  else if(pct >= 70)
+    verdict = "This is exactly the score ceiling you are trying to break. You know the nouns; you are bleeding on opposites. Use category filters and drill the weakest one.";
+  else
+    verdict = "Not ready. Stop taking full mixed quizzes for a minute. Filter by one category, rebuild the rules, then come back to all 50.";
+  document.getElementById("final-verdict").textContent = verdict;
+
+  var wrong = answerHistory.filter(function(h){ return !h.isCorrect; });
+  var bkEl = document.getElementById("breakdown-list");
+  if(wrong.length === 0) {
+    bkEl.innerHTML = "<div style=\"color:var(--green);font-size:.9rem;padding:8px 0\">Clean run. Every trap disarmed.</div>";
+  } else {
+    bkEl.innerHTML = wrong.map(function(h){
+      var qShort = h.q.length > 105 ? h.q.substring(0, 105) + "..." : h.q;
+      return "<div class=\"bk-item\"><div class=\"bk-q\">" + escapeHTML(qShort) + "</div><div class=\"bk-ans\"><div class=\"bk-you\">You: " + escapeHTML(h.chosenText) + "</div><div class=\"bk-correct\">Correct: " + escapeHTML(h.correctText) + "</div></div></div>";
+    }).join("");
+  }
+}
+
+function restart() {
+  document.getElementById("quiz-wrap").style.display = "block";
+  document.getElementById("final").style.display = "none";
+  buildQuestionSet();
+  render();
+}
+
+buildQuestionSet();
+render();
+</script>
+</body>
+</html>
