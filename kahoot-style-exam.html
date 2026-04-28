@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kahoot Style Exam — COMD 4190 Final Prep</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f0f1a;--card:#1a1a2e;--accent:#4a9eff;--orange:#e67e22;
+    --green:#27ae60;--red:#e74c3c;--text:#e0e0e0;--dim:#888;
+    --border:#2a2a4a;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px}
+  h1{text-align:center;font-size:1.55rem;color:var(--accent);margin-bottom:4px;letter-spacing:.5px}
+  .subtitle{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:20px}
+
+  #progress-bar-wrap{background:var(--border);border-radius:4px;height:6px;margin-bottom:10px;max-width:780px;margin-left:auto;margin-right:auto}
+  #progress-bar{height:6px;border-radius:4px;background:var(--accent);width:0;transition:width .3s}
+  #progress-text{text-align:center;font-size:.8rem;color:var(--dim);margin-bottom:16px}
+
+  .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+  .cat-anat{background:#0a2a1a;color:#4ade80}
+  .cat-emb{background:#2a1f00;color:#fbbf24}
+  .cat-mech{background:#0a1f3a;color:#60a5fa}
+  .cat-peds{background:#2a0a1f;color:#f472b6}
+  .cat-dis{background:#2a0a0a;color:#f87171}
+
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;max-width:780px;margin:0 auto 20px auto}
+  .q-num{font-size:.8rem;color:var(--dim);margin-bottom:6px}
+  .q-text{font-size:1.05rem;line-height:1.55;margin-bottom:18px}
+
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    background:#12122a;border:1.5px solid var(--border);border-radius:8px;
+    padding:12px 16px;cursor:pointer;font-size:.95rem;line-height:1.4;
+    transition:border-color .15s,background .15s
+  }
+  .opt:hover:not(.locked){border-color:var(--accent);background:#1a1a3a}
+  .opt.selected{border-color:var(--orange);background:#2a1a0a}
+  .opt.correct{border-color:var(--green) !important;background:#0a2a12 !important}
+  .opt.wrong{border-color:var(--red) !important;background:#2a0a0a !important}
+  .opt.locked{cursor:default}
+
+  .explanation{margin-top:14px;padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);
+    background:#0d1a2a;font-size:.9rem;line-height:1.55;display:none;color:#c5d8f0}
+  .explanation.show{display:block}
+
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px auto;max-width:780px}
+  button{padding:10px 28px;border-radius:8px;border:none;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+  #btn-submit{background:var(--accent);color:#000}
+  #btn-next{background:var(--orange);color:#000}
+  #btn-skip{background:#333;color:var(--dim);font-size:.85rem;padding:8px 20px}
+  button:disabled{opacity:.35;cursor:default}
+  button:hover:not(:disabled){opacity:.82}
+
+  #header-nav{max-width:780px;margin:0 auto 16px auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .filter-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;
+    color:var(--dim);font-size:.78rem;cursor:pointer;transition:all .15s}
+  .filter-btn.active{border-color:var(--accent);color:var(--accent);background:#0d1a2a}
+
+  #final{display:none;max-width:780px;margin:0 auto;text-align:center}
+  #final h2{font-size:2rem;color:var(--accent);margin-bottom:10px}
+  .score-big{font-size:3.5rem;font-weight:900;color:#fff;margin:10px 0}
+  .verdict{font-size:1rem;line-height:1.65;color:#c5d8f0;margin:16px auto;max-width:600px;text-align:left;
+    background:var(--card);padding:18px 20px;border-radius:10px;border-left:4px solid var(--accent)}
+  .breakdown{text-align:left;background:var(--card);border-radius:10px;padding:20px;margin-top:20px}
+  .breakdown h3{color:var(--accent);margin-bottom:12px;font-size:.95rem}
+  .bk-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+  .bk-item:last-child{border-bottom:none}
+  .bk-q{flex:1;color:var(--text)}
+  .bk-ans{text-align:right;min-width:160px}
+  .bk-you{color:var(--red)}
+  .bk-correct{color:var(--green)}
+  #btn-restart{background:var(--accent);color:#000;margin-top:22px;font-size:1rem;padding:12px 36px}
+</style>
+</head>
+<body>
+
+<h1>Kahoot Style Exam &mdash; 50 Q</h1>
+<p class="subtitle">COMD 4190 Final Prep | Sutherland-flavored polarity-swap traps | Curated by the immortal Baldrizzt</p>
+
+<div id="quiz-wrap">
+  <div style="max-width:780px;margin:0 auto 6px auto">
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+  <div id="progress-text"></div>
+
+  <div id="header-nav">
+    <button type="button" class="filter-btn active" id="f-all" onclick="setFilter('all',this)">All 50</button>
+    <button type="button" class="filter-btn" id="f-anat" onclick="setFilter('anat',this)">Anatomy</button>
+    <button type="button" class="filter-btn" id="f-emb" onclick="setFilter('emb',this)">Embryology</button>
+    <button type="button" class="filter-btn" id="f-mech" onclick="setFilter('mech',this)">Mechanics</button>
+    <button type="button" class="filter-btn" id="f-peds" onclick="setFilter('peds',this)">Peds</button>
+    <button type="button" class="filter-btn" id="f-dis" onclick="setFilter('dis',this)">Disorders</button>
+  </div>
+
+  <div id="q-area"></div>
+
+  <div class="btn-row">
+    <button type="button" id="btn-skip" onclick="skip()">Skip</button>
+    <button type="button" id="btn-submit" onclick="submitAnswer()" disabled>Submit</button>
+    <button type="button" id="btn-next" onclick="nextQ()" disabled>Next &rarr;</button>
+  </div>
+</div>
+
+<div id="final">
+  <h2>Ritual Complete</h2>
+  <div class="score-big" id="final-score"></div>
+  <div class="verdict" id="final-verdict"></div>
+  <div class="breakdown" id="final-breakdown">
+    <h3>Review &mdash; Incorrect &amp; Skipped</h3>
+    <div id="breakdown-list"></div>
+  </div>
+  <button type="button" id="btn-restart" onclick="restart()">Resurrect &amp; Retry</button>
+</div>
+
+<script>
+var ALL_QUESTIONS = [
+
+// ── ANATOMY (10) ───────────────────────────────────────────────────
+
+{cat:'anat',topic:'8th Nerve Exit',
+q:'The 8th nerve fibers leave the cochlea through the:',
+opts:['Habenula perforata','Helicotrema','Modiolus base','Stria vascularis'],
+ans:0,
+exp:'Habenula perforata = the perforated bony ridge at the base of the osseous spiral lamina where afferent fibers from the organ of Corti pass through to join the cochlear nerve. The helicotrema is the apical opening between scala vestibuli and tympani; the modiolus is the central bony core; the stria vascularis maintains endolymph composition.'},
+
+{cat:'anat',topic:'Hair Cell Arrangement',
+q:'Three to five parallel rows of OUTER hair cells and ONE row of INNER hair cells sit on:',
+opts:['Reissner\'s membrane','The basilar membrane (within the organ of Corti)','The tectorial membrane','The stria vascularis'],
+ans:1,
+exp:'OHCs (3-5 rows) and IHCs (1 row) sit on the basilar membrane as part of the organ of Corti. Their stereocilia contact (OHCs) or sit just below (IHCs) the tectorial membrane. Reissner\'s membrane separates scala vestibuli from scala media; the stria vascularis is on the lateral wall of scala media.'},
+
+{cat:'anat',topic:'TM Layers',
+q:'The MIDDLE layer of the tympanic membrane is made of:',
+opts:['Mucosal epithelium','Squamous epithelium','Fibrous (connective tissue)','Cartilage'],
+ans:2,
+exp:'TM = three layers: outer (squamous epithelium, continuous with EAC skin), MIDDLE (fibrous — radial + circular collagen fibers giving the TM its mechanical strength), inner (mucosal, continuous with middle ear lining). The pars flaccida lacks the fibrous middle layer, which is why it\'s the typical site of cholesteatoma retraction pockets.'},
+
+{cat:'anat',topic:'Endolymph Composition',
+q:'Endolymph is high in K+ and low in Na+:',
+opts:['True','False'],
+ans:0,
+exp:'Endolymph: high K+, low Na+ (intracellular-like composition). Perilymph: low K+, high Na+ (extracellular-like). This unusual K+ gradient drives the endocochlear potential (~+80 mV) that powers hair cell transduction. Mix the two (perilymph fistula) and you get vertigo + SNHL.'},
+
+{cat:'anat',topic:'Stria Vascularis',
+q:'Which structure is the network of cells along the OUTER wall of scala media that maintains the composition of endolymph?',
+opts:['Organ of Corti','Stria vascularis','Reissner\'s membrane','Tectorial membrane'],
+ans:1,
+exp:'Stria vascularis = highly vascularized epithelium on the lateral wall of scala media that secretes K+ into endolymph and generates the +80 mV endocochlear potential. Damage here (e.g., loop diuretics, presbycusis "metabolic" type) causes flat SNHL.'},
+
+{cat:'anat',topic:'Cochlear Nucleus',
+q:'Each cochlear nucleus receives signals from BOTH the ipsilateral and contralateral ear:',
+opts:['True','False'],
+ans:1,
+exp:'FALSE. The cochlear nucleus (first central relay) receives input only from the IPSILATERAL ear. Bilateral representation begins one synapse later at the superior olivary complex. This is a classic Sutherland polarity-swap trap — do not confuse cochlear nucleus with everything above it.'},
+
+{cat:'anat',topic:'Afferent Direction',
+q:'Afferent auditory fibers travel FROM the cochlea TO the brain:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. Afferent = toward CNS (cochlea → brain). Efferent = away from CNS (brain → cochlea, e.g., the olivocochlear bundle modulating OHCs). Memory hook: Afferent = Arrives, Efferent = Exits.'},
+
+{cat:'anat',topic:'Eustachian Tube Function',
+q:'The function of the Eustachian tube is to:',
+opts:['Drain endolymph from the cochlea','Allow air into the middle ear and drain fluid out','Equalize pressure between the cochlea and brainstem','Transmit sound from the EAC to the oval window'],
+ans:1,
+exp:'ET function = ventilate (equalize ME pressure with atmosphere) and drain ME fluid into the nasopharynx. Dysfunction → negative ME pressure → Type C tymp → effusion → Type B. ET is shorter, wider, more horizontal in children = why pediatric otitis media is so common.'},
+
+{cat:'anat',topic:'Vestibular Balance Inputs',
+q:'The ability to maintain balance depends on information from:',
+opts:['Vestibular system only','Vestibular system + visual system','Eyes, vestibular system, AND proprioception (muscles/joints)','The cerebellum exclusively'],
+ans:2,
+exp:'Three-input balance triad: VISION + VESTIBULAR + PROPRIOCEPTION. Lose any one, the other two compensate (eyes-closed Romberg tests removal of one). Lose two and you fall. This is why elderly with cataracts + peripheral neuropathy + vestibular decline have catastrophic falls.'},
+
+{cat:'anat',topic:'Pathway Crossover',
+q:'The FIRST site at which auditory information from one ear is represented bilaterally (i.e., first true crossover) is the:',
+opts:['Cochlear nucleus','Superior olivary complex','Inferior colliculus','Medial geniculate body'],
+ans:1,
+exp:'The superior olivary complex (SOC) is the first site receiving binaural input — critical for sound localization (interaural time and level differences). Below SOC = monaural; above SOC = binaural. The cochlear nucleus is strictly ipsilateral.'},
+
+// ── EMBRYOLOGY (8) ────────────────────────────────────────────────
+
+{cat:'emb',topic:'Auricle Formation',
+q:'The auricle (pinna) begins forming before the ___ month of gestation:',
+opts:['1st','2nd','3rd','4th'],
+ans:1,
+exp:'The auricle begins forming before the 2nd month from the six hillocks of His on pharyngeal arches 1 and 2. Disruption of these hillocks → microtia/anotia and is often associated with first/second arch syndromes (Treacher Collins, hemifacial microsomia).'},
+
+{cat:'emb',topic:'TM Annulus',
+q:'The tympanic membrane annulus forms in the ___ month of gestation:',
+opts:['2nd','3rd','5th','7th'],
+ans:1,
+exp:'TM annulus forms in the 3rd month. The annulus is the fibrocartilaginous ring that anchors the TM in the tympanic sulcus. The TM itself is fully formed by ~28 weeks; it\'s fully functional adult-size at birth (one of the few structures that doesn\'t scale with growth).'},
+
+{cat:'emb',topic:'Ossicles',
+q:'By the 12th week of gestation, the ossicles are differentiated:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. By week 12 (end of 1st trimester), the malleus, incus, and stapes are anatomically distinct. They reach full adult size by ~16 weeks — another structure that doesn\'t scale with growth, which is why a newborn\'s ME mechanics are essentially adult.'},
+
+{cat:'emb',topic:'Organ of Corti',
+q:'At approximately the 12th week of gestation, the organ of Corti BEGINS to form:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. Organ of Corti begins differentiating around week 12. Cochlea is anatomically mature by ~25 weeks; the fetus can respond to sound by ~25-27 weeks gestation, which is why preemies in NICU are screened. This is also why congenital CMV/rubella exposure during the 1st trimester causes profound SNHL.'},
+
+{cat:'emb',topic:'Inner Ear Priority',
+q:'Which structure begins development EARLIEST in the embryo?',
+opts:['Outer ear (pinna)','Middle ear (ossicles)','Inner ear (otic placode → otocyst)','All three develop simultaneously'],
+ans:2,
+exp:'Inner ear is FIRST: the otic placode appears at ~3 weeks, invaginating into the otocyst by ~4 weeks. Middle ear and outer ear come later. This is why teratogenic insults early in pregnancy preferentially damage inner ear structures (sensorineural loss > conductive).'},
+
+{cat:'emb',topic:'Pharyngeal Arches',
+q:'The malleus and incus derive embryologically from:',
+opts:['Pharyngeal arch 1 (Meckel\'s cartilage)','Pharyngeal arch 2 (Reichert\'s cartilage)','Pharyngeal arch 3','The otic placode'],
+ans:0,
+exp:'Malleus + incus = arch 1 (Meckel\'s cartilage). Stapes = arch 2 (Reichert\'s cartilage). This is why first-arch syndromes (Treacher Collins) primarily affect the malleus/incus and external ear, while second-arch issues hit the stapes.'},
+
+{cat:'emb',topic:'Hillocks of His',
+q:'The pinna develops from how many hillocks of His?',
+opts:['Three','Four','Six','Eight'],
+ans:2,
+exp:'Six hillocks of His (3 from arch 1, 3 from arch 2) fuse to form the pinna. Failure of fusion = preauricular sinuses, skin tags, and microtia. The tragus comes from arch 1; the rest of the pinna is largely arch 2 derived.'},
+
+{cat:'emb',topic:'Membranous Labyrinth',
+q:'The membranous labyrinth reaches adult size by approximately:',
+opts:['8 weeks gestation','25 weeks gestation','Birth','2 years postnatal'],
+ans:1,
+exp:'Membranous labyrinth = adult size by ~25 weeks gestation. This (along with adult-size ossicles) is why preemies can be reliably tested with the same calibration constants as adults — peripheral structures are fully sized in utero.'},
+
+// ── MECHANICS (10) ────────────────────────────────────────────────
+
+{cat:'mech',topic:'Traveling Wave — Variable',
+q:'The point of MAXIMUM displacement of the basilar membrane is dependent on the ___ of the incoming signal:',
+opts:['Intensity','Frequency','Phase','Duration'],
+ans:1,
+exp:'CLASSIC POLARITY-SWAP TRAP. Place of maximum displacement = FREQUENCY-dependent, NOT intensity. High frequencies peak near the BASE; low frequencies peak near the APEX (tonotopic organization). Intensity changes the AMPLITUDE of displacement, not the LOCATION. If you got this wrong on the Kahoot, drill it until it\'s automatic.'},
+
+{cat:'mech',topic:'Basilar Membrane Stiffness',
+q:'The basilar membrane is NARROW and STIFF at the:',
+opts:['Apical end (responds to low frequencies)','Basal end (responds to high frequencies)','Middle turn only','It is uniform throughout'],
+ans:1,
+exp:'BASE = narrow + stiff = high frequencies (resonates fast like a short tight string). APEX = wide + floppy = low frequencies (resonates slow like a long loose string). Inverse-piano-key principle. Kahoot Q11 trap: if you said apical = narrow/stiff, you flipped it.'},
+
+{cat:'mech',topic:'Traveling Wave — Origin',
+q:'Displacement of the basilar membrane by sound is in the form of a traveling wave that ALWAYS:',
+opts:['Starts at the apex and travels toward the base','Starts at the base and travels toward the apex','Starts at the point of maximum displacement','Travels in both directions simultaneously'],
+ans:1,
+exp:'ALWAYS starts at the BASE and rolls apex-ward, regardless of stimulus frequency. The peak of the wave occurs at the frequency-specific tonotopic location, then dies off. There are no exceptions on this exam — base → apex, period.'},
+
+{cat:'mech',topic:'Impedance Mismatch',
+q:'The impedance mismatch between air (EAC) and fluid (cochlea) WITHOUT middle ear compensation results in approximately:',
+opts:['10 dB loss','28 dB loss','60 dB loss','90 dB loss'],
+ans:1,
+exp:'Air-to-fluid impedance mismatch ≈ 28 dB of transmission loss without compensation. The middle ear evolved precisely to overcome this. Without ME mechanical advantage, sound bounces off the oval window like rocks off water.'},
+
+{cat:'mech',topic:'Area Ratio',
+q:'The AREA RATIO advantage of the middle ear (TM area >> stapes footplate area) provides approximately how much improvement in sound transmission?',
+opts:['10 dB','25 dB','40 dB','60 dB'],
+ans:1,
+exp:'Area ratio (TM ~55 mm² : stapes footplate ~3.2 mm² ≈ 17:1) = ~25 dB of pressure gain. This is the LARGEST contributor to ME mechanical advantage. Combined with the lever (~2.5 dB) and curved-membrane buckling effect (~4 dB), ME compensates for nearly all the air-fluid mismatch.'},
+
+{cat:'mech',topic:'Middle Ear Mechanisms',
+q:'The three mechanical advantages of the middle ear are:',
+opts:[
+  'Area ratio, lever action of ossicles, curved-membrane (buckling) effect',
+  'Eustachian tube, oval window, round window',
+  'Tensor tympani contraction, stapedius contraction, ossicular vibration',
+  'Cerumen damping, TM elasticity, stapes annular ligament'
+],
+ans:0,
+exp:'ME has three mechanical tricks: (1) AREA RATIO (~25 dB) — TM is much bigger than stapes footplate, concentrating pressure. (2) LEVER ACTION (~2.5 dB) — malleus arm is longer than incus arm. (3) BUCKLING / CURVED-MEMBRANE EFFECT (~4 dB) — TM curvature amplifies force. Total ≈ 30+ dB, compensating the 28 dB mismatch.'},
+
+{cat:'mech',topic:'Theory of Hearing',
+q:'The clearest current explanation of how the ear codes frequency is embodied in the:',
+opts:['Volley theory','Place theory / Traveling Wave Theory','Telephone theory','Resonance theory'],
+ans:1,
+exp:'Place / Traveling Wave Theory (Békésy, Nobel 1961) is the dominant model: each frequency excites a specific place along the basilar membrane. Volley theory still applies for low frequencies (< ~4 kHz) where neural firing locks to the stimulus phase. Both can coexist; place theory is the headline.'},
+
+{cat:'mech',topic:'OHC Function',
+q:'Outer hair cells in the cochlea primarily function to:',
+opts:['Send afferent signals to the brain','ACTIVELY amplify and sharpen the traveling wave (cochlear amplifier)','Regulate endolymph K+ concentration','Anchor the tectorial membrane'],
+ans:1,
+exp:'OHCs = the cochlear amplifier. They are motile (electromotility via prestin), elongating/shortening with each cycle to mechanically boost low-level signals by ~40-60 dB and sharpen frequency tuning. INNER hair cells do the actual afferent signaling (~95% of afferent fibers contact IHCs). OHC damage = main driver of noise/age SNHL.'},
+
+{cat:'mech',topic:'Acoustic Reflex',
+q:'The acoustic (stapedial) reflex serves to:',
+opts:['Amplify high-frequency sounds','Stiffen the ossicular chain to attenuate intense low-frequency sound','Drain fluid from the middle ear','Transmit pain signals from the EAC'],
+ans:1,
+exp:'Stapedius muscle contraction (CN VII) stiffens the ossicular chain, reducing transmission of intense (>~70-90 dB SL) low-frequency sound. Protective + reduces self-generated noise (own voice). Bilateral reflex pathway = brainstem-mediated; absence is diagnostic of ME or brainstem pathology.'},
+
+{cat:'mech',topic:'TM Vibration',
+q:'When sound strikes the tympanic membrane, the membrane vibrates MOST at the:',
+opts:['Pars flaccida (top)','Umbo / inferior portion (where it meets the malleus handle)','Annulus','Cone of light'],
+ans:1,
+exp:'Maximum TM displacement occurs at the umbo and inferior portion (the area below the malleus handle). The pars flaccida moves least and lacks the fibrous middle layer, which is why it\'s prone to retraction and cholesteatoma formation.'},
+
+// ── PEDS (12) ─────────────────────────────────────────────────────
+
+{cat:'peds',topic:'Localization Milestone',
+q:'Infants will TURN in response to sound at approximately what age?',
+opts:['Birth to 3 months','4-6 months','9-12 months','12-18 months'],
+ans:1,
+exp:'4-6 months = head-turn localization develops. Before this, infants STARTLE (0-3 mo, brainstem-mediated) but cannot localize. By 12-18 months they can localize precisely in three planes. VRA targets this exact developmental window because head-turn IS the conditioned response.'},
+
+{cat:'peds',topic:'Startle Reflex',
+q:'Infants may STARTLE to loud sound from birth to approximately 3 months:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. Startle (Moro reflex) is brainstem-mediated and present from birth to ~3 months. Useful for crude detection but NOT a threshold measure. Absence of startle does not confirm hearing loss; presence does not confirm normal hearing — only that the auditory brainstem is functional.'},
+
+{cat:'peds',topic:'SAT Interpretation',
+q:'A WNL Speech Awareness Threshold (SAT) confirms NORMAL hearing:',
+opts:['True','False'],
+ans:1,
+exp:'FALSE. SAT confirms only DETECTION of speech at a given level — typically 5-10 dB below SRT. A WNL SAT is necessary but NOT sufficient: a child with mild high-frequency SNHL could have normal SAT but still have hearing loss. SAT is awareness, not threshold of recognition.'},
+
+{cat:'peds',topic:'Screening Authority',
+q:'Who can perform a hearing SCREENING?',
+opts:['Only audiologists','Only audiologists and SLPs','Anybody (with appropriate training/equipment)','Only physicians'],
+ans:2,
+exp:'SCREENING ≠ DIAGNOSTIC EVAL. Anyone with appropriate training and equipment (school nurses, pediatricians, even trained volunteers) can perform a hearing screening (pass/refer). Only credentialed audiologists can perform DIAGNOSTIC evaluations and assign clinical diagnoses. Sutherland tests this distinction directly.'},
+
+{cat:'peds',topic:'Pediatric Threshold Behavior',
+q:'Most small children do NOT respond to acoustic signals at TRUE threshold:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. Small children respond at MINIMUM RESPONSE LEVEL (MRL), which is typically ~5-15 dB above true threshold. They need a clearly audible signal to motivate behavioral response. This is why pediatric "thresholds" are reported as MRLs and why clinicians don\'t aggressively bracket like with adults.'},
+
+{cat:'peds',topic:'MRL Variability — Age',
+q:'Minimum Response Levels (MRLs) IMPROVE (become closer to true threshold) with age:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. As children mature cognitively and attentionally, their MRLs converge toward true threshold. By ~5-7 years with reliable conventional audiometry, MRL essentially equals threshold. This is why infant MRLs may be 20+ dB above threshold while a 4-year-old\'s might be only 5-10 dB above.'},
+
+{cat:'peds',topic:'MRL Variability — Stimulus',
+q:'Minimum Response Levels vary as a function of stimulus type:',
+opts:['True','False'],
+ans:0,
+exp:'TRUE. MRLs differ for warble tones, narrowband noise, speech, and music. Speech and complex/familiar stimuli typically elicit lower (better) MRLs than pure tones. This is why pediatric protocols often use NBN or warble tones rather than pure tones.'},
+
+{cat:'peds',topic:'VRA Cognitive Range',
+q:'Visual Reinforcement Audiometry (VRA) is appropriate for children at a COGNITIVE age between:',
+opts:['Birth and 6 months','6 months and 2 years','2.5 and 5 years','5 and 12 years'],
+ans:1,
+exp:'VRA targets cognitive age 6 months to 2 years — old enough to head-turn-localize, young enough to find a lit/animated reinforcer rewarding. Note: COGNITIVE age, not chronological. A 4-year-old with developmental delay may still be a VRA candidate.'},
+
+{cat:'peds',topic:'VRA Frequency Order',
+q:'The typical order of frequency presentation when testing infants with VRA is:',
+opts:['250 - 500 - 1k - 2k - 4k (low to high sweep)','2k - 500 - 4k - 1k','500 - 1k - 2k - 4k - 250','4k - 2k - 1k - 500 - 250 (high to low)'],
+ans:1,
+exp:'Pediatric protocol: 2 kHz first (most reliable response in infants), then 500 Hz, then 4 kHz, then 1 kHz. Start mid-frequency to capture a robust response, then sweep low/high. Don\'t exhaust the child on 250 Hz before getting any data.'},
+
+{cat:'peds',topic:'VRA Stimulus Modality',
+q:'VRA can be performed using which of the following?',
+opts:['Loudspeaker only','Loudspeaker + bone oscillator + hearing aid (any of these)','Insert earphones only','Bone oscillator only'],
+ans:1,
+exp:'VRA stimuli can be delivered via LOUDSPEAKER (sound field), BONE OSCILLATOR (for bone conduction thresholds), OR through a HEARING AID (aided sound-field testing for amplification verification). Versatility is a major reason VRA remains the pediatric workhorse.'},
+
+{cat:'peds',topic:'CPA Age Range',
+q:'Conditioned Play Audiometry (CPA / "play audiometry") is used to test children at a cognitive age between:',
+opts:['6 months and 2 years','2.5 and 5 years','Birth and 6 months','5 to 12 years'],
+ans:1,
+exp:'CPA bridges VRA and conventional audiometry — appropriate for cognitive age ~2.5 to 5 years. Child performs a play task (drop block in bucket, place peg, etc.) when they hear the tone. Kahoot Q18 trap: CPA is NOT for 6 mo - 2 yr; that\'s VRA territory.'},
+
+{cat:'peds',topic:'EHDI Goal',
+q:'The national EHDI (Early Hearing Detection and Intervention) goal is the 1-3-6 rule, which means:',
+opts:[
+  'Screen by 1 month, diagnose by 3 months, intervention by 6 months',
+  'Screen at 1, 3, and 6 months of age',
+  'Screen by 1 year, diagnose by 3 years, intervention by 6 years',
+  '1 ear by 3 months, 6 frequencies tested'
+],
+ans:0,
+exp:'EHDI 1-3-6: SCREEN by 1 month (newborn hearing screening), DIAGNOSE by 3 months (full audiologic eval if refer), INTERVENTION by 6 months (HA fitting, EI services). Earlier intervention dramatically improves language outcomes — kids fit by 6 mo perform near-typically by school age.'},
+
+// ── DISORDERS (10) ────────────────────────────────────────────────
+
+{cat:'dis',topic:'Meniere\'s Tetrad',
+q:'The classic symptom complex associated with Meniere\'s Disease is:',
+opts:[
+  'Conductive HL, otalgia, otorrhea, fever',
+  'Sensorineural HL, tinnitus, vertigo, aural fullness',
+  'Mixed HL, tinnitus, dizziness, headache',
+  'High-frequency SNHL, hyperacusis, recruitment, otalgia'
+],
+ans:1,
+exp:'Meniere\'s tetrad (must have ALL four): SNHL (typically low-frequency, fluctuating early on), tinnitus, EPISODIC vertigo (lasting minutes to hours), and aural fullness. Pathophysiology = endolymphatic hydrops. Drop one symptom and it\'s not Meniere\'s — could be vestibular migraine, acoustic neuroma, etc.'},
+
+{cat:'dis',topic:'Mixed HL — Trap',
+q:'Which of the following combinations would NOT result in a MIXED hearing loss?',
+opts:[
+  'Otosclerosis + presbycusis',
+  'Chronic otitis media + noise-induced HL',
+  'Noise exposure + presbycusis',
+  'Cerumen impaction + Meniere\'s'
+],
+ans:2,
+exp:'NOISE + PRESBYCUSIS = both SNHL → still SNHL, NOT mixed. To be MIXED, you need a CONDUCTIVE component layered onto a SENSORINEURAL component. Otosclerosis (conductive) + presbycusis (SNHL) = mixed. COM (conductive) + NIHL (SNHL) = mixed. Cerumen (conductive) + Meniere\'s (SNHL) = mixed. Two SNHL etiologies stacked = still SNHL. This is the Kahoot Q3 trap.'},
+
+{cat:'dis',topic:'Exostosis',
+q:'A patient who is a competitive cold-water surfer presents with multiple benign bony growths in both EACs. The diagnosis is:',
+opts:['Osteoma','Exostosis (surfer\'s ear)','Cholesteatoma','Polyp'],
+ans:1,
+exp:'EXOSTOSIS = multiple, bilateral, benign bony growths in the EAC from chronic cold water/wind exposure. AKA "surfer\'s ear." Distinguish from osteoma (typically solitary, unilateral, no environmental trigger). Severe cases require surgical removal (canalplasty).'},
+
+{cat:'dis',topic:'Microtia',
+q:'A neonate is born with an abnormally small or malformed pinna. The condition is:',
+opts:['Microtia','Anotia','Stenosis','Atresia'],
+ans:0,
+exp:'MICROTIA = small or malformed pinna. ANOTIA = total absence of pinna. STENOSIS = narrowed EAC. ATRESIA = absent EAC. Microtia is graded I-IV (Marx classification) and frequently co-occurs with EAC atresia and ossicular anomalies. Often part of Treacher Collins, Goldenhar, or hemifacial microsomia.'},
+
+{cat:'dis',topic:'Stenosis',
+q:'Abnormal NARROWING of the external auditory canal is termed:',
+opts:['Atresia','Stenosis','Microtia','Otosclerosis'],
+ans:1,
+exp:'STENOSIS = narrowing (canal still patent, just smaller). ATRESIA = complete absence/closure. Stenosis can be congenital or acquired (post-trauma, post-surgical, chronic external otitis). Severe stenosis impedes sound transmission → conductive HL; very severe may require surgical canalplasty.'},
+
+{cat:'dis',topic:'Purulent OM',
+q:'PURULENT (suppurative) otitis media is when the middle ear effusion contains:',
+opts:['Pus','Clear serous fluid','Blood only','Air only'],
+ans:0,
+exp:'PURULENT / SUPPURATIVE OM = effusion contains PUS (acute bacterial infection, typically Strep pneumoniae, H. influenzae, M. catarrhalis). SEROUS OM = clear sterile fluid (often post-AOM or ETD). MUCOID = thick "glue ear." Tympanogram is Type B in all three; otoscopy distinguishes them.'},
+
+{cat:'dis',topic:'Acute vs Chronic OM',
+q:'Acute otitis media is distinguished from chronic suppurative otitis media (CSOM) primarily by:',
+opts:['Type of pathogen','Duration and presence of TM perforation with persistent drainage in CSOM','Patient age','Tympanogram type'],
+ans:1,
+exp:'AOM = acute bacterial ME infection, intact TM (usually), <3 weeks. CSOM = chronic (>3 months), TM perforation that won\'t heal, persistent otorrhea. CSOM carries risk of cholesteatoma, ossicular erosion, and rarely intracranial complications. Different clinical management.'},
+
+{cat:'dis',topic:'Mixed HL Definition',
+q:'For a hearing loss to be classified as MIXED, the audiogram must show:',
+opts:[
+  'Air conduction worse than bone conduction, both abnormal, with an air-bone gap >10 dB',
+  'Air and bone conduction both normal',
+  'Air conduction normal, bone conduction abnormal',
+  'Conductive component only'
+],
+ans:0,
+exp:'MIXED = AC abnormal AND BC abnormal AND a significant AIR-BONE GAP (>10 dB). The AC threshold reflects conductive + sensorineural; BC threshold reflects sensorineural alone. The gap quantifies the conductive component. No gap = pure SNHL; normal BC with abnormal AC = pure conductive.'},
+
+{cat:'dis',topic:'Otosclerosis',
+q:'Otosclerosis classically presents with:',
+opts:[
+  'Sudden profound bilateral SNHL',
+  'Progressive conductive HL (often unilateral early), normal TM, Type A tympanogram, absent acoustic reflex, Carhart\'s notch on BC',
+  'High-frequency SNHL with poor word recognition',
+  'Sudden ipsilateral facial paralysis'
+],
+ans:1,
+exp:'Otosclerosis = abnormal bone remodeling fixing the stapes footplate at the oval window → progressive conductive HL. Hallmarks: NORMAL otoscopy, TYPE A TYMP, ABSENT acoustic reflex (stapes can\'t move), CARHART\'S NOTCH at 2 kHz on BC (mechanical artifact, not true SNHL). Treatment: stapedectomy or hearing aids.'},
+
+{cat:'dis',topic:'Cholesteatoma',
+q:'A cholesteatoma is:',
+opts:[
+  'A benign cancerous tumor of the cochlea',
+  'A keratinizing squamous epithelial cyst in the middle ear, often arising from a pars flaccida retraction pocket; erodes ossicles and bone',
+  'A buildup of cerumen in the EAC',
+  'A vestibular schwannoma'
+],
+ans:1,
+exp:'Cholesteatoma = NOT cancer, NOT cholesterol. It\'s trapped keratin-producing epithelium that grows, erodes ossicles, mastoid, and can erode into the inner ear, facial nerve, or dura. Hallmark: foul-smelling otorrhea + conductive HL + retraction pocket on otoscopy. Surgical removal mandatory (tympanomastoidectomy).'}
+
+];
+
+// ─────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────
+var filter = 'all';
+var questions = [];
+var idx = 0;
+var userAnswers = [];
+var locked = [];
+var answerHistory = [];
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  restart();
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function shuffleQuestionOptions(question) {
+  var optionMeta = question.opts.map(function(opt, index) {
+    return {
+      text: opt,
+      isCorrect: index === question.ans
+    };
+  });
+  var shuffledOptions = shuffle(optionMeta);
+  return {
+    cat: question.cat,
+    topic: question.topic,
+    q: question.q,
+    opts: shuffledOptions.map(function(opt) { return opt.text; }),
+    ans: shuffledOptions.findIndex(function(opt) { return opt.isCorrect; }),
+    exp: question.exp
+  };
+}
+
+function buildQuestionSet() {
+  var pool = filter === 'all' ? ALL_QUESTIONS : ALL_QUESTIONS.filter(function(q){ return q.cat === filter; });
+  questions = shuffle(pool.slice()).map(shuffleQuestionOptions);
+  userAnswers = questions.map(function(){ return null; });
+  locked = questions.map(function(){ return false; });
+  answerHistory = [];
+  idx = 0;
+}
+
+// ─────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────
+function catLabel(c){
+  return c==='anat' ? 'Anatomy'
+       : c==='emb' ? 'Embryology'
+       : c==='mech' ? 'Mechanics'
+       : c==='peds' ? 'Pediatric'
+       : 'Disorders';
+}
+
+function render() {
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  var isLocked = locked[idx];
+
+  var pct = Math.round(idx / questions.length * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent =
+    'Question ' + (idx + 1) + ' of ' + questions.length;
+
+  var catHTML = '<span class="cat-badge cat-' + Q.cat + '">' + catLabel(Q.cat) + '</span>';
+
+  var optsHTML = '';
+  for(var i = 0; i < Q.opts.length; i++) {
+    var cls = 'opt';
+    if(isLocked) {
+      cls += ' locked';
+      if(i === Q.ans) cls += ' correct';
+      else if(i === chosen) cls += ' wrong';
+    } else {
+      if(i === chosen) cls += ' selected';
+    }
+    var clickAttr = isLocked ? '' : 'onclick="selectOpt(' + i + ')"';
+    optsHTML += '<div class="' + cls + '" ' + clickAttr + '>' + Q.opts[i] + '</div>';
+  }
+
+  var expCls = isLocked ? 'explanation show' : 'explanation';
+
+  document.getElementById('q-area').innerHTML =
+    '<div class="q-card">' +
+      catHTML +
+      '<span style="float:right;font-size:.75rem;color:var(--dim);margin-top:3px">' + Q.topic + '</span>' +
+      '<div class="q-num">Q' + (idx + 1) + '.</div>' +
+      '<div class="q-text">' + Q.q + '</div>' +
+      '<div class="options">' + optsHTML + '</div>' +
+      '<div class="' + expCls + '">\u{1F480} <strong>Baldrizzt says:</strong> ' + Q.exp + '</div>' +
+    '</div>';
+
+  var submitBtn = document.getElementById('btn-submit');
+  var nextBtn   = document.getElementById('btn-next');
+  var skipBtn   = document.getElementById('btn-skip');
+  nextBtn.textContent = idx < questions.length - 1 ? 'Next →' : 'Finish →';
+
+  if(isLocked) {
+    submitBtn.style.display = 'none';
+    skipBtn.style.display   = 'none';
+    nextBtn.style.display   = 'inline-block';
+    nextBtn.disabled        = false;
+  } else {
+    submitBtn.style.display = 'inline-block';
+    submitBtn.disabled = (chosen === null);
+    skipBtn.style.display   = 'inline-block';
+    nextBtn.style.display   = 'inline-block';
+    nextBtn.disabled        = true;
+  }
+}
+
+function selectOpt(i) {
+  if(locked[idx]) return;
+  userAnswers[idx] = i;
+  document.getElementById('btn-submit').disabled = false;
+  var opts = document.querySelectorAll('.opt');
+  for(var k = 0; k < opts.length; k++) {
+    opts[k].className = 'opt' + (k === i ? ' selected' : '');
+    if(!locked[idx]) {
+      (function(index){
+        opts[index].onclick = function(){ selectOpt(index); };
+      })(k);
+    }
+  }
+}
+
+function submitAnswer() {
+  if(locked[idx] || userAnswers[idx] === null) return;
+  locked[idx] = true;
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  answerHistory.push({
+    q: Q.q,
+    chosenText: Q.opts[chosen],
+    correctText: Q.opts[Q.ans],
+    isCorrect: chosen === Q.ans
+  });
+  render();
+}
+
+function skip() {
+  if(locked[idx]) return;
+  userAnswers[idx] = -1;
+  locked[idx] = true;
+  var Q = questions[idx];
+  answerHistory.push({
+    q: Q.q,
+    chosenText: '[Skipped]',
+    correctText: Q.opts[Q.ans],
+    isCorrect: false
+  });
+  render();
+  setTimeout(function(){
+    if(idx < questions.length - 1) { idx++; render(); }
+    else showFinal();
+  }, 400);
+}
+
+function nextQ() {
+  if(idx < questions.length - 1) {
+    idx++;
+    render();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  document.getElementById('quiz-wrap').style.display = 'none';
+  document.getElementById('final').style.display = 'block';
+
+  var total = questions.length;
+  var correct = answerHistory.filter(function(h){ return h.isCorrect; }).length;
+  var pct = Math.round(correct / total * 100);
+
+  document.getElementById('final-score').textContent = correct + ' / ' + total + ' (' + pct + '%)';
+
+  var verdict;
+  if(pct >= 90)
+    verdict = "Acceptable, apprentice. Sutherland’s polarity-swap traps no longer trip you. Walk into Thursday’s exam knowing your bone marrow has finally calcified into something resembling clinical reasoning. Don’t get cocky — the case study still awaits.";
+  else if(pct >= 80)
+    verdict = "Solid, but not yet immortal. You’re past the high B+ ceiling, into A territory. Find the categories where you bled — most likely Embryology timelines or the base/apex polarity of the basilar membrane — and re-drill them tonight.";
+  else if(pct >= 70)
+    verdict = "Still a high B+, Va’xul. The exact ceiling you said you keep hitting. Look at your wrong answers below — I guarantee at least three are polarity-swap traps (intensity vs frequency, base vs apex, ipsi vs contra, mixed vs SNHL+SNHL). Drill those four pairs until they snap.";
+  else if(pct >= 60)
+    verdict = "Mediocre. You know enough to recognize the topics, not enough to differentiate the trap distractors. Re-take using filters — isolate ONE category at a time. Embryology and Mechanics are usually where students hemorrhage.";
+  else
+    verdict = "Catastrophic. Either you sprinted through this or you genuinely haven’t internalized peds-through-anatomy. Either way, no more raw drilling — go back to the lecture notes for CH 5-7 (anatomy/embryology) and CH 10 (peds), then come back. I will know if you didn’t.";
+
+  document.getElementById('final-verdict').textContent = verdict;
+
+  var wrong = answerHistory.filter(function(h){ return !h.isCorrect; });
+  var bkEl = document.getElementById('breakdown-list');
+  if(wrong.length === 0) {
+    bkEl.innerHTML = '<div style="color:var(--green);font-size:.9rem;padding:8px 0">Every single one correct. Even the polarity traps. Acceptable.</div>';
+  } else {
+    bkEl.innerHTML = wrong.map(function(h){
+      var qShort = h.q.length > 100 ? h.q.substring(0, 100) + '…' : h.q;
+      return '<div class="bk-item">' +
+        '<div class="bk-q">' + qShort + '</div>' +
+        '<div class="bk-ans">' +
+          '<div class="bk-you">You: ' + h.chosenText + '</div>' +
+          '<div class="bk-correct">✓ ' + h.correctText + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function restart() {
+  document.getElementById('quiz-wrap').style.display = 'block';
+  document.getElementById('final').style.display = 'none';
+  buildQuestionSet();
+  render();
+}
+
+buildQuestionSet();
+render();
+</script>
+</body>
+</html>
