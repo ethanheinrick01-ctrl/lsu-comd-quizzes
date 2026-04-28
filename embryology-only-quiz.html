@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audiology Embryology Only Quiz - COMD 4190</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f0f1a;--card:#1a1a2e;--accent:#fbbf24;--orange:#e67e22;
+    --green:#27ae60;--red:#e74c3c;--text:#e8e3d4;--dim:#a59e8f;
+    --border:#3a3150;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px}
+  h1{text-align:center;font-size:1.55rem;color:var(--accent);margin-bottom:4px;letter-spacing:0}
+  .subtitle{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:20px}
+  #progress-bar-wrap{background:var(--border);border-radius:4px;height:6px;margin-bottom:10px;max-width:820px;margin-left:auto;margin-right:auto}
+  #progress-bar{height:6px;border-radius:4px;background:var(--accent);width:0;transition:width .3s}
+  #progress-text{text-align:center;font-size:.8rem;color:var(--dim);margin-bottom:16px}
+  #header-nav{max-width:820px;margin:0 auto 16px auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .filter-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--dim);font-size:.78rem;cursor:pointer;transition:all .15s}
+  .filter-btn.active{border-color:var(--accent);color:var(--accent);background:#2a2108}
+  .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:800;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+  .cat-time{background:#2a1f00;color:#fbbf24}
+  .cat-outer{background:#2a0f14;color:#fb7185}
+  .cat-middle{background:#102319;color:#6ee7b7}
+  .cat-inner{background:#0a1f3a;color:#60a5fa}
+  .cat-cong{background:#20133a;color:#c4b5fd}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;max-width:820px;margin:0 auto 20px auto}
+  .q-num{font-size:.8rem;color:var(--dim);margin-bottom:6px}
+  .q-text{font-size:1.05rem;line-height:1.55;margin-bottom:18px}
+  .topic{float:right;font-size:.75rem;color:var(--dim);margin-top:3px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{background:#12122a;border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.95rem;line-height:1.4;transition:border-color .15s,background .15s}
+  .opt:hover:not(.locked){border-color:var(--accent);background:#1d1930}
+  .opt.selected{border-color:var(--orange);background:#2a1a0a}
+  .opt.correct{border-color:var(--green) !important;background:#0a2a12 !important}
+  .opt.wrong{border-color:var(--red) !important;background:#2a0a0a !important}
+  .opt.locked{cursor:default}
+  .explanation{margin-top:14px;padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);background:#151b24;font-size:.9rem;line-height:1.55;display:none;color:#d8e4f0}
+  .explanation.show{display:block}
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px auto;max-width:820px}
+  button{padding:10px 28px;border-radius:8px;border:none;font-size:.95rem;font-weight:800;cursor:pointer;transition:opacity .2s}
+  #btn-submit{background:var(--accent);color:#000}
+  #btn-next{background:var(--orange);color:#000}
+  #btn-skip{background:#333;color:var(--dim);font-size:.85rem;padding:8px 20px}
+  button:disabled{opacity:.35;cursor:default}
+  button:hover:not(:disabled){opacity:.82}
+  #final{display:none;max-width:820px;margin:0 auto;text-align:center}
+  #final h2{font-size:2rem;color:var(--accent);margin-bottom:10px}
+  .score-big{font-size:3.2rem;font-weight:900;color:#fff;margin:10px 0}
+  .verdict{font-size:1rem;line-height:1.65;color:#d8e4f0;margin:16px auto;max-width:640px;text-align:left;background:var(--card);padding:18px 20px;border-radius:10px;border-left:4px solid var(--accent)}
+  .breakdown{text-align:left;background:var(--card);border-radius:10px;padding:20px;margin-top:20px}
+  .breakdown h3{color:var(--accent);margin-bottom:12px;font-size:.95rem}
+  .bk-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+  .bk-item:last-child{border-bottom:none}
+  .bk-q{flex:1;color:var(--text)}
+  .bk-ans{text-align:right;min-width:170px}
+  .bk-you{color:var(--red)}
+  .bk-correct{color:var(--green)}
+  #btn-restart{background:var(--accent);color:#000;margin-top:22px;font-size:1rem;padding:12px 36px}
+  @media (max-width:640px){
+    body{padding:14px}
+    h1{font-size:1.35rem}
+    .q-card{padding:18px 16px}
+    .topic{float:none;display:block;margin:-2px 0 8px}
+    .bk-item{display:block}
+    .bk-ans{text-align:left;margin-top:6px}
+  }
+</style>
+</head>
+<body>
+
+<h1>Audiology Embryology Only - 30 Questions</h1>
+<p class="subtitle">COMD 4190 Final Prep | fetal weeks, arches, grooves, pouches, and congenital traps</p>
+
+<div id="quiz-wrap">
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <div id="progress-text"></div>
+  <div id="header-nav">
+    <button type="button" class="filter-btn active" onclick="setFilter('all',this)">All 30</button>
+    <button type="button" class="filter-btn" onclick="setFilter('time',this)">Timeline</button>
+    <button type="button" class="filter-btn" onclick="setFilter('outer',this)">Outer Ear</button>
+    <button type="button" class="filter-btn" onclick="setFilter('middle',this)">Middle Ear</button>
+    <button type="button" class="filter-btn" onclick="setFilter('inner',this)">Inner Ear</button>
+    <button type="button" class="filter-btn" onclick="setFilter('cong',this)">Congenital</button>
+  </div>
+  <div id="q-area"></div>
+  <div class="btn-row">
+    <button type="button" id="btn-skip" onclick="skip()">Skip</button>
+    <button type="button" id="btn-submit" onclick="submitAnswer()" disabled>Submit</button>
+    <button type="button" id="btn-next" onclick="nextQ()" disabled>Next &rarr;</button>
+  </div>
+</div>
+
+<div id="final">
+  <h2>Embryology Drill Complete</h2>
+  <div class="score-big" id="final-score"></div>
+  <div class="verdict" id="final-verdict"></div>
+  <div class="breakdown">
+    <h3>Review - Incorrect &amp; Skipped</h3>
+    <div id="breakdown-list"></div>
+  </div>
+  <button type="button" id="btn-restart" onclick="restart()">Retry</button>
+</div>
+
+<script>
+var ALL_QUESTIONS = [
+{cat:"time",topic:"Week 3",q:"Inner ear differentiation begins during approximately the:",opts:["3rd week","8th week","12th week","28th week"],ans:0,exp:"The inner ear starts earliest. Course slides place inner-ear differentiation at the 3rd week. Anything that says the outer or middle ear starts first is a trap."},
+{cat:"time",topic:"Month 2",q:"The auricle begins forming before the:",opts:["Second fetal month","Third fetal month","Sixth fetal month","First birthday"],ans:0,exp:"This is one of the exact Kahoot-style timeline facts: auricle begins before month 2. Reworded exam versions may ask it as pinna, auricle, or external ear."},
+{cat:"time",topic:"Week 6",q:"Cochlear turns begin developing around the:",opts:["6th week","10th week","18th week","28th week"],ans:0,exp:"Anatomy notes: cochlear turns begin at the 6th week and are complete by the 10th week. Begin versus complete is the trap."},
+{cat:"time",topic:"Week 10",q:"The cochlear turns are generally complete by the:",opts:["10th week","12th week","18th week","25th week"],ans:0,exp:"Cochlear turns begin around week 6 and are complete by week 10. Organ of Corti starts around week 12, so do not merge those two dates."},
+{cat:"time",topic:"Week 12",q:"By the 12th week, the ossicles are differentiated:",opts:["True","False"],ans:0,exp:"True. Sutherland's slide says by the 12th week the ossicles differentiate, then they are fully formed by about the 16th week and begin ossifying."},
+{cat:"time",topic:"Week 12",q:"At approximately the 12th week, the organ of Corti:",opts:["Begins to form","Is already adult-sized and fully functional","Degenerates into the otic capsule","Becomes the Eustachian tube"],ans:0,exp:"The Organ of Corti begins to form around week 12. Do not overstate that as complete mature hearing at week 12."},
+{cat:"time",topic:"Week 18",q:"By about the 18th week, the membranous labyrinth has reached:",opts:["Adult configuration","Initial otic placode formation only","Complete mastoid pneumatization","Postnatal EAC length"],ans:0,exp:"Inner-ear slides state that adult configuration of the membranous labyrinth is reached by week 18. Full adult inner-ear form is later, around week 25."},
+{cat:"time",topic:"Week 25",q:"By about the 25th week, the inner ear is in:",opts:["Full adult form","Only its first arch stage","The beginning of meatus formation","The third fetal month annulus stage"],ans:0,exp:"Course notes: by week 25 the inner ear is full adult form. This is why fetal auditory responsiveness becomes plausible in late second trimester."},
+{cat:"outer",topic:"Auricle Source",q:"The auricle develops mainly from the first two:",opts:["Pharyngeal arches","Scalae","Cochlear turns","Semicircular canals"],ans:0,exp:"Martin and Clark describe auricle development from the first two pharyngeal arches. That is why first/second arch disorders can show pinna and canal anomalies."},
+{cat:"outer",topic:"First Groove",q:"The external auditory canal forms from the:",opts:["First pharyngeal groove","First pharyngeal pouch","Second pharyngeal pouch","Otic vesicle"],ans:0,exp:"Groove versus pouch is a classic exam split. First groove makes EAC. First pouch makes middle-ear space and Eustachian tube."},
+{cat:"outer",topic:"Meatus vs Auricle",q:"Which pairing is correct?",opts:["Meatus begins around week 4; auricle begins before month 2","Meatus begins after birth; auricle begins at week 25","Meatus comes from first pouch; auricle comes from otic placode","Meatus and auricle both begin at week 12"],ans:0,exp:"Outer-ear slide sequence: meatus around week 4, auricle before month 2. The first pouch belongs to middle ear and ET, not meatus."},
+{cat:"outer",topic:"Auricular Malformation",q:"A small or malformed pinna from congenital auricular abnormality is called:",opts:["Microtia","Atresia","Stenosis","Otosclerosis"],ans:0,exp:"Microtia = small/malformed pinna. Atresia and stenosis are canal terms. Otosclerosis is stapes fixation, not auricle embryology."},
+{cat:"outer",topic:"Canal Absence",q:"Congenital absence of the external auditory canal because of embryologic events is:",opts:["Atresia","Microtia","Anotia","Myringitis"],ans:0,exp:"Atresia means absence or closure of the EAC. It can co-occur with auricular and ossicular anomalies because these structures develop close together."},
+{cat:"middle",topic:"First Pouch",q:"The middle-ear space and Eustachian tube form from the:",opts:["First pharyngeal pouch","First pharyngeal groove","Otic placode","Second branchial cleft"],ans:0,exp:"Textbook: middle-ear space and Eustachian tube form from the first pharyngeal pouch. Groove is outer canal; pouch is middle-ear/ET."},
+{cat:"middle",topic:"Annulus",q:"The tympanic membrane annulus forms in the:",opts:["Third fetal month","Third gestational week","Tenth fetal week","Twenty-fifth fetal week"],ans:0,exp:"The annulus forms in the third fetal month. It is the ring anchoring the TM at the medial end of the EAC."},
+{cat:"middle",topic:"TM Layers",q:"The tympanic membrane is embryologically interesting because it includes:",opts:["Outer ectoderm, middle mesoderm, inner endoderm","Only neural crest tissue","Only otic placode tissue","Only cartilage from the stapes"],ans:0,exp:"TM sits at the boundary of external and middle ear structures, so it has ectodermal, mesodermal, and endodermal contributions."},
+{cat:"middle",topic:"Ossicle Arches",q:"The ossicles first form as cartilage from the:",opts:["First and second pharyngeal arches","Third and fourth pharyngeal arches","First pharyngeal pouch only","External auditory canal skin"],ans:0,exp:"Textbook: ossicles first form as cartilage of the first and second pharyngeal arches. That is why arch anomalies can affect ossicular mechanics."},
+{cat:"middle",topic:"Stapes Footplate",q:"The base or footplate of the stapes forms from the:",opts:["Otic capsule","First pharyngeal groove","External auditory canal plug","Tympanic annulus"],ans:0,exp:"The textbook separates stapes superstructure from footplate. Stapes footplate/base comes from the otic capsule."},
+{cat:"middle",topic:"Tensor Tympani",q:"The tensor tympani muscle is derived from the:",opts:["First pharyngeal arch mesenchyme","Second arch only","Otic placode","First pharyngeal groove"],ans:0,exp:"Middle-ear muscle derivation: tensor tympani is first arch; stapedius is second arch. That mirrors their nerve supply logic."},
+{cat:"inner",topic:"Otic Vesicle",q:"The otocyst is also called the:",opts:["Auditory vesicle","Tympanic annulus","Incudostapedial joint","External meatus"],ans:0,exp:"The glossary/textbook defines otocyst as the auditory vesicle of the embryo. Inner-ear structures arise from this vesicle/sac."},
+{cat:"inner",topic:"Vestibular Earlier",q:"Vestibular portions of the inner ear develop earlier than auditory portions:",opts:["True","False"],ans:0,exp:"Sutherland's anatomy slide states that vestibular portions develop earlier than auditory portions. Do not assume cochlea is always first just because hearing is the course focus."},
+{cat:"inner",topic:"Cochlea Turns",q:"Which sequence is correct for cochlear turns?",opts:["Begin week 6; complete week 10","Begin week 12; complete week 25","Begin month 3; complete after birth","Begin week 18; complete week 28"],ans:0,exp:"The cochlear turns begin at week 6 and are complete by week 10. Organ of Corti development begins around week 12."},
+{cat:"inner",topic:"Scalae",q:"The scalae begin forming before the organ of Corti begins forming:",opts:["True","False"],ans:0,exp:"By week 8 the scalae are forming. The Organ of Corti begins around week 12. That order matters."},
+{cat:"inner",topic:"Adult Config",q:"Adult configuration of the membranous labyrinth is reached before the inner ear is in full adult form:",opts:["True","False"],ans:0,exp:"Adult configuration is around week 18; full adult inner-ear form is around week 25. Configuration comes before full form."},
+{cat:"inner",topic:"Otic Capsule",q:"The stapes footplate is linked developmentally to the otic capsule, which is associated with the:",opts:["Inner ear","Auricle","External auditory canal skin","Eustachian tube mucosa"],ans:0,exp:"The otic capsule surrounds the inner ear. The stapes footplate deriving from it is one reason stapes development bridges middle and inner-ear embryology."},
+{cat:"cong",topic:"Microtia Pairing",q:"Microtia often matters clinically because it can be associated with:",opts:["EAC atresia and ossicular anomalies","Only normal hearing","Only Meniere disease","Only noise-induced hearing loss"],ans:0,exp:"The textbook notes middle-ear and temporal bone abnormalities with pinna/EAC anomalies. Microtia is not just cosmetic when canal or ossicles are also affected."},
+{cat:"cong",topic:"Treacher Collins",q:"Treacher Collins syndrome can present with preauricular tags and EAC atresia because of abnormal:",opts:["Embryologic development of first/second arch structures","Adult noise exposure","Endolymphatic hydrops","Aminoglycoside ototoxicity only"],ans:0,exp:"Treacher Collins is an arch-development disorder. Preauricular tags, malformed pinnae, and EAC atresia fit first/second arch embryology."},
+{cat:"cong",topic:"Conductive Consequence",q:"A child born without external auditory canals would most directly show risk for:",opts:["Conductive hearing loss","Pure vestibular migraine","Meniere disease","Noise notch at 4 kHz only"],ans:0,exp:"No EAC means air-conducted sound cannot reach the TM normally. Cochlear function may be intact, but the air pathway is blocked."},
+{cat:"cong",topic:"Atresia vs Stenosis",q:"Which contrast is correct?",opts:["Atresia is absent canal; stenosis is narrowed canal","Atresia is small pinna; stenosis is absent pinna","Atresia is inner-ear hydrops; stenosis is stapes fixation","Both terms mean exostosis"],ans:0,exp:"Atresia and stenosis are canal terms, but not synonyms. Atresia is absent/closed; stenosis is narrowed."},
+{cat:"cong",topic:"Exam Trap",q:"If a question says 'stenosis is complete absence of the EAC,' the statement is:",opts:["False","True"],ans:0,exp:"False. Complete absence/closure is atresia. Stenosis is narrowing. This is exactly the kind of one-word swap that costs easy points."}
+];
+
+var filter = "all";
+var questions = [];
+var idx = 0;
+var userAnswers = [];
+var locked = [];
+var answerHistory = [];
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
+}
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll(".filter-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  restart();
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function shuffleQuestionOptions(question) {
+  var optionMeta = question.opts.map(function(opt, index) {
+    return { text: opt, isCorrect: index === question.ans };
+  });
+  var shuffledOptions = shuffle(optionMeta);
+  return {
+    cat: question.cat,
+    topic: question.topic,
+    q: question.q,
+    opts: shuffledOptions.map(function(opt) { return opt.text; }),
+    ans: shuffledOptions.findIndex(function(opt) { return opt.isCorrect; }),
+    exp: question.exp
+  };
+}
+
+function buildQuestionSet() {
+  var pool = filter === "all" ? ALL_QUESTIONS : ALL_QUESTIONS.filter(function(q){ return q.cat === filter; });
+  questions = shuffle(pool.slice()).map(shuffleQuestionOptions);
+  userAnswers = questions.map(function(){ return null; });
+  locked = questions.map(function(){ return false; });
+  answerHistory = [];
+  idx = 0;
+}
+
+function catLabel(c){
+  return c==="time" ? "Timeline"
+       : c==="outer" ? "Outer Ear"
+       : c==="middle" ? "Middle Ear"
+       : c==="inner" ? "Inner Ear"
+       : "Congenital";
+}
+
+function render() {
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  var isLocked = locked[idx];
+  var pct = Math.round(idx / questions.length * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-text").textContent = "Question " + (idx + 1) + " of " + questions.length;
+
+  var optsHTML = "";
+  for(var i = 0; i < Q.opts.length; i++) {
+    var cls = "opt";
+    if(isLocked) {
+      cls += " locked";
+      if(i === Q.ans) cls += " correct";
+      else if(i === chosen) cls += " wrong";
+    } else if(i === chosen) {
+      cls += " selected";
+    }
+    var clickAttr = isLocked ? "" : "onclick=\"selectOpt(" + i + ")\"";
+    optsHTML += "<div class=\"" + cls + "\" " + clickAttr + ">" + escapeHTML(Q.opts[i]) + "</div>";
+  }
+
+  document.getElementById("q-area").innerHTML =
+    "<div class=\"q-card\">" +
+      "<span class=\"cat-badge cat-" + Q.cat + "\">" + catLabel(Q.cat) + "</span>" +
+      "<span class=\"topic\">" + escapeHTML(Q.topic) + "</span>" +
+      "<div class=\"q-num\">Q" + (idx + 1) + ".</div>" +
+      "<div class=\"q-text\">" + escapeHTML(Q.q) + "</div>" +
+      "<div class=\"options\">" + optsHTML + "</div>" +
+      "<div class=\"" + (isLocked ? "explanation show" : "explanation") + "\"><strong>Why:</strong> " + escapeHTML(Q.exp) + "</div>" +
+    "</div>";
+
+  var submitBtn = document.getElementById("btn-submit");
+  var nextBtn = document.getElementById("btn-next");
+  var skipBtn = document.getElementById("btn-skip");
+  nextBtn.textContent = idx < questions.length - 1 ? "Next ->" : "Finish ->";
+  if(isLocked) {
+    submitBtn.style.display = "none";
+    skipBtn.style.display = "none";
+    nextBtn.style.display = "inline-block";
+    nextBtn.disabled = false;
+  } else {
+    submitBtn.style.display = "inline-block";
+    submitBtn.disabled = (chosen === null);
+    skipBtn.style.display = "inline-block";
+    nextBtn.style.display = "inline-block";
+    nextBtn.disabled = true;
+  }
+}
+
+function selectOpt(i) {
+  if(locked[idx]) return;
+  userAnswers[idx] = i;
+  document.getElementById("btn-submit").disabled = false;
+  var opts = document.querySelectorAll(".opt");
+  for(var k = 0; k < opts.length; k++) {
+    opts[k].className = "opt" + (k === i ? " selected" : "");
+  }
+}
+
+function submitAnswer() {
+  if(locked[idx] || userAnswers[idx] === null) return;
+  locked[idx] = true;
+  var Q = questions[idx];
+  var chosen = userAnswers[idx];
+  answerHistory.push({ q: Q.q, chosenText: Q.opts[chosen], correctText: Q.opts[Q.ans], isCorrect: chosen === Q.ans });
+  render();
+}
+
+function skip() {
+  if(locked[idx]) return;
+  userAnswers[idx] = -1;
+  locked[idx] = true;
+  var Q = questions[idx];
+  answerHistory.push({ q: Q.q, chosenText: "[Skipped]", correctText: Q.opts[Q.ans], isCorrect: false });
+  render();
+  setTimeout(function(){
+    if(idx < questions.length - 1) { idx++; render(); }
+    else showFinal();
+  }, 300);
+}
+
+function nextQ() {
+  if(idx < questions.length - 1) {
+    idx++;
+    render();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  document.getElementById("quiz-wrap").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  var total = questions.length;
+  var correct = answerHistory.filter(function(h){ return h.isCorrect; }).length;
+  var pct = Math.round(correct / total * 100);
+  document.getElementById("final-score").textContent = correct + " / " + total + " (" + pct + "%)";
+  var verdict;
+  if(pct >= 94)
+    verdict = "Good. Timeline traps are under control. Keep first groove versus first pouch and week 18 versus week 25 sharp.";
+  else if(pct >= 86)
+    verdict = "Close. This is mostly ready, but embryology punishes one-word swaps. Review every miss and name the category: week, arch, groove, pouch, or congenital term.";
+  else if(pct >= 75)
+    verdict = "Not enough. You are recognizing the vocabulary but not the timeline. Filter by Timeline first, then Outer/Middle/Inner.";
+  else
+    verdict = "Stop mixed drilling and rebuild the map: week 3 inner ear, week 4 meatus, week 6-10 cochlear turns, week 12 Organ of Corti and ossicle differentiation, week 16 ossicles formed, week 18 membranous labyrinth adult configuration, week 25 inner ear adult form.";
+  document.getElementById("final-verdict").textContent = verdict;
+  var wrong = answerHistory.filter(function(h){ return !h.isCorrect; });
+  var bkEl = document.getElementById("breakdown-list");
+  if(wrong.length === 0) {
+    bkEl.innerHTML = "<div style=\"color:var(--green);font-size:.9rem;padding:8px 0\">Clean run. No embryology points left on the table.</div>";
+  } else {
+    bkEl.innerHTML = wrong.map(function(h){
+      var qShort = h.q.length > 105 ? h.q.substring(0, 105) + "..." : h.q;
+      return "<div class=\"bk-item\"><div class=\"bk-q\">" + escapeHTML(qShort) + "</div><div class=\"bk-ans\"><div class=\"bk-you\">You: " + escapeHTML(h.chosenText) + "</div><div class=\"bk-correct\">Correct: " + escapeHTML(h.correctText) + "</div></div></div>";
+    }).join("");
+  }
+}
+
+function restart() {
+  document.getElementById("quiz-wrap").style.display = "block";
+  document.getElementById("final").style.display = "none";
+  buildQuestionSet();
+  render();
+}
+
+buildQuestionSet();
+render();
+</script>
+</body>
+</html>
