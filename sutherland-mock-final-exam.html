@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Randomized Sutherland Mock Final - COMD 4190</title>
+<link rel="icon" href="data:,">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    color-scheme:dark;
+    --bg:#0f0f1a;--card:#1a1a2e;--panel:#121228;--accent:#4a9eff;
+    --gold:#f6c453;--orange:#e67e22;--green:#27ae60;--red:#e74c3c;
+    --text:#eceff7;--dim:#a4acbb;--border:#2b3154;--soft:#17213a;
+  }
+  body{min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;padding:20px}
+  header{max-width:960px;margin:0 auto 16px;text-align:center}
+  h1{font-size:clamp(1.35rem,4vw,2rem);line-height:1.12;color:var(--accent);letter-spacing:0;margin-bottom:6px}
+  .subtitle{color:var(--dim);font-size:.92rem;line-height:1.45}
+  .topbar{max-width:960px;margin:18px auto 14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+  .status{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:left}
+  .form-name{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:900;margin-bottom:4px}
+  .form-desc{font-size:.92rem;color:#d7deec;line-height:1.45}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  button{border:none;border-radius:8px;padding:10px 18px;font-weight:800;font-size:.92rem;cursor:pointer;transition:opacity .15s,transform .15s}
+  button:hover:not(:disabled){opacity:.84;transform:translateY(-1px)}
+  button:disabled{opacity:.35;cursor:default}
+  .secondary{background:#30364f;color:#dce4f4}
+  .primary{background:var(--accent);color:#06101c}
+  .next{background:var(--orange);color:#080400}
+  .progress-wrap{max-width:960px;margin:0 auto 12px}
+  .progress-track{height:7px;background:var(--border);border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .2s}
+  .progress-text{display:flex;justify-content:space-between;gap:12px;color:var(--dim);font-size:.82rem;margin-top:7px}
+  main{max-width:960px;margin:0 auto}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;box-shadow:0 18px 36px rgba(0,0,0,.16)}
+  .meta{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;background:#10243d;color:#8ec5ff;font-size:.72rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+  .pill.tf{background:#2a1f00;color:#f6c453}
+  .pill.labeling{background:#2a133a;color:#d9b8ff}
+  .pill.case{background:#3a1717;color:#ffa09a}
+  .topic{color:var(--dim);font-size:.8rem}
+  .q-text{font-size:1.08rem;line-height:1.55;margin-bottom:16px}
+  .figure{margin:0 0 18px;background:#eceff7;border-radius:10px;border:1px solid #424b6c;padding:10px}
+  .figure img{display:block;width:100%;max-height:440px;object-fit:contain;border-radius:6px}
+  .caption{color:#111827;font-weight:800;font-size:.76rem;line-height:1.35;margin-top:8px}
+  .case-box{margin:0 0 18px;background:var(--soft);border:1px solid #31446f;border-radius:10px;padding:14px 16px;color:#e5eefb;font-size:.9rem;line-height:1.5}
+  .case-box h2{font-size:1rem;color:var(--gold);margin-bottom:6px}
+  .case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;margin-top:8px}
+  .case-grid div{border-top:1px solid #2f4168;padding-top:7px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px;text-align:left;color:var(--text);font-size:.95rem;line-height:1.4;cursor:pointer}
+  .opt:hover:not(.locked){border-color:var(--accent);background:#171b36}
+  .opt.selected{border-color:var(--orange);background:#2a1a0a}
+  .opt.correct{border-color:var(--green) !important;background:#0a2a12 !important}
+  .opt.wrong{border-color:var(--red) !important;background:#2a0a0a !important}
+  .opt.locked{cursor:default}
+  .explanation{display:none;margin-top:14px;padding:13px 15px;border-left:4px solid var(--accent);background:#0d1a2a;border-radius:8px;color:#c7d9f2;font-size:.92rem;line-height:1.55}
+  .explanation.show{display:block}
+  .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:960px;margin:16px auto}
+  #final{display:none;max-width:960px;margin:0 auto;text-align:center}
+  #final h2{font-size:2rem;color:var(--accent);margin-bottom:10px}
+  .score{font-size:3.1rem;font-weight:900;margin:10px 0;color:#fff}
+  .verdict{max-width:720px;margin:16px auto;text-align:left;background:var(--card);border-left:4px solid var(--accent);border-radius:10px;padding:18px 20px;line-height:1.62;color:#d7e4f5}
+  .review{margin-top:18px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:left}
+  .review h3{font-size:1rem;color:var(--gold);margin-bottom:10px}
+  .review-row{display:grid;grid-template-columns:1fr minmax(180px,260px);gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.88rem;line-height:1.4}
+  .review-row:last-child{border-bottom:none}
+  .bad{color:#ff9f99}.good{color:#8ee3a4}
+  @media (max-width:720px){
+    body{padding:14px}
+    .topbar{grid-template-columns:1fr}
+    .controls{justify-content:flex-start}
+    .q-card{padding:18px 16px}
+    .case-grid{grid-template-columns:1fr}
+    .review-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Randomized Sutherland Mock Final</h1>
+  <p class="subtitle">70 questions. One randomized form. Original Kahoot-style traps, final-scope labeling, and one comprehensive assessment block.</p>
+</header>
+
+<section class="topbar" aria-label="Exam form">
+  <div class="status">
+    <div class="form-name" id="formName">Loading form</div>
+    <div class="form-desc" id="formDesc">Preparing the mock final.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="secondary" id="newRandom">New Random Form</button>
+    <button type="button" class="secondary" id="forceA">Form A</button>
+    <button type="button" class="secondary" id="forceB">Form B</button>
+    <button type="button" class="secondary" id="forceC">Form C</button>
+  </div>
+</section>
+
+<section class="progress-wrap" aria-label="Progress">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text">
+    <span id="progressText">Question 1 of 70</span>
+    <span id="sectionText">Core</span>
+  </div>
+</section>
+
+<main id="quiz">
+  <section class="q-card" id="questionCard"></section>
+  <div class="actions">
+    <button type="button" class="secondary" id="skipBtn">Skip</button>
+    <button type="button" class="primary" id="submitBtn" disabled>Submit</button>
+    <button type="button" class="next" id="nextBtn" disabled>Next</button>
+  </div>
+</main>
+
+<section id="final">
+  <h2>Mock Final Complete</h2>
+  <div class="score" id="scoreText"></div>
+  <div class="verdict" id="verdict"></div>
+  <div class="review">
+    <h3>Review - Incorrect and Skipped</h3>
+    <div id="reviewList"></div>
+  </div>
+  <button type="button" class="primary" id="restartBtn">Retry Same Form</button>
+</section>
+
+<script>
+function q(section,type,topic,prompt,opts,ans,exp){
+  return {section:section,type:type,topic:topic,prompt:prompt,opts:opts,ans:ans,exp:exp};
+}
+
+var CORE_QUESTIONS = [
+q("Core","MC","EHDI","The EHDI 1-3-6 benchmark means hearing should be screened, diagnosed, and treated by:",["1 month, 3 months, 6 months","3 days, 1 month, 6 months","1 week, 6 weeks, 3 months","6 weeks, 3 months, 1 year"],0,"The public-health benchmark is screen by 1 month, diagnose by 3 months, and begin intervention by 6 months."),
+q("Core","MC","Screening","A newborn who does not pass the hearing screen should be described as:",["Referred for diagnostic follow-up","Diagnosed with permanent loss","Confirmed as sensorineural","Cleared after rescreen only"],0,"Screening results are pass or refer. A refer result is not a diagnosis; it means diagnostic audiology is needed."),
+q("Core","MC","NICU","NICU babies often need AABR screening because OAE-only screening can miss:",["Auditory neuropathy spectrum disorder","Simple cerumen impaction","Otosclerosis in the stapes","External canal stenosis only"],0,"ANSD can leave outer hair cell function intact, so OAEs may be present while ABR is abnormal."),
+q("Core","TF","Screening","A high-risk registry by itself catches nearly all congenital hearing loss.",["True","False"],1,"False. Risk-only screening misses many infants with hearing loss because many have no obvious risk factor."),
+q("Core","MC","Age To Test","A typically developing 6-month-old is most likely tested behaviorally with:",["Visual reinforcement audiometry","Conditioned play audiometry","Conventional button-press audiometry","Word recognition testing only"],0,"Around 6 months, VRA is the main behavioral method because the infant can turn toward a reinforcer."),
+q("Core","MC","Age To Test","A 3-year-old who can follow a play routine is usually a good candidate for:",["Conditioned play audiometry","Behavioral observation audiometry","Newborn AABR only","Adult pure-tone testing only"],0,"CPA is the play-based method for roughly 2 to 5 years, depending on cognitive level."),
+q("Core","MC","Sound Field","A sound-field VRA response through speakers tells you:",["Better-ear or aided-field response","Exact right-ear threshold","Exact left-ear threshold","Bone-conduction threshold only"],0,"Speakers are not ear-specific. The better ear may be driving the response."),
+q("Core","MC","VRA Protocol","Sutherland's lecture protocol for VRA starts around:",["60 dB HL","0 dB HL","20 dB SL","100 dB HL"],0,"Her lecture value was 60 dB HL. For her exam, lecture values beat textbook defaults."),
+q("Core","MC","MRL","A minimum response level in infants is best read as:",["Softest reliable response, not always true threshold","The exact adult-equivalent threshold","A word-recognition score","A tympanometric pressure value"],0,"MRLs improve with age and attention. They are behavioral response levels, not guaranteed true thresholds."),
+q("Core","MC","SAT Trap","A normal SAT by itself proves:",["Sound detection only","Normal hearing across frequencies","Excellent word recognition","Normal tympanograms"],0,"SAT/SDT is detection or awareness. It does not prove threshold shape or speech understanding."),
+q("Core","MC","Milestones","A newborn's expected sound behavior is closest to:",["Startle or reflexive response to sound","Reliable head turn to speech","Two-word phrase production","Conditioned block-drop response"],0,"Newborn responses are reflexive. Reliable head turn and play tasks come later."),
+q("Core","MC","Milestones","First true words are usually expected around:",["12 months","2 months","6 months","5 years"],0,"First words are a broad 12-month checkpoint. The exam will likely use general milestones, not a full developmental chart."),
+q("Core","MC","EAC Resonance","The adult ear canal's natural resonance mainly boosts speech-range energy near:",["2.5 to 3.5 kHz","125 Hz only","10 kHz only","All frequencies equally"],0,"The EAC acts like a quarter-wavelength resonator and boosts roughly the 2.5 to 3.5 kHz region."),
+q("Core","MC","Ossicles","The correct ossicular sequence for sound transmission is:",["Malleus, incus, stapes","Incus, malleus, stapes","Stapes, incus, malleus","Malleus, stapes, incus"],0,"The TM drives the malleus, the malleus drives the incus, and the incus drives the stapes."),
+q("Core","MC","Oval Window","When the stapes footplate moves inward, it first drives fluid motion in the:",["Scala vestibuli","Scala tympani","External auditory canal","Eustachian tube"],0,"The oval window opens into scala vestibuli, which contains perilymph."),
+q("Core","MC","Round Window","The round window is needed because cochlear fluids are:",["Incompressible","Full of air","Generated by the pinna","Part of the ossicular chain"],0,"Round-window movement gives the fluid wave a pressure release pathway."),
+q("Core","MC","Impedance","The middle ear's area ratio advantage comes from:",["Large TM area to small stapes footplate area","Small TM area to large stapes footplate area","Equal areas on both sides","The Eustachian tube pushing air inward"],0,"Force collected over the larger TM is concentrated onto the much smaller stapes footplate."),
+q("Core","MC","Lever","The ossicular lever effect exists mainly because:",["The malleus handle is longer than the incus process","The incus is longer than the malleus","The stapes is the largest ossicle","The TM has no fibrous layer"],0,"The malleus-to-incus lever gives a small pressure boost compared with the larger area-ratio effect."),
+q("Core","MC","Eustachian Tube","The Eustachian tube's main middle-ear job is:",["Pressure equalization","High-frequency pitch coding","OHC amplification","Auditory nerve firing"],0,"The Eustachian tube equalizes pressure between the middle ear and nasopharynx."),
+q("Core","MC","Middle Ear Muscles","Tensor tympani and stapedius both reduce transmission by:",["Stiffening the middle-ear system","Opening the cochlear apex","Creating endolymph","Improving OAE recording"],0,"Middle-ear muscles damp ossicular/TM movement, especially for intense low-frequency energy."),
+q("Core","MC","Scala Media","Scala media contains:",["Endolymph and the organ of Corti","Perilymph and the ossicles","Air and the stapes footplate","CSF and the pinna"],0,"Scala media, the cochlear duct, contains endolymph and houses the organ of Corti."),
+q("Core","MC","Perilymph","Perilymph is best described as:",["High sodium, low potassium","High potassium, low sodium","No electrolytes","Only calcium and glucose"],0,"Perilymph is extracellular-fluid-like: high Na+ and low K+."),
+q("Core","MC","Endolymph","Endolymph is best described as:",["High potassium, low sodium","High sodium, low potassium","No charged ions","Only found in scala tympani"],0,"Endolymph is high K+ and low Na+, which helps drive hair-cell depolarization."),
+q("Core","MC","Hair Cells","The main afferent sensory receptors for hearing are:",["Inner hair cells","Outer hair cells","Stapedius cells","Eustachian tube cilia"],0,"IHCs send most afferent information to CN VIII. OHCs mainly amplify and sharpen tuning."),
+q("Core","MC","OHC Function","Outer hair cells are most directly tied to:",["Cochlear amplification and OAEs","Middle-ear pressure equalization","Bone-conduction masking","Speech detection threshold naming"],0,"Healthy OHC motility supports the cochlear amplifier and is the source of OAEs."),
+q("Core","MC","Transduction","Bending stereocilia toward the tallest row opens channels that allow:",["K+ influx and depolarization","Na+ outflow and hyperpolarization only","Air release through the round window","Ossicular fixation"],0,"Endolymph is K+-rich, so K+ enters the hair cell and depolarizes it."),
+q("Core","MC","Auditory Pathway","The cochlear nucleus receives input from:",["The ipsilateral ear only","Both ears equally first","Only the opposite ear","The Eustachian tube"],0,"The cochlear nucleus is still ipsilateral. Binaural integration begins higher, especially at the SOC."),
+q("Core","MC","SOC","The superior olivary complex is important because it is:",["A first major binaural/reflex-arc station","The outermost layer of the TM","The fluid inside scala media","The place where the pinna forms"],0,"The SOC participates in binaural processing and the acoustic reflex arc."),
+q("Core","MC","Cochlear Microphonic","A present cochlear microphonic with abnormal ABR points toward:",["OHC activity with neural synchrony problem","Normal hearing with no follow-up","Middle-ear effusion only","A pinna landmark error"],0,"A cochlear microphonic can remain when hair cells work but neural transmission is disordered, as in ANSD."),
+q("Core","MC","Tonotopy","High frequencies peak on the basilar membrane near the:",["Base","Apex","Helicotrema only","Round window membrane"],0,"The base is narrow and stiff, so high frequencies peak there."),
+q("Core","MC","Tonotopy","Low frequencies peak on the basilar membrane near the:",["Apex","Base","Oval window only","Cochlear nucleus"],0,"The apex is wider and more compliant, so low frequencies travel farther before peaking."),
+q("Core","MC","Frequency Vs Intensity","If a 1000 Hz tone gets louder, the main basilar-membrane change is:",["Greater amplitude at the same place","A new peak at the apex","A reversed wave direction","A change from SNHL to conductive loss"],0,"Frequency determines place; intensity mainly changes amplitude. This is a classic polarity trap."),
+q("Core","TF","Traveling Wave","The cochlear traveling wave starts at the apex and moves toward the base.",["True","False"],1,"False. The traveling wave starts at the base and travels apically for both air and bone conduction."),
+q("Core","MC","Inner Ear Development","The earliest major ear region to begin development is the:",["Inner ear from the otic placode","Auricle from final hillocks","Adult mastoid air cells","Postnatal ear canal bend"],0,"The inner ear starts early from the otic placode/otocyst."),
+q("Core","MC","Embryology","The external auditory canal develops mainly from the:",["First branchial cleft/groove","First pharyngeal pouch","Otic capsule","Neural tube"],0,"First cleft/groove makes the EAC. First pouch makes middle-ear space and Eustachian tube."),
+q("Core","MC","Embryology","The middle-ear cavity and Eustachian tube develop mainly from the:",["First pharyngeal pouch","First branchial cleft","Otic placode","Second cochlear turn"],0,"Pouch equals middle-ear space and Eustachian tube in this course's embryology map."),
+q("Core","MC","Ossicle Arches","The correct arch pairing is:",["Malleus/incus first arch; stapes second arch","Malleus/incus second arch; stapes first arch","All ossicles from otic placode","All ossicles from first pouch"],0,"Malleus and incus come mainly from first arch cartilage; stapes is second arch."),
+q("Core","MC","Ossicle Timing","Ossicles are differentiated by about week 12 and formed by about:",["Week 16","Week 4","Week 25","After birth"],0,"The study guide's minimum timeline is 12 weeks differentiated, 16 weeks formed/adult-size trajectory."),
+q("Core","MC","Organ Of Corti","The organ of Corti begins forming around:",["Weeks 10 to 12","Day 3 only","Week 25 only","After birth"],0,"The key timeline: cochlear turns finish earlier, then the organ of Corti begins around weeks 10 to 12."),
+q("Core","MC","Inner Ear Timeline","The inner ear is essentially fully formed by about:",["Week 25","Week 6","Week 10","The third postnatal month"],0,"The consolidated timeline places full inner-ear formation around week 25."),
+q("Core","MC","Outer Ear Terms","Microtia means:",["Small or malformed pinna","Narrow canal","Absent canal","Cold-water bony growth"],0,"Microtia is a pinna malformation. Stenosis and atresia are canal terms."),
+q("Core","MC","Canal Terms","Atresia and stenosis differ because:",["Atresia is absent/closed canal; stenosis is narrowed canal","Atresia is narrowed canal; stenosis is small pinna","Both mean surfer's ear","Both mean cochlear hydrops"],0,"Atresia means absent or closed EAC. Stenosis means narrowed EAC."),
+q("Core","MC","Exostosis","Multiple broad-based bony growths linked to cold water exposure suggest:",["Exostoses","Osteoma","Meniere disease","Auditory neuropathy"],0,"Exostoses are often bilateral/multiple and associated with cold water or wind exposure."),
+q("Core","MC","Otitis Externa","Pain with tragus pressure or pinna pull points toward:",["Otitis externa","Otosclerosis","Presbycusis","ANSD"],0,"Otitis externa inflames the EAC skin, so moving the canal hurts."),
+q("Core","MC","Otosclerosis","Otosclerosis most classically begins as:",["Conductive middle-ear loss","Pure outer-ear infection","Retrocochlear loss only","Normal hearing with poor WRS"],0,"Stapes fixation causes conductive loss first and may progress to mixed loss if cochlear involvement develops."),
+q("Core","MC","OME","Type B tymps with normal ECV most strongly point to:",["Middle-ear effusion/pathology","Patent PE tube only","Large TM perforation","Normal middle ear"],0,"Flat tymp plus normal ECV means the TM is intact but the middle-ear system is not moving."),
+q("Core","MC","ECV Trap","Type B tymps with unusually large ECV suggest:",["TM perforation or patent tube","Simple effusion behind intact TM","Probe blocked with cerumen","Normal tympanic mobility"],0,"Large ECV means the measured space extends beyond the canal through an open TM or tube."),
+q("Core","MC","Cholesteatoma","A retraction pocket with keratin debris and conductive loss should make you think:",["Cholesteatoma","Presbycusis","Ototoxicity only","Noise notch only"],0,"Cholesteatoma can grow from a retraction pocket and erode ossicles/bone."),
+q("Core","MC","HL Type Trap","Noise exposure plus presbycusis is still classified as:",["Sensorineural hearing loss","Mixed hearing loss","Conductive hearing loss","Normal hearing"],0,"Both NIHL and presbycusis are sensorineural. Mixed requires an added conductive component."),
+q("Core","MC","Meniere","The classic Meniere cluster includes:",["SNHL, tinnitus, vertigo, aural fullness","Conductive loss, ear pain, fever, otorrhea","Normal hearing, poor tymps, no dizziness","Pinna pain, canal swelling, normal balance"],0,"Meniere disease is an inner-ear disorder with fluctuating SNHL, tinnitus, vertigo, and aural fullness.")
+];
+
+var IMAGE_A = "useme_diagrams/diagram_04.png";
+var IMAGE_B = "useme_diagrams/diagram_06.png";
+var IMAGE_C = "useme_diagrams/diagram_07.png";
+
+var CASE_A = '<h2>Assessment Form A: Bilateral Middle-Ear Effusion Pattern</h2><p>Adult after a URI reports muffled hearing and fullness in both ears. Otoscopy shows cloudy, bulging tympanic membranes bilaterally.</p><div class="case-grid"><div><b>Audiogram:</b> AC elevated, BC 0-15 dB HL, clear bilateral air-bone gaps. PTA R about 43 dB, L about 48 dB.</div><div><b>Speech:</b> SRT R 45, L 50. WRS R 96%, L 92% at loud presentation levels.</div><div><b>Tymps:</b> Type B both ears. ECV R 1.0 ml, L 1.1 ml.</div><div><b>Reflex/OAE:</b> Ipsi reflexes absent bilaterally. DPOAEs absent bilaterally.</div></div>';
+var CASE_B = '<h2>Assessment Form B: PE Tube / Ear Canal Volume Trap</h2><p>Four-year-old with bilateral PE tubes. Parent reports the right ear seems worse. Otoscopy shows tubes in both ears.</p><div class="case-grid"><div><b>Audiogram:</b> Right AC around 45-50 dB with BC 15-20 dB. Left AC 5-15 dB.</div><div><b>Speech:</b> SRT R 50, L 25. WRS 100% both ears when speech is audible.</div><div><b>Tymps:</b> Right Type B, ECV 0.8 ml. Left Type B, ECV 4.0 ml.</div><div><b>Reflex/OAE:</b> Right ipsi absent. Left ipsi present at expected levels. OAEs not tested.</div></div>';
+var CASE_C = '<h2>Assessment Form C: Cochlear SNHL With Recruitment Pattern</h2><p>Adult reports difficulty hearing low-pitched voices and needs more loudness than before. Otoscopy is unremarkable bilaterally.</p><div class="case-grid"><div><b>Audiogram:</b> AC and BC overlap. R 55/45/50/40/30/25. L 65/60/55/45/35/30.</div><div><b>Speech:</b> PTA R about 45, L about 53. SRT R 35, L 45. WRS R 80%, L 76%.</div><div><b>Tymps:</b> Type A bilaterally with normal ECV and compliance.</div><div><b>Reflex/OAE:</b> Ipsi reflexes present but reduced in SL. TEOAEs absent bilaterally.</div></div>';
+
+var FORMS = {
+  A:{
+    name:"Form A",
+    desc:"Basilar membrane / tonotopy labeling plus a middle-ear effusion assessment block.",
+    labelTitle:"Basilar Membrane Labeling",
+    image:IMAGE_A,
+    caption:"Use this basilar membrane tuning figure for the labeling questions. The key exam idea is base/apex, high/low frequency, and traveling-wave direction.",
+    label:[
+      q("Labeling","MC","Basilar Membrane","On this figure, the high-frequency end is the part that is:",["Narrow and stiff near the base","Wide and floppy near the apex","Inside the cochlear nucleus","Past the auditory cortex"],0,"High frequencies peak at the basal, narrow, stiff end. Low frequencies travel farther toward the apex."),
+      q("Labeling","MC","Basilar Membrane","The low-frequency region should be labeled as the:",["Apical, wider portion","Basal, stiff portion","Oval-window footplate","Superior olivary complex"],0,"Low-frequency energy peaks toward the apex where the basilar membrane is wider and more flexible."),
+      q("Labeling","MC","Traveling Wave","The arrow for cochlear traveling-wave direction should run:",["Base to apex","Apex to base","Cortex to cochlea","Round window to pinna"],0,"The traveling wave begins at the base and moves apically, even for low-frequency sounds."),
+      q("Labeling","MC","Intensity Trap","If the same frequency is louder, the label that changes is best thought of as:",["Amplitude of movement","Place of maximum frequency coding","Ear of stimulation","Cochlear nucleus side"],0,"Loudness increases displacement amplitude. Frequency is what chooses the place on the membrane."),
+      q("Labeling","TF","Tonotopy","In a tonotopy label, base = low frequency and apex = high frequency.",["True","False"],1,"False. It is base = high frequency and apex = low frequency.")
+    ],
+    caseTitle:"Middle-Ear Effusion Assessment",
+    caseHtml:CASE_A,
+    case:[
+      q("Case","MC","Loss Type","The audiogram pattern is best classified as:",["Bilateral conductive loss","Bilateral sensorineural loss","Bilateral mixed loss","Normal hearing"],0,"BC is normal while AC is elevated, creating air-bone gaps. That is conductive."),
+      q("Case","MC","Why Conductive","The clue that makes the loss conductive is:",["Normal BC with elevated AC","Poor WRS with no ABG","Present OAEs with absent ABR","Normal AC with poor BC"],0,"Conductive loss is identified by elevated air thresholds with normal bone thresholds."),
+      q("Case","MC","PTA","The right-ear PTA from 500, 1000, and 2000 Hz is closest to:",["43 dB HL","10 dB HL","75 dB HL","5 dB HL"],0,"The case gives R PTA about 43 dB HL. It is a moderate-ish air-conduction average, not a bone threshold."),
+      q("Case","MC","SRT Agreement","The SRTs in this case are:",["In good agreement with PTA","Too poor to use at all","Proof of retrocochlear disease","Better than normal hearing"],0,"SRTs are within about 10 dB of PTA, so they agree reasonably well."),
+      q("Case","MC","WRS","Excellent WRS in this conductive case tells you:",["The cochlea can process speech when loud enough","The middle ear is normal","The loss must be retrocochlear","The tymps must be Type A"],0,"Conductive loss reduces audibility. Once speech is loud enough, word recognition can remain excellent."),
+      q("Case","MC","Tymp Meaning","Type B tymps with normal adult ECV mean:",["Middle-ear pathology behind intact membranes","Patent PE tubes bilaterally","Canal occlusion in both ears","Normal tympanic mobility"],0,"Flat plus normal ECV points to effusion or other middle-ear pathology with an intact TM."),
+      q("Case","MC","ECV Trap","If the Type B tymps had very large ECV, the best answer would change toward:",["Perforation or patent tube","Otosclerosis only","Cochlear hydrops","Normal tymps"],0,"Large ECV means the probe measures beyond the canal because there is an opening through the membrane or tube."),
+      q("Case","MC","Reflexes","Absent ipsi reflexes fit because:",["The conductive barrier attenuates the reflex stimulus","The cochlea is always destroyed","The auditory cortex is absent","WRS scores are too high"],0,"Conductive pathology can block enough sound from reaching the cochlea and can prevent a measurable compliance change."),
+      q("Case","MC","OAE Trap","Absent DPOAEs in this case most likely mean:",["The middle ear blocked the stimulus/emission path","OHCs are definitely the primary lesion","The auditory nerve is severed","OAEs cannot be affected by fluid"],0,"Middle-ear fluid can make OAEs absent even when OHCs are healthy."),
+      q("Case","MC","Diagnosis","The best overall diagnosis is:",["Bilateral middle-ear effusion causing conductive loss","Bilateral cochlear SNHL from noise exposure","Auditory neuropathy spectrum disorder","Normal hearing with poor attention"],0,"Every measure points to middle-ear pathology: cloudy TMs, Type B normal ECV, ABG, absent reflexes, and excellent WRS."),
+      q("Case","TF","Cross-Check","The absent OAEs alone prove outer hair cell damage in this patient.",["True","False"],1,"False. Conductive pathology can create absent OAEs by blocking sound in and emissions out."),
+      q("Case","MC","Best Next Step","The most appropriate referral direction is toward:",["Medical management of middle-ear disease","Immediate cochlear implant mapping","Noise-exposure counseling only","Retrocochlear tumor workup first"],0,"The findings are middle-ear dominant. Medical management is the logical next step."),
+      q("Case","MC","Wrong Summary","Which summary is the trap answer?",["Cochlear SNHL because OAEs are absent","Conductive loss because BC is normal","Type B normal ECV suggests effusion","WRS stays strong when speech is audible"],0,"Absent OAEs do not automatically equal cochlear loss when the middle ear is blocked."),
+      q("Case","MC","Sound Path","The disrupted part of the pathway is primarily:",["Outer/middle-ear air-conduction transmission","CN VIII neural synchrony","Primary auditory cortex only","IHC synaptic release only"],0,"The case is a conductive problem before sound reaches the cochlea normally."),
+      q("Case","MC","Professor Logic","The best Sutherland-style final answer is:",["All measures tell the same middle-ear story","The measures disagree, so ignore tymps","Speech scores override the audiogram","OAE data alone determines the diagnosis"],0,"Her case-study logic rewards cross-measure agreement, not one isolated test.")
+    ]
+  },
+  B:{
+    name:"Form B",
+    desc:"Organ of Corti / cochlear fluids labeling plus a PE tube and ear-canal-volume assessment block.",
+    labelTitle:"Organ Of Corti Labeling",
+    image:IMAGE_B,
+    caption:"Use this organ of Corti figure for the labeling questions. The target ideas are IHC/OHC roles, tectorial-basilary shear, and cochlear fluids.",
+    label:[
+      q("Labeling","MC","Organ Of Corti","The organ of Corti sits on top of the:",["Basilar membrane","Round window","Eustachian tube","Malleus head"],0,"The organ of Corti rests on the basilar membrane inside the cochlear duct."),
+      q("Labeling","MC","Hair Cells","In a hair-cell label, the cells in multiple rows mainly function as:",["Outer hair cells for amplification","Inner hair cells for most afferent input","Ossicles for lever action","Middle-ear muscles"],0,"OHCs are arranged in multiple rows and provide active mechanical amplification."),
+      q("Labeling","MC","Hair Cells","The single row of sensory cells carries most of the:",["Afferent auditory signal","Middle-ear pressure change","Bone-conduction artifact","Pinna resonance"],0,"IHCs are the main afferent sensory receptors for hearing."),
+      q("Labeling","MC","Transduction","The membrane that helps shear stereocilia against basilar-membrane motion is the:",["Tectorial membrane","Round window membrane","First pharyngeal pouch","External canal wall"],0,"Relative motion between the basilar and tectorial membranes bends stereocilia."),
+      q("Labeling","TF","Cochlear Fluid","Scala media is filled with perilymph, not endolymph.",["True","False"],1,"False. Scala media contains endolymph; scala vestibuli and scala tympani contain perilymph.")
+    ],
+    caseTitle:"PE Tube / ECV Assessment",
+    caseHtml:CASE_B,
+    case:[
+      q("Case","MC","Right Ear","The right ear is best classified as:",["Conductive loss","Sensorineural loss","Mixed loss","Normal hearing"],0,"Right AC is elevated while BC is near normal, creating an air-bone gap."),
+      q("Case","MC","Left Ear","The left ear is best classified as:",["Normal hearing","Conductive loss","Sensorineural loss","Mixed loss"],0,"Left AC thresholds are normal or near normal."),
+      q("Case","MC","Right Tube","Right Type B with ECV 0.8 ml in a child with a visible tube suggests:",["Occluded tube","Patent tube","Large perforation","Normal tymp"],0,"A patent tube should create a large ECV. Normal child ECV with Type B suggests the tube is blocked."),
+      q("Case","MC","Left Tube","Left Type B with ECV 4.0 ml suggests:",["Patent tube","Occluded tube","Middle-ear effusion behind intact TM","Probe blocked by cerumen"],0,"Large ECV with a tube means the tube is open and the measured volume includes middle-ear space."),
+      q("Case","MC","ECV Rule","The ECV result tells you:",["Why the tymp is flat","The exact cochlear threshold","The WRS percentage","The auditory pathway side"],0,"Flat tymps are interpreted by ECV: normal, high, or low volume changes the meaning."),
+      q("Case","MC","PTA-SRT","Right PTA around 47 and SRT 50 show:",["Good agreement","No usable speech data","Retrocochlear rollover","Normal hearing"],0,"A 3 dB difference is excellent agreement."),
+      q("Case","MC","Left SRT Trap","Left PTA near 8 and SRT 25 is:",["Outside expected agreement","Perfect agreement","A Type B tymp value","Proof of cochlear loss"],0,"SRT should usually be within about 10 dB of PTA; this is farther apart."),
+      q("Case","MC","WRS","WRS of 100% in both ears means:",["Speech is clear when audible","There is no conductive component","Tymps are normal","The tubes are both blocked"],0,"Excellent WRS fits a conductive/right-ear audibility problem with intact cochlear clarity."),
+      q("Case","MC","Reflexes","Right absent reflexes fit because:",["Right conductive loss blocks the pathway","Right cochlea must be dead","Left tube is patent","Speech testing was normal"],0,"The conductive component can prevent reflex activation/measurement."),
+      q("Case","MC","Left Reflexes","Left present reflexes fit because:",["Left hearing and transmission are functionally open","Left has a blocked tube","Left has moderate conductive loss","Left has profound SNHL"],0,"The left tube is patent and hearing is normal, so reflexes can be present."),
+      q("Case","MC","Best Summary","The best cross-measure summary is:",["Right tube occluded; left tube patent","Both tubes occluded","Both ears have cochlear SNHL","Left ear has middle-ear effusion"],0,"Right: Type B normal ECV with loss. Left: Type B high ECV with normal hearing."),
+      q("Case","TF","Type B Trap","Every Type B tympanogram means middle-ear effusion.",["True","False"],1,"False. ECV determines the likely reason: normal for effusion, high for tube/perforation, low for occlusion/probe issue."),
+      q("Case","MC","Conductive Component","The finding that proves a right conductive component is:",["Right air-bone gap","Right WRS of 100%","Left large ECV","Child age"],0,"The ABG is the audiometric proof of conductive involvement."),
+      q("Case","MC","Most Likely Action","The right ear most likely needs:",["Tube patency/medical check","Cochlear implant candidacy only","Retrocochlear MRI first","No follow-up because WRS is high"],0,"The right tube appears blocked and the right ear has conductive loss."),
+      q("Case","MC","Professor Logic","The trap she wants you to avoid is:",["Calling both flat tymps the same thing","Calculating PTA before looking at speech","Using ECV to interpret Type B","Noting the right air-bone gap"],0,"Both ears are Type B, but ECV makes them different.")
+    ]
+  },
+  C:{
+    name:"Form C",
+    desc:"Auditory pathway labeling plus a cochlear SNHL assessment with reduced reflex sensation levels.",
+    labelTitle:"Auditory Pathway Labeling",
+    image:IMAGE_C,
+    caption:"Use this auditory pathway figure for the labeling questions. The key exam idea is where ipsilateral input becomes binaural processing.",
+    label:[
+      q("Labeling","MC","Pathway Order","The correct ascending pathway order is:",["CN VIII, cochlear nucleus, SOC, lateral lemniscus, inferior colliculus, MGN, cortex","SOC, cochlear nucleus, CN VIII, MGN, cortex, lateral lemniscus","Pinna, SOC, scala media, MGN, organ of Corti, cortex","Cortex, MGN, cochlear nucleus, CN VIII, cochlea"],0,"The signal travels from CN VIII to cochlear nucleus, then SOC, lateral lemniscus, inferior colliculus, MGN, and auditory cortex."),
+      q("Labeling","MC","Cochlear Nucleus","At the cochlear nucleus, input is still:",["Ipsilateral only","Fully binaural first","Only contralateral","Only vestibular"],0,"The cochlear nucleus receives input from the same-side ear before major bilateral integration."),
+      q("Labeling","MC","SOC","The first major binaural station is the:",["Superior olivary complex","External auditory canal","Scala media","Semicircular canal"],0,"The SOC is where binaural comparison becomes a central feature."),
+      q("Labeling","MC","Thalamus","The thalamic relay in the auditory pathway is the:",["Medial geniculate nucleus","Inferior colliculus","Heschl gyrus","Habenula perforata"],0,"MGN is the auditory thalamic relay before primary auditory cortex."),
+      q("Labeling","TF","Pathway Trap","The cochlear nucleus receives both ears equally, so it is the first binaural station.",["True","False"],1,"False. The cochlear nucleus is ipsilateral; SOC is the first major binaural station.")
+    ],
+    caseTitle:"Cochlear SNHL / Recruitment Assessment",
+    caseHtml:CASE_C,
+    case:[
+      q("Case","MC","Loss Type","The audiogram is best classified as:",["Bilateral sensorineural loss","Bilateral conductive loss","Bilateral mixed loss","Normal hearing"],0,"AC and BC overlap while both are elevated, so there is no conductive gap."),
+      q("Case","MC","Configuration","The configuration is best described as:",["Rising","Sloping","Flat normal","Corner audiogram"],0,"Thresholds are worse in the lows and improve toward the highs."),
+      q("Case","MC","Air-Bone Gap","The key audiometric clue is:",["No significant air-bone gap","Large ABG with normal BC","Only air thresholds were tested","Normal BC with absent AC"],0,"SNHL is identified by overlapping elevated AC and BC thresholds."),
+      q("Case","MC","PTA","The right-ear PTA is closest to:",["45 dB HL","15 dB HL","85 dB HL","0 dB HL"],0,"The case gives right PTA about 45 dB HL from the mid-frequency thresholds."),
+      q("Case","MC","Speech","WRS of 80% and 76% is best described as:",["Slightly reduced difficulty range","Perfect word recognition","Profoundly poor only","A tympanogram type"],0,"Those scores are not normal-perfect, but they are not profoundly poor either."),
+      q("Case","MC","Tymps","Type A tymps in this case mean:",["Middle-ear mechanics are normal","The loss is conductive","The tubes are patent","The ECV is too high"],0,"Normal tymps do not explain the hearing loss. The loss is cochlear."),
+      q("Case","MC","OAE","Absent TEOAEs with Type A tymps and SNHL most strongly suggest:",["Outer hair cell cochlear involvement","Middle-ear fluid blocking only","Patent PE tubes","Normal OHC function"],0,"When the middle ear is normal, absent OAEs fit cochlear/OHC damage."),
+      q("Case","MC","Reflex SL","Reduced acoustic-reflex sensation levels point most directly to:",["Cochlear recruitment","Middle-ear effusion","Patent PE tube","Normal hearing"],0,"Reduced SL is the cochlear recruitment pattern. Retrocochlear patterns are not reduced SL."),
+      q("Case","MC","Retrocochlear Trap","Which conclusion is too strong from this case alone?",["Retrocochlear lesion is proven","Cochlear involvement is likely","OAEs fit OHC damage","Type A rules out middle-ear effusion"],0,"Nothing here proves retrocochlear disease; the pattern is cochlear SNHL with recruitment."),
+      q("Case","MC","SRT Agreement","Right PTA 45 with SRT 35 is:",["Borderline but near agreement","A 40 dB mismatch","A Type B tymp result","Proof of malingering"],0,"The difference is about 10 dB, which is near the usual agreement boundary."),
+      q("Case","MC","Left Speech","Left PTA 53 with SRT 45 is:",["Within about 10 dB","A profound mismatch","Impossible in SNHL","A reflex decay result"],0,"About 8 dB difference is acceptable agreement."),
+      q("Case","MC","Best Summary","The best cross-measure summary is:",["Bilateral rising cochlear SNHL with absent OAEs and reduced reflex SLs","Bilateral middle-ear effusion with high ECV","Right tube blocked and left tube patent","Auditory neuropathy with present OAEs"],0,"The measures fit cochlear SNHL: overlapping AC/BC, Type A tymps, absent OAEs, and reduced reflex SLs."),
+      q("Case","TF","Conductive Trap","Absent OAEs automatically mean conductive loss.",["True","False"],1,"False. OAEs can be absent from conductive blockage or from OHC damage. Tymps and audiogram decide which story fits."),
+      q("Case","MC","Mechanism","The reduced reflex SL pattern is caused by:",["Abnormal loudness growth from cochlear recruitment","Fluid preventing probe measurement only","A large ear-canal volume","The EAC resonance peak"],0,"Cochlear recruitment can make reflex thresholds occur at lower sensation levels."),
+      q("Case","MC","Professor Logic","The answer she is most likely rewarding is:",["Connect the normal middle ear to cochlear findings","Ignore reflexes because WRS is present","Call it mixed because speech is reduced","Use the OAE alone as the diagnosis"],0,"Her case-study style rewards the whole chain: audiogram, tymps, reflexes, OAEs, and speech all considered together.")
+    ]
+  }
+};
+
+var currentFormKey = "A";
+var questions = [];
+var idx = 0;
+var selected = null;
+var locked = [];
+var responses = [];
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
+}
+
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function shuffleOptions(question){
+  var optionMeta = question.opts.map(function(text,index){ return {text:text,correct:index===question.ans}; });
+  var shuffled = shuffle(optionMeta);
+  var next = Object.assign({}, question);
+  next.opts = shuffled.map(function(option){ return option.text; });
+  next.ans = shuffled.findIndex(function(option){ return option.correct; });
+  return next;
+}
+
+function withFigure(question, form){
+  var next = Object.assign({}, question);
+  next.image = form.image;
+  next.caption = form.caption;
+  return next;
+}
+
+function withCase(question, form){
+  var next = Object.assign({}, question);
+  next.caseHtml = form.caseHtml;
+  return next;
+}
+
+function getRequestedForm(){
+  var params = new URLSearchParams(window.location.search);
+  var form = (params.get("form") || "").toUpperCase();
+  return FORMS[form] ? form : null;
+}
+
+function setForm(key, updateUrl){
+  currentFormKey = key || ["A","B","C"][Math.floor(Math.random()*3)];
+  if(updateUrl){
+    var url = new URL(window.location.href);
+    url.searchParams.set("form", currentFormKey);
+    window.history.replaceState({}, "", url);
+  }
+  buildExam();
+}
+
+function buildExam(){
+  var form = FORMS[currentFormKey];
+  var core = shuffle(CORE_QUESTIONS).map(shuffleOptions);
+  var labeling = form.label.map(function(item){ return shuffleOptions(withFigure(item, form)); });
+  var caseItems = form.case.map(function(item){ return shuffleOptions(withCase(item, form)); });
+  questions = core.concat(labeling, caseItems);
+  idx = 0;
+  selected = null;
+  locked = questions.map(function(){ return false; });
+  responses = questions.map(function(){ return null; });
+  document.getElementById("formName").textContent = form.name + " - " + questions.length + " questions";
+  document.getElementById("formDesc").textContent = form.desc;
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("final").style.display = "none";
+  render();
+}
+
+function render(){
+  var qItem = questions[idx];
+  var pct = Math.round((idx / questions.length) * 100);
+  selected = responses[idx];
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressText").textContent = "Question " + (idx + 1) + " of " + questions.length;
+  document.getElementById("sectionText").textContent = qItem.section + " - " + qItem.topic;
+
+  var typeClass = qItem.section === "Labeling" ? "labeling" : qItem.section === "Case" ? "case" : qItem.type === "TF" ? "tf" : "";
+  var image = qItem.image ? '<figure class="figure"><img src="' + escapeHTML(qItem.image) + '" alt="' + escapeHTML(FORMS[currentFormKey].labelTitle) + '"><figcaption class="caption">' + escapeHTML(qItem.caption) + '</figcaption></figure>' : "";
+  var caseBox = qItem.caseHtml ? '<section class="case-box">' + qItem.caseHtml + '</section>' : "";
+  var options = qItem.opts.map(function(option,index){
+    var cls = "opt";
+    if(locked[idx]){
+      cls += " locked";
+      if(index === qItem.ans) cls += " correct";
+      else if(index === responses[idx]) cls += " wrong";
+    } else if(index === selected) {
+      cls += " selected";
+    }
+    return '<button type="button" class="' + cls + '" data-index="' + index + '">' + escapeHTML(option) + '</button>';
+  }).join("");
+
+  document.getElementById("questionCard").innerHTML =
+    '<div class="meta"><span class="pill ' + typeClass + '">' + escapeHTML(qItem.section) + " / " + escapeHTML(qItem.type) + '</span><span class="topic">' + escapeHTML(qItem.topic) + '</span></div>' +
+    image +
+    caseBox +
+    '<div class="q-text">' + escapeHTML(qItem.prompt) + '</div>' +
+    '<div class="options">' + options + '</div>' +
+    '<div class="explanation ' + (locked[idx] ? 'show' : '') + '" id="explanation">' + escapeHTML(qItem.exp) + '</div>';
+
+  document.querySelectorAll(".opt").forEach(function(button){
+    button.addEventListener("click",function(){
+      if(locked[idx]) return;
+      responses[idx] = Number(button.getAttribute("data-index"));
+      selected = responses[idx];
+      document.getElementById("submitBtn").disabled = false;
+      render();
+    });
+  });
+  document.getElementById("submitBtn").disabled = locked[idx] || selected === null;
+  document.getElementById("nextBtn").disabled = !locked[idx];
+  document.getElementById("skipBtn").disabled = locked[idx];
+}
+
+function submit(){
+  if(selected === null || locked[idx]) return;
+  locked[idx] = true;
+  render();
+}
+
+function skip(){
+  if(locked[idx]) return;
+  responses[idx] = null;
+  locked[idx] = true;
+  render();
+}
+
+function next(){
+  if(!locked[idx]) return;
+  if(idx < questions.length - 1){
+    idx += 1;
+    selected = responses[idx];
+    render();
+  } else {
+    finish();
+  }
+}
+
+function finish(){
+  document.getElementById("progressFill").style.width = "100%";
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  var correct = questions.reduce(function(sum,item,index){
+    return sum + (responses[index] === item.ans ? 1 : 0);
+  },0);
+  var pct = Math.round((correct / questions.length) * 100);
+  document.getElementById("scoreText").textContent = correct + " / " + questions.length + " (" + pct + "%)";
+  var verdict = pct >= 90 ? "This is the clean zone: your errors are now likely wording traps, not missing content."
+    : pct >= 80 ? "High-B / low-A territory. Review the missed polarity swaps and case cross-checks before the real final."
+    : pct >= 70 ? "You know chunks of it, but Sutherland's traps are still taking points. Redo the missed section today."
+    : "This needs another pass. Start with the review list, then retake a different form.";
+  document.getElementById("verdict").textContent = verdict;
+  var misses = questions.map(function(item,index){
+    return {item:item,index:index,response:responses[index]};
+  }).filter(function(row){ return row.response !== row.item.ans; });
+  document.getElementById("reviewList").innerHTML = misses.length ? misses.map(function(row){
+    var you = row.response === null ? "Skipped" : row.item.opts[row.response];
+    var right = row.item.opts[row.item.ans];
+    return '<div class="review-row"><div><b>Q' + (row.index + 1) + ':</b> ' + escapeHTML(row.item.prompt) + '<br><span class="bad">You: ' + escapeHTML(you) + '</span></div><div><span class="good">Correct: ' + escapeHTML(right) + '</span><br>' + escapeHTML(row.item.exp) + '</div></div>';
+  }).join("") : '<p class="good">No misses. Run a different form so the labeling and case blocks change.</p>';
+}
+
+document.getElementById("submitBtn").addEventListener("click", submit);
+document.getElementById("skipBtn").addEventListener("click", skip);
+document.getElementById("nextBtn").addEventListener("click", next);
+document.getElementById("restartBtn").addEventListener("click", buildExam);
+document.getElementById("newRandom").addEventListener("click", function(){ setForm(null, true); });
+document.getElementById("forceA").addEventListener("click", function(){ setForm("A", true); });
+document.getElementById("forceB").addEventListener("click", function(){ setForm("B", true); });
+document.getElementById("forceC").addEventListener("click", function(){ setForm("C", true); });
+
+setForm(getRequestedForm(), !getRequestedForm());
+</script>
+</body>
+</html>
