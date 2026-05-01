@@ -14,7 +14,7 @@ window.ACOUSTICS_PAGE = {
   course: "COMD 4153",
   title: "Consonant Feature Drill",
   subtitle: "Nasals, nasalization, laterals, fricatives, stops, VOT, affricates, semivowels, and prosody.",
-  sourceNote: "Built to match the final-review pattern: identify the source, identify the filter/resonator, then explain the acoustic consequence.",
+  sourceNote: "Built to match the final-review pattern: read the class-style visual, identify the source/filter or timing interval, then explain the acoustic consequence.",
   sections: [
     {
       title: "Nasals, Nasalization, and Laterals",
@@ -46,11 +46,11 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Nasal place",
-          visual: "nasal-order",
-          visualCaption: "Original schematic of trapped oral-cavity size across nasal place.",
-          prompt: "Use the diagram to explain why /m/ has a lower antiresonance frequency than /ng/.",
-          model: "/m/ closes at the lips, leaving a large trapped pharyngeal-oral cavity, and larger cavities produce lower antiresonance frequencies. /ng/ has a much smaller trapped oral cavity near the back of the vocal tract, so its antiresonance is higher.",
-          rubric: ["Links antiresonance to trapped oral cavity.", "States larger cavity -> lower frequency.", "Compares /m/ and /ng/ by closure place."]
+          visualImage: "acoustics_assets/spectrograms/nasal-m-n-ng-comparison.png",
+          visualCaption: "Class-slide example: /m/, /n/, and /ng/ nasal-vowel comparisons.",
+          prompt: "Use this class figure to explain what information can cue nasal place of articulation.",
+          model: "Nasal place can be cued by the murmur piece, the transition piece, and the murmur-plus-transition interval. The murmur spectrum changes with the trapped oral cavity, and F2/F3 transitions into the following vowel also carry place information.",
+          rubric: ["Mentions murmur piece.", "Mentions transition or murmur-plus-transition interval.", "Connects place to cavity size or F2/F3 transitions."]
         },
         {
           type: "mc",
@@ -71,11 +71,20 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Nasalization",
-          visual: "nasalization",
-          visualCaption: "Original spectral sketch comparing oral and nasalized vowel energy patterns.",
-          prompt: "Name two acoustic effects nasalization can introduce into a vowel spectrum.",
-          model: "Nasalization can lower the amplitude of F1, add nasal resonances, and introduce antiresonance notches because the oral and nasal tracts are coupled.",
+          visualImage: "acoustics_assets/spectrograms/nasal-murmur-antiresonance-annotated.png",
+          visualCaption: "Class-slide example: annotated nasal murmur and antiresonance.",
+          prompt: "Name two acoustic effects nasal coupling can introduce into a vowel or nasal spectrum.",
+          model: "Nasal coupling can add nasal resonances, reduce F1 amplitude, and introduce antiresonance notches or weakened frequency regions. These effects occur because energy is split between the oral and nasal tracts and side cavities absorb/cancel energy.",
           rubric: ["Mentions reduced F1/lower intensity.", "Mentions nasal resonance.", "Mentions antiresonance/coupling."]
+        },
+        {
+          type: "visual",
+          topic: "Nasal spectrogram",
+          visual: "spec:nasal-ma",
+          visualCaption: "Praat-style generated spectrogram: nasal murmur followed by a vowel.",
+          prompt: "How does the first interval differ visually from the following vowel?",
+          model: "The nasal murmur is voiced but lower in intensity, with more energy concentrated low in frequency and weaker higher-frequency formants. The following vowel has stronger, clearer formant bands because the oral tract is open without the same nasal damping.",
+          rubric: ["Mentions lower intensity murmur.", "Mentions low-frequency energy.", "Contrasts with stronger vowel formants."]
         },
         {
           type: "tf",
@@ -147,11 +156,29 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Fricative spectra",
-          visual: "fricative-spectra",
-          visualCaption: "Original schematic of sibilant and nonsibilant spectral differences.",
-          prompt: "Explain why /s/ generally has a higher spectral peak than /sh/.",
-          model: "/s/ is produced with a more anterior constriction, so the front cavity in front of the constriction is smaller. A smaller front cavity has a higher resonant frequency, so the /s/ spectral peak is higher than the /sh/ peak.",
-          rubric: ["Identifies /s/ as smaller front cavity.", "States smaller cavity -> higher frequency.", "Compares /s/ to /sh/ explicitly."]
+          visualImage: "acoustics_assets/spectrograms/fricatives-s-vs-f-spectrogram.png",
+          visualCaption: "Class-slide example: /s/ versus /f/ in VCV frames with spectra.",
+          prompt: "Explain why /s/ is visually stronger than /f/ in this slide example.",
+          model: "/s/ is a sibilant with intense high-frequency frication and a stronger spectral peak. /f/ is a nonsibilant with weaker, diffuse frication, so it can be much lighter on the spectrogram and less reliably identified by peak frequency alone.",
+          rubric: ["Identifies /s/ as sibilant.", "Identifies /f/ as nonsibilant.", "Mentions stronger high-frequency energy for /s/ and weaker diffuse /f/."]
+        },
+        {
+          type: "visual",
+          topic: "Fricative duration",
+          visualImage: "acoustics_assets/spectrograms/fricative-duration-voicing.png",
+          visualCaption: "Class-slide example: voiceless and voiced fricative duration in VCV frames.",
+          prompt: "What duration relationship is shown here, and what mechanism explains it?",
+          model: "Voiceless fricatives tend to be longer than voiced fricatives. Voiceless fricatives need a laryngeal devoicing gesture and sustained turbulent airflow, while maintaining voicing limits the aerodynamic conditions for frication.",
+          rubric: ["States voiceless fricatives are longer.", "States voiced fricatives are shorter.", "Connects the relationship to laryngeal/aerodynamic timing."]
+        },
+        {
+          type: "visual",
+          topic: "Spectral moments",
+          visualImage: "acoustics_assets/spectrograms/fricative-spectral-moments-table.png",
+          visualCaption: "Class-slide example: spectral moment table for fricatives.",
+          prompt: "Why does the class use spectral moments instead of peak frequency alone for fricatives?",
+          model: "Peak frequency can be weak or unreliable, especially for nonsibilants. Spectral moments summarize the distribution of fricative energy, including mean, variance, skewness, and kurtosis, so they give a broader description of the spectrum.",
+          rubric: ["Says peak frequency alone can be unreliable.", "Mentions nonsibilants or weak spectra.", "Names spectral moments or distribution of energy."]
         },
         {
           type: "mc",
@@ -172,11 +199,29 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "VOT",
-          visual: "stop-vot",
-          visualCaption: "Original timing diagram showing stop intervals and VOT.",
+          visualImage: "acoustics_assets/spectrograms/ata-voiceless-stop-vot.png",
+          visualCaption: "Praat example: /ata/ with a selected post-release timing interval.",
           prompt: "Define VOT and state which intervals it includes in a voiceless stop.",
           model: "VOT is the time from the stop burst release to the first glottal pulse of the following vowel. In a voiceless stop it includes the burst, frication interval, and aspiration interval, but not the closure interval.",
           rubric: ["Defines burst-to-first-glottal-pulse interval.", "Includes burst/frication/aspiration.", "Excludes closure interval."]
+        },
+        {
+          type: "visual",
+          topic: "Voiced stop contrast",
+          visualImage: "acoustics_assets/spectrograms/ada-voiced-stop-vot.png",
+          visualCaption: "Praat example: /ada/ with shorter burst-to-voicing timing.",
+          prompt: "Why is this voiced-stop example a short-VOT case?",
+          model: "The stop release is followed quickly by vowel voicing, because the vocal folds are near phonation-ready position for voiced stops. That makes the burst-to-first-glottal-pulse interval short compared with voiceless aspirated stops.",
+          rubric: ["Mentions quick voicing after release.", "Mentions short burst-to-vowel interval.", "Contrasts with voiceless aspirated stops."]
+        },
+        {
+          type: "visual",
+          topic: "Stop burst spectra",
+          visualImage: "acoustics_assets/spectrograms/stop-burst-spectra-place.png",
+          visualCaption: "Class-slide example: /b/, /d/, and /g/ burst spectra.",
+          prompt: "Map the three burst spectra to place of articulation and state the stable-cue trap.",
+          model: "/b/ is diffuse-falling, /d/ is diffuse-rising, and /g/ is compact. The trap is that stop place is not read from closure alone; burst spectrum and formant transitions provide place cues, but they vary with vowel context.",
+          rubric: ["Maps /b/ to diffuse-falling.", "Maps /d/ to diffuse-rising and /g/ to compact.", "Mentions context-sensitive place cues."]
         },
         {
           type: "tf",
@@ -203,8 +248,8 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Stop/fricative/affricate",
-          visual: "affricate-compare",
-          visualCaption: "Original timing comparison of stop, fricative, and affricate patterns.",
+          visual: "spec:affricate-cha",
+          visualCaption: "Praat-style generated affricate: closure, burst, extended frication, vowel.",
           prompt: "Using the timing patterns, give one acoustic cue that separates an affricate from a plain stop.",
           model: "Both can have closure and burst, but an affricate has a prolonged frication interval after the burst. A plain stop has a brief burst and much shorter/no sustained frication.",
           rubric: ["Mentions closure/burst overlap.", "Identifies prolonged frication for affricate.", "Contrasts with plain stop."]
@@ -242,11 +287,20 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Semivowels",
-          visual: "semivowels",
-          visualCaption: "Original schematic of formant-transition cues for semivowels.",
+          visualImage: "acoustics_assets/spectrograms/semivowel-transition-comparison.png",
+          visualCaption: "Class-slide example: /w/, /r/, /j/, and /l/ transition patterns.",
           prompt: "Why do semivowels rely heavily on formant transitions as acoustic cues?",
           model: "Semivowels involve movement into and out of a vocal tract constriction that is tighter than a vowel but not tight enough for an obstruent. Because the articulators are moving, transitions into and out of adjacent vowels help cue the specific semivowel.",
           rubric: ["Mentions movement into/out of constriction.", "Contrasts semivowels with vowels/obstruents.", "Mentions transitions as cues."]
+        },
+        {
+          type: "visual",
+          topic: "/r/ low F3",
+          visual: "spec:semivowel-ra",
+          visualCaption: "Praat-style generated spectrogram: /r/ into a vowel.",
+          prompt: "What cue should make you suspect /r/ rather than /w/ or /j/?",
+          model: "/r/ is the semivowel associated with a lowered F3. /w/ has low F2/F3 from labial-velar rounding, while /j/ has high F2/F3 from a front palatal posture, so the low-F3 transition is the /r/ trap.",
+          rubric: ["Names low F3.", "Contrasts /r/ with /w/ or /j/.", "Mentions transition into vowel."]
         },
         {
           type: "mc",

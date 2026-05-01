@@ -14,7 +14,7 @@ window.ACOUSTICS_PAGE = {
   course: "COMD 4153",
   title: "Source-Filter and Vowel Acoustics Drill",
   subtitle: "Focused practice for Chapter 8 and Chapter 11 vowel material: source-filter theory, Fourier analysis, formants, speaker variation, vowel duration, undershoot, and diphthongs.",
-  sourceNote: "Professor DNA target: know the relationship, the figure, the acoustic consequence, and a one-sentence explanation.",
+  sourceNote: "Professor DNA target: know the relationship, read the class-style figure, identify the acoustic consequence, and give a compact mechanism.",
   sections: [
     {
       title: "Core Theory",
@@ -66,6 +66,24 @@ window.ACOUSTICS_PAGE = {
           prompt: "Using the diagram, explain what source, filter, and output each refer to in vowel production.",
           model: "Source = vocal fold vibration, which determines F0 and harmonic spacing. Filter = vocal tract configuration, which shapes resonances/formants. Output = the source spectrum after it has been shaped by the vocal tract transfer function.",
           rubric: ["Names source as vocal folds/F0/harmonics.", "Names filter as vocal tract shape/resonance/formants.", "Explains output as shaped source spectrum."]
+        },
+        {
+          type: "visual",
+          topic: "Articulation to acoustics",
+          visualImage: "acoustics_assets/spectrograms/xray-microbeam-vowel-articulation.png",
+          visualCaption: "Class-slide example: articulatory tracking with a simultaneous acoustic interval.",
+          prompt: "Use this slide example to explain why vowel acoustics are not determined by F0 alone.",
+          model: "The articulators change the vocal tract shape, and the vocal tract shape is the filter that determines formant frequencies. F0 comes from vocal fold vibration, but the vowel identity depends on the resonant pattern created by tongue, lip, jaw, and pharyngeal configuration.",
+          rubric: ["Separates vocal fold source from vocal tract filter.", "Names articulators or vocal tract shape.", "Connects vocal tract configuration to formants/vowel identity."]
+        },
+        {
+          type: "visual",
+          topic: "Waveform and spectrogram",
+          visualImage: "acoustics_assets/spectrograms/vowel-waveform-spectrogram.png",
+          visualCaption: "Class-slide example: waveform above a vowel-like spectrogram.",
+          prompt: "Identify the display that lets you see formants over time and explain what the dark horizontal bands show.",
+          model: "The spectrogram is the lower display. It shows time on the x-axis, frequency on the y-axis, and amplitude/intensity through darkness. The dark horizontal bands are formants, or frequency regions where the vocal tract filter gives strong energy.",
+          rubric: ["Names spectrogram.", "Gives time/frequency/darkness logic.", "Identifies dark bands as formants/strong energy."]
         },
         {
           type: "short",
@@ -130,11 +148,29 @@ window.ACOUSTICS_PAGE = {
         {
           type: "visual",
           topic: "Vowel space",
-          visual: "vowel-space",
-          visualCaption: "Original vowel-space diagram showing F1/F2 relationships and a diphthong trajectory.",
-          prompt: "Explain why the /i/ point and /u/ point sit in different parts of the vowel space.",
-          model: "/i/ is high and front, so it has low F1 and high F2. /u/ is high, back, and rounded, so it has low F1 and low F2, with rounding further lowering the formants.",
-          rubric: ["Uses tongue height for F1.", "Uses front/back tongue advancement for F2.", "Mentions rounding for /u/."]
+          visualImage: "acoustics_assets/spectrograms/vowel-age-speaker-space.png",
+          visualCaption: "Class-slide example: vowel spaces for men, women, and children.",
+          prompt: "Explain why /i/ and /u/ occupy different regions of this F1-F2 space, then name the speaker-variation trap shown by the figure.",
+          model: "/i/ is high and front, so it has low F1 and high F2. /u/ is high, back, and rounded, so it has low F1 and low F2. The trap is that absolute formant values shift across speaker groups, so the relationship pattern matters more than memorizing one exact number.",
+          rubric: ["Uses tongue height for F1.", "Uses front/back and rounding for F2.", "Mentions speaker variation in absolute formant values."]
+        },
+        {
+          type: "visual",
+          topic: "High-front vowel",
+          visual: "spec:vowel-i",
+          visualCaption: "Praat-style generated spectrogram: /i/ with low F1 and high F2.",
+          prompt: "On this spectrogram, what F1/F2 pattern would you expect for /i/, and what articulatory posture causes it?",
+          model: "/i/ should show a low F1 because it is high, and a high F2 because it is front. The tongue body is high and advanced, creating a long back cavity/short front cavity relationship that raises F2.",
+          rubric: ["States low F1.", "States high F2.", "Links the pattern to high/front tongue posture."]
+        },
+        {
+          type: "visual",
+          topic: "Speaker and study variation",
+          visualImage: "acoustics_assets/spectrograms/vowel-formant-literature-space.png",
+          visualCaption: "Class-slide example: several published vowel-space datasets plotted together.",
+          prompt: "Why would Dr. Chung ask about this figure instead of asking you to memorize one formant value?",
+          model: "The figure shows that formant values vary across studies, speakers, ages, dialects, and contexts. The stable exam target is the relationship: F1 tracks vowel height, F2 tracks front-back advancement, and relative category separation is more useful than one absolute number.",
+          rubric: ["Mentions across-speaker/study/context variability.", "Names F1-height relationship.", "Names F2-front/back relationship."]
         }
       ]
     },
@@ -156,6 +192,15 @@ window.ACOUSTICS_PAGE = {
           options: ["age", "dialect/language background", "vocal tract size", "the x-axis label of a spectrogram"],
           answer: [0, 1, 2],
           explanation: "Across-speaker variation includes age, dialect/language, gender/sex, and vocal tract size. Axis labels are display knowledge, not speaker variation."
+        },
+        {
+          type: "visual",
+          topic: "Cross-language vowel space",
+          visualImage: "acoustics_assets/spectrograms/vowel-cross-language-space.png",
+          visualCaption: "Class-slide example: Taiwanese and American vowel spaces.",
+          prompt: "What is the exam trap if two languages use the same IPA vowel symbol?",
+          model: "The same IPA symbol does not guarantee the same acoustic realization. Languages and dialects can place vowel categories differently in F1-F2 space, so the written symbol is not enough; you must consider the measured formant pattern.",
+          rubric: ["Rejects identical-acoustics assumption.", "Mentions language/dialect differences.", "Uses F1-F2/formant pattern language."]
         },
         {
           type: "multi",
@@ -181,6 +226,15 @@ window.ACOUSTICS_PAGE = {
           explanation: "True. The surrounding consonant context is external to the vowel category itself."
         },
         {
+          type: "visual",
+          topic: "Vowel duration",
+          visualImage: "acoustics_assets/spectrograms/vowel-duration-cvc-frame.png",
+          visualCaption: "Class-slide example: vowel duration in CVC frames.",
+          prompt: "Use this graph to separate intrinsic and extrinsic vowel-duration effects.",
+          model: "Intrinsic effects come from the vowel category itself, such as low vowels tending to be longer than high vowels. Extrinsic effects come from the context, such as a longer vowel before voiced consonants and a shorter vowel before voiceless consonants.",
+          rubric: ["Defines intrinsic as vowel-category effect.", "Defines extrinsic as contextual effect.", "Mentions voiced/voiceless consonant context."]
+        },
+        {
           type: "mc",
           topic: "Duration",
           prompt: "Which is an intrinsic vowel-duration factor?",
@@ -194,6 +248,24 @@ window.ACOUSTICS_PAGE = {
           prompt: "Diphthongs are best characterized only by extracting F1 and F2 at one temporal midpoint.",
           answer: 1,
           explanation: "False. Diphthongs are dynamic; formant trajectories capture the movement better than one midpoint."
+        },
+        {
+          type: "visual",
+          topic: "Diphthong paths",
+          visualImage: "acoustics_assets/spectrograms/diphthong-paths-f1-f2.png",
+          visualCaption: "Class-slide example: diphthong paths through F1-F2 space.",
+          prompt: "Explain why the plotted path is the cue, not just the starting or ending vowel target.",
+          model: "A diphthong is characterized by a trajectory through F1-F2 space. The listener gets information from the direction, slope, and amount of formant movement, not only from a single starting point or ending point.",
+          rubric: ["Mentions F1-F2 trajectory.", "Mentions direction/slope/movement.", "Contrasts path with one endpoint."]
+        },
+        {
+          type: "visual",
+          topic: "Diphthong spectrogram",
+          visualImage: "acoustics_assets/spectrograms/diphthong-formant-trajectory.png",
+          visualCaption: "Class-slide spectrogram example: formant tracking across diphthongs.",
+          prompt: "Why are formant tracks on a spectrogram especially useful for diphthongs?",
+          model: "They show how F1 and F2 change over time inside the vowel nucleus. That movement is the acoustic signature of a diphthong and is more informative than measuring only a steady-state midpoint.",
+          rubric: ["Mentions F1/F2 movement over time.", "Connects movement to diphthong identity.", "Contrasts with midpoint-only measurement."]
         },
         {
           type: "short",
