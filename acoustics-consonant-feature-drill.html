@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COMD 4153 Consonant Feature Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./acoustics-quiz.css">
+</head>
+<body>
+<script>
+window.ACOUSTICS_PAGE = {
+  type: "quiz",
+  course: "COMD 4153",
+  title: "Consonant Feature Drill",
+  subtitle: "Nasals, nasalization, laterals, fricatives, stops, VOT, affricates, semivowels, and prosody.",
+  sourceNote: "Built to match the final-review pattern: identify the source, identify the filter/resonator, then explain the acoustic consequence.",
+  sections: [
+    {
+      title: "Nasals, Nasalization, and Laterals",
+      desc: "These are antiresonance questions. Expect cavity-size logic and nasal murmur vs nasalized vowel contrasts.",
+      questions: [
+        {
+          type: "tf",
+          topic: "Nasal murmur",
+          prompt: "Nasal consonants contain both nasal resonance and antiresonance from a trapped oral cavity.",
+          answer: 0,
+          explanation: "True. The nasal tract is open and contributes resonance; the closed oral side cavity traps energy and creates antiresonance."
+        },
+        {
+          type: "mc",
+          topic: "Nasal intensity",
+          prompt: "Nasals are generally less intense than vowels mainly because:",
+          options: ["antiresonance removes energy and nasal tissue absorbs energy", "the vocal folds never vibrate for nasals", "nasals have no resonances", "nasals are always voiceless"],
+          answer: 0,
+          explanation: "Nasals are usually voiced, but antiresonance and absorption through nasal cavities reduce intensity."
+        },
+        {
+          type: "mc",
+          topic: "Antiresonance order",
+          prompt: "The expected antiresonance-frequency ordering for English nasal place is:",
+          options: ["/m/ < /n/ < /ng/", "/ng/ < /n/ < /m/", "/n/ < /m/ < /ng/", "all nasals have the same antiresonance frequency"],
+          answer: 0,
+          explanation: "/m/ has the largest trapped oral cavity, so lowest antiresonance. /ng/ has the smallest trapped cavity, so highest antiresonance."
+        },
+        {
+          type: "visual",
+          topic: "Nasal place",
+          visual: "nasal-order",
+          visualCaption: "Original schematic of trapped oral-cavity size across nasal place.",
+          prompt: "Use the diagram to explain why /m/ has a lower antiresonance frequency than /ng/.",
+          model: "/m/ closes at the lips, leaving a large trapped pharyngeal-oral cavity, and larger cavities produce lower antiresonance frequencies. /ng/ has a much smaller trapped oral cavity near the back of the vocal tract, so its antiresonance is higher.",
+          rubric: ["Links antiresonance to trapped oral cavity.", "States larger cavity -> lower frequency.", "Compares /m/ and /ng/ by closure place."]
+        },
+        {
+          type: "mc",
+          topic: "Nasal cue",
+          prompt: "A strong answer for nasal place identification should mention:",
+          options: ["nasal murmur, formant transitions, or murmur-plus-transition cues", "only F0", "only loudness", "only the spelling of the word"],
+          answer: 0,
+          explanation: "The final review names murmur piece, transition piece, and murmur-plus-transition information."
+        },
+        {
+          type: "mc",
+          topic: "Nasalization",
+          prompt: "The main articulatory difference between a nasal consonant and a nasalized vowel is that:",
+          options: ["the oral tract is closed for nasal consonants but open during nasalized vowels", "the nasal port is closed for both", "nasalized vowels are always voiceless", "nasal consonants have no source"],
+          answer: 0,
+          explanation: "Both have the nasal port open. Nasal consonants have oral closure; nasalized vowels keep the oral tract open enough for a vowel."
+        },
+        {
+          type: "visual",
+          topic: "Nasalization",
+          visual: "nasalization",
+          visualCaption: "Original spectral sketch comparing oral and nasalized vowel energy patterns.",
+          prompt: "Name two acoustic effects nasalization can introduce into a vowel spectrum.",
+          model: "Nasalization can lower the amplitude of F1, add nasal resonances, and introduce antiresonance notches because the oral and nasal tracts are coupled.",
+          rubric: ["Mentions reduced F1/lower intensity.", "Mentions nasal resonance.", "Mentions antiresonance/coupling."]
+        },
+        {
+          type: "tf",
+          topic: "Nasalized vowels",
+          prompt: "Evidence of nasal resonance can appear in the spectrogram or spectrum of nasalized vowels.",
+          answer: 0,
+          explanation: "True. The professor explicitly reviewed this as a true statement."
+        },
+        {
+          type: "mc",
+          topic: "Nasalance",
+          prompt: "Nasalance is commonly represented as:",
+          options: ["An / (An + Am)", "F2 / F1", "VOT / F0", "period / frequency"],
+          answer: 0,
+          explanation: "Nasalance is the nasal acoustic energy divided by total nasal plus oral acoustic energy."
+        },
+        {
+          type: "mc",
+          topic: "Lateral /l/",
+          prompt: "The shunt cavity in /l/ introduces an antiresonance most often described as affecting:",
+          options: ["energy between F2 and F3, especially F3 amplitude", "only F0", "only the first harmonic", "only aspiration"],
+          answer: 0,
+          explanation: "Laterals are vowel-like but include a side-branch/shunt resonator that can reduce energy around F2-F3."
+        }
+      ]
+    },
+    {
+      title: "Fricatives, Stops, and Affricates",
+      desc: "The exam likes source type, timing intervals, and place-related spectral patterns.",
+      questions: [
+        {
+          type: "mc",
+          topic: "Fricative source",
+          prompt: "The primary source for voiceless fricatives is:",
+          options: ["aperiodic turbulent airflow at or near a constriction", "periodic vocal fold vibration only", "nasal resonance only", "a shock burst only"],
+          answer: 0,
+          explanation: "Fricatives are defined by turbulent aperiodic noise generated at a narrow constriction."
+        },
+        {
+          type: "mc",
+          topic: "Voiced fricatives",
+          prompt: "A voiced fricative such as /z/ has:",
+          options: ["aperiodic turbulence plus periodic vocal fold vibration", "only periodic vowel-like source", "only nasal resonance", "only aspiration at the glottis"],
+          answer: 0,
+          explanation: "Voiced fricatives have a mixed source: frication noise plus vocal fold vibration."
+        },
+        {
+          type: "tf",
+          topic: "Fricative duration",
+          prompt: "Voiceless fricatives are usually longer than voiced fricatives.",
+          answer: 0,
+          explanation: "True. The review tied this to the laryngeal devoicing gesture for voiceless fricatives."
+        },
+        {
+          type: "tf",
+          topic: "Sibilants",
+          prompt: "Sibilants are usually less intense than nonsibilant fricatives.",
+          answer: 1,
+          explanation: "False. Sibilants are typically more intense because the turbulent jet hits a downstream obstacle such as the teeth."
+        },
+        {
+          type: "mc",
+          topic: "Fricative filter",
+          prompt: "As the front cavity in front of a fricative constriction gets smaller, the spectral peak frequency tends to:",
+          options: ["increase", "decrease", "become F0", "disappear for every fricative"],
+          answer: 0,
+          explanation: "Smaller resonating cavity -> higher resonance/peak frequency. This helps explain /s/ vs /sh/."
+        },
+        {
+          type: "visual",
+          topic: "Fricative spectra",
+          visual: "fricative-spectra",
+          visualCaption: "Original schematic of sibilant and nonsibilant spectral differences.",
+          prompt: "Explain why /s/ generally has a higher spectral peak than /sh/.",
+          model: "/s/ is produced with a more anterior constriction, so the front cavity in front of the constriction is smaller. A smaller front cavity has a higher resonant frequency, so the /s/ spectral peak is higher than the /sh/ peak.",
+          rubric: ["Identifies /s/ as smaller front cavity.", "States smaller cavity -> higher frequency.", "Compares /s/ to /sh/ explicitly."]
+        },
+        {
+          type: "mc",
+          topic: "/h/",
+          prompt: "/h/ is often described acoustically as:",
+          options: ["a noisy vowel or glottal fricative-like sound", "a nasal murmur", "a stop burst", "a diphthong trajectory"],
+          answer: 0,
+          explanation: "/h/ has glottal noise shaped by the vocal tract, giving it vowel-like formant structure with frication noise."
+        },
+        {
+          type: "mc",
+          topic: "Stop intervals",
+          prompt: "The typical voiceless stop sequence is:",
+          options: ["closure, burst, frication, aspiration, vowel onset", "vowel, aspiration, closure, burst", "nasal murmur, antiresonance, vowel", "frication only"],
+          answer: 0,
+          explanation: "This is the exact stop-timing chain reviewed for final: closure -> burst -> frication -> aspiration -> vowel."
+        },
+        {
+          type: "visual",
+          topic: "VOT",
+          visual: "stop-vot",
+          visualCaption: "Original timing diagram showing stop intervals and VOT.",
+          prompt: "Define VOT and state which intervals it includes in a voiceless stop.",
+          model: "VOT is the time from the stop burst release to the first glottal pulse of the following vowel. In a voiceless stop it includes the burst, frication interval, and aspiration interval, but not the closure interval.",
+          rubric: ["Defines burst-to-first-glottal-pulse interval.", "Includes burst/frication/aspiration.", "Excludes closure interval."]
+        },
+        {
+          type: "tf",
+          topic: "VOT",
+          prompt: "A stop with a 10 ms VOT is likely to be perceived as a voiced stop in English.",
+          answer: 0,
+          explanation: "True. Short-lag VOT values below about 25 ms tend to be perceived as voiced stops."
+        },
+        {
+          type: "tf",
+          topic: "VOT",
+          prompt: "A stop with a -20 ms VOT is likely to be perceived as voiceless.",
+          answer: 1,
+          explanation: "False. Negative VOT means prevoicing, so it is perceived as voiced."
+        },
+        {
+          type: "mc",
+          topic: "Affricates",
+          prompt: "Affricates are often called slowly released stops because they have:",
+          options: ["closure and burst followed by prolonged frication", "only vowel-like formants", "only nasal resonance", "no aperiodic energy"],
+          answer: 0,
+          explanation: "Affricates begin stop-like and release into a longer fricative-like interval."
+        },
+        {
+          type: "visual",
+          topic: "Stop/fricative/affricate",
+          visual: "affricate-compare",
+          visualCaption: "Original timing comparison of stop, fricative, and affricate patterns.",
+          prompt: "Using the timing patterns, give one acoustic cue that separates an affricate from a plain stop.",
+          model: "Both can have closure and burst, but an affricate has a prolonged frication interval after the burst. A plain stop has a brief burst and much shorter/no sustained frication.",
+          rubric: ["Mentions closure/burst overlap.", "Identifies prolonged frication for affricate.", "Contrasts with plain stop."]
+        }
+      ]
+    },
+    {
+      title: "Semivowels and Prosody",
+      desc: "Lower probability than stops/fricatives, but explicitly present in the final review.",
+      questions: [
+        {
+          type: "mc",
+          topic: "/r/",
+          prompt: "The most characteristic acoustic cue for /r/ is:",
+          options: ["very low F3", "very high F0 only", "no formants at all", "a burst with long aspiration"],
+          answer: 0,
+          explanation: "/r/ is known for a low F3, often close to F2."
+        },
+        {
+          type: "mc",
+          topic: "/w/",
+          prompt: "The semivowel /w/ is associated with:",
+          options: ["low F2 and low F3", "high F1 and high F2", "only aperiodic frication", "nasalance only"],
+          answer: 0,
+          explanation: "/w/ has low F2/F3 due to lip rounding and back constriction."
+        },
+        {
+          type: "mc",
+          topic: "/j/",
+          prompt: "The semivowel /j/ is associated with:",
+          options: ["high F2 and high F3", "low F3 as the defining cue", "a stop closure", "a nasal murmur"],
+          answer: 0,
+          explanation: "/j/ is high/front-like, so F2 and F3 are high."
+        },
+        {
+          type: "visual",
+          topic: "Semivowels",
+          visual: "semivowels",
+          visualCaption: "Original schematic of formant-transition cues for semivowels.",
+          prompt: "Why do semivowels rely heavily on formant transitions as acoustic cues?",
+          model: "Semivowels involve movement into and out of a vocal tract constriction that is tighter than a vowel but not tight enough for an obstruent. Because the articulators are moving, transitions into and out of adjacent vowels help cue the specific semivowel.",
+          rubric: ["Mentions movement into/out of constriction.", "Contrasts semivowels with vowels/obstruents.", "Mentions transitions as cues."]
+        },
+        {
+          type: "mc",
+          topic: "Prosody",
+          prompt: "F0 is the acoustic term; the perceptual term is:",
+          options: ["pitch", "loudness", "nasalance", "bandwidth"],
+          answer: 0,
+          explanation: "F0 is measurable in Hz. Pitch is the perceptual correlate."
+        },
+        {
+          type: "mc",
+          topic: "Intensity",
+          prompt: "Intensity is the acoustic term; the perceptual term is:",
+          options: ["loudness", "pitch", "formant", "VOT"],
+          answer: 0,
+          explanation: "Intensity is physical/acoustic; loudness is perceptual."
+        },
+        {
+          type: "multi",
+          topic: "Stress",
+          prompt: "Select all acoustic effects associated with stressed syllables in the review.",
+          options: ["higher F0", "greater intensity", "longer duration", "more distinctive vowel formant pattern"],
+          answer: [0, 1, 2, 3],
+          explanation: "The final review listed all four as stress-related acoustic effects."
+        },
+        {
+          type: "visual",
+          topic: "Prosody",
+          visual: "prosody",
+          visualCaption: "Original schematic of stress-timed rhythm and stressed-syllable prominence.",
+          prompt: "Contrast stress-timed and syllable-timed languages using duration.",
+          model: "In stress-timed languages such as English, the timing between stressed syllables tends to stay more regular, so unstressed syllables can shorten and reduce. In syllable-timed languages, individual syllables tend to have more similar duration and less vowel reduction.",
+          rubric: ["Defines stress-timed timing around stressed syllables.", "Defines syllable-timed equal-ish syllable duration.", "Mentions vowel reduction/duration difference."]
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./acoustics-quiz-engine.js"></script>
+</body>
+</html>

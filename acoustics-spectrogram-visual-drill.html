@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COMD 4153 Spectrogram and Visual Feature Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./acoustics-quiz.css">
+</head>
+<body>
+<script>
+window.ACOUSTICS_PAGE = {
+  type: "quiz",
+  course: "COMD 4153",
+  title: "Waveform, Spectrum, Spectrogram Drill",
+  subtitle: "Visual recognition practice for the displays and sound-class features Dr. Chung kept returning to in review.",
+  sourceNote: "No raw classroom screenshots are used here; the visuals are original canvas diagrams built from the reviewed acoustic relationships.",
+  sections: [
+    {
+      title: "Display Recognition and Axes",
+      desc: "These should be automatic by exam day: display name, x-axis, y-axis, and z-axis when present.",
+      questions: [
+        {
+          type: "visual",
+          topic: "Three displays",
+          visual: "displays",
+          visualCaption: "Original display comparison: waveform, spectrum, and spectrogram.",
+          prompt: "Identify the three displays and give the x-axis and y-axis for each. Include the z-axis where needed.",
+          model: "Waveform: x-axis = time, y-axis = amplitude. Spectrum: x-axis = frequency, y-axis = amplitude. Spectrogram: x-axis = time, y-axis = frequency, z-axis/darkness = amplitude or intensity.",
+          rubric: ["Names all three displays.", "Gives correct x/y axes for waveform and spectrum.", "Gives spectrogram x/y plus darkness/intensity."]
+        },
+        {
+          type: "mc",
+          topic: "Waveform",
+          prompt: "A waveform shows amplitude as a function of:",
+          options: ["time", "frequency", "speaker age", "vocal tract length only"],
+          answer: 0,
+          explanation: "A waveform is a time-domain display: x = time, y = amplitude."
+        },
+        {
+          type: "mc",
+          topic: "Spectrum",
+          prompt: "A spectrum shows amplitude as a function of:",
+          options: ["frequency", "time", "vowel duration only", "nasalance only"],
+          answer: 0,
+          explanation: "A spectrum is a frequency-domain display: x = frequency, y = amplitude."
+        },
+        {
+          type: "mc",
+          topic: "Spectrogram",
+          prompt: "On a spectrogram, darker regions usually indicate:",
+          options: ["greater acoustic energy/amplitude", "lower time", "higher age", "more spelling regularity"],
+          answer: 0,
+          explanation: "Spectrogram darkness represents greater amplitude or intensity at that time-frequency region."
+        },
+        {
+          type: "tf",
+          topic: "Spectrogram axes",
+          prompt: "The x-axis of a spectrogram is frequency.",
+          answer: 1,
+          explanation: "False. A spectrogram's x-axis is time; frequency is on the y-axis."
+        },
+        {
+          type: "tf",
+          topic: "Spectrum axes",
+          prompt: "The x-axis of a spectrum is frequency.",
+          answer: 0,
+          explanation: "True. Spectrum = frequency domain."
+        },
+        {
+          type: "short",
+          topic: "Visual strategy",
+          prompt: "Give the first two things you should ask yourself when a display appears on the paper final.",
+          model: "First identify the display type: waveform, spectrum, or spectrogram. Then identify the axes before interpreting the sound class or acoustic cue.",
+          rubric: ["Starts with display type.", "Mentions axes.", "Connects axes to later interpretation."]
+        }
+      ]
+    },
+    {
+      title: "Sound-Class Visual Features",
+      desc: "Use the feature, not vibes: periodicity, silence, burst, frication, aspiration, formant bands, nasal murmur, and antiresonance.",
+      questions: [
+        {
+          type: "visual",
+          topic: "VOT",
+          visual: "stop-vot",
+          visualCaption: "Original stop-timing diagram for closure, burst, frication, aspiration, and vowel onset.",
+          prompt: "Which portion of the display is not included in VOT, and why?",
+          model: "The closure interval is not included in VOT. VOT starts at the burst release and ends at the first glottal pulse of the following vowel.",
+          rubric: ["Names closure as excluded.", "Defines VOT start at burst.", "Defines VOT end at first glottal pulse."]
+        },
+        {
+          type: "mc",
+          topic: "Voiceless stop",
+          prompt: "The strongest visual cue for a voiceless stop before the vowel is usually:",
+          options: ["silent closure, burst, and delayed voicing/aspiration", "continuous formants with no interruption", "only nasal murmur", "a flat spectrum with no time axis"],
+          answer: 0,
+          explanation: "Voiceless stops show closure silence, release burst, aspiration/noise, then vowel voicing."
+        },
+        {
+          type: "mc",
+          topic: "Voiced stop",
+          prompt: "A voiced stop closure can show:",
+          options: ["a low-frequency voicing bar", "a high-frequency sibilant peak only", "no possible periodic energy", "only nasal resonance"],
+          answer: 0,
+          explanation: "Voiced stops may maintain weak vocal fold vibration during closure, visible as a low-frequency voicing bar."
+        },
+        {
+          type: "visual",
+          topic: "Affricates",
+          visual: "affricate-compare",
+          visualCaption: "Original timing comparison of stop, fricative, and affricate patterns.",
+          prompt: "Explain how a visual display helps separate a fricative from an affricate.",
+          model: "A fricative has sustained frication without a preceding complete closure and burst. An affricate begins with stop-like closure and burst, then has a prolonged frication interval.",
+          rubric: ["Defines fricative as sustained frication only.", "Defines affricate as closure + burst + prolonged frication.", "Uses visual timing language."]
+        },
+        {
+          type: "mc",
+          topic: "Fricative spectra",
+          prompt: "A strong high-frequency spectral peak is most consistent with:",
+          options: ["a sibilant fricative such as /s/", "a nasal murmur only", "a low F0 vowel only", "silence during closure"],
+          answer: 0,
+          explanation: "Sibilants such as /s/ have intense high-frequency frication energy."
+        },
+        {
+          type: "visual",
+          topic: "Fricatives",
+          visual: "fricative-spectra",
+          visualCaption: "Original spectral sketch for /s/, /sh/, and /f/ style contrasts.",
+          prompt: "Why is peak frequency alone not always enough to identify every fricative?",
+          model: "Some fricatives, especially weak nonsibilants such as /f/ or theta, can have flatter spectra or unclear peaks. Fricatives are better characterized using multiple measures such as peak frequency, dynamic range, spectral moments, intensity, and temporal patterns.",
+          rubric: ["Names weak/flat nonsibilant spectra or unclear peak.", "States peak alone is insufficient.", "Mentions multiple acoustic measures."]
+        },
+        {
+          type: "visual",
+          topic: "Nasals",
+          visual: "nasal-order",
+          visualCaption: "Original nasal antiresonance order schematic.",
+          prompt: "In a spectrum, would antiresonance appear more like a peak or a dip/notch? Explain.",
+          model: "Antiresonance appears as a dip or notch because energy at that frequency is reduced or cancelled by the trapped side cavity. A resonance appears as a peak.",
+          rubric: ["Says dip/notch.", "Explains energy reduction/cancellation.", "Contrasts resonance peak."]
+        },
+        {
+          type: "mc",
+          topic: "Nasal murmur",
+          prompt: "A nasal murmur on a spectrogram is expected to be:",
+          options: ["lower intensity than adjacent vowels with low-frequency periodic energy", "more intense than vowels with only high-frequency noise", "complete silence", "a stop burst only"],
+          answer: 0,
+          explanation: "Nasal murmurs are voiced but damped, so they show weaker periodic energy than neighboring vowels."
+        },
+        {
+          type: "visual",
+          topic: "Nasalization",
+          visual: "nasalization",
+          visualCaption: "Original oral-vowel vs nasalized-vowel spectral sketch.",
+          prompt: "If this were a spectrogram, what would lower F1 amplitude in the nasalized vowel tell you?",
+          model: "Lower F1 amplitude suggests nasal coupling has introduced antiresonance near the first formant region. It is evidence that the oral and nasal tracts are coupled during the vowel.",
+          rubric: ["Mentions lower F1 amplitude.", "Links it to nasal coupling/antiresonance.", "States nasalized vowel has both oral and nasal tract involvement."]
+        },
+        {
+          type: "visual",
+          topic: "Semivowels",
+          visual: "semivowels",
+          visualCaption: "Original semivowel transition cue schematic.",
+          prompt: "Which semivowel is most associated with a low F3, and why is that visually useful?",
+          model: "/r/ is most associated with a low F3. On a spectrogram, the low F3 and its transition help separate /r/ from other semivowels such as /w/ and /j/.",
+          rubric: ["Names /r/.", "Mentions low F3.", "Explains spectrogram/transition usefulness."]
+        },
+        {
+          type: "visual",
+          topic: "Prosody",
+          visual: "prosody",
+          visualCaption: "Original stress timing diagram.",
+          prompt: "Name two acoustic cues that can make a stressed syllable stand out visually or acoustically.",
+          model: "A stressed syllable may show higher F0, greater intensity, longer duration, and a more distinctive vowel formant pattern.",
+          rubric: ["Names at least two correct cues.", "Uses acoustic terms.", "Connects them to stress."]
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./acoustics-quiz-engine.js"></script>
+</body>
+</html>

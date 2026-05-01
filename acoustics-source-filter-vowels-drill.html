@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COMD 4153 Source-Filter and Vowel Acoustics Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./acoustics-quiz.css">
+</head>
+<body>
+<script>
+window.ACOUSTICS_PAGE = {
+  type: "quiz",
+  course: "COMD 4153",
+  title: "Source-Filter and Vowel Acoustics Drill",
+  subtitle: "Focused practice for Chapter 8 and Chapter 11 vowel material: source-filter theory, Fourier analysis, formants, speaker variation, vowel duration, undershoot, and diphthongs.",
+  sourceNote: "Professor DNA target: know the relationship, the figure, the acoustic consequence, and a one-sentence explanation.",
+  sections: [
+    {
+      title: "Core Theory",
+      desc: "These are the professor's favorite relationship traps: source vs filter, F0 vs formants, and time vs frequency displays.",
+      questions: [
+        {
+          type: "tf",
+          topic: "F0 vs formants",
+          prompt: "Formant frequencies of vowels are primarily determined by the rate at which the vocal folds vibrate.",
+          answer: 1,
+          explanation: "False. Vocal fold vibration rate determines F0 and harmonic spacing. Vowel formants are determined mainly by vocal tract configuration."
+        },
+        {
+          type: "mc",
+          topic: "Source-filter theory",
+          prompt: "In source-filter theory, the source of vowel sounds is generated mainly by the:",
+          options: ["vocal folds", "lips", "nasal cavity", "hard palate"],
+          answer: 0,
+          explanation: "The glottal source is produced by vocal fold vibration. The vocal tract above the glottis acts as the filter."
+        },
+        {
+          type: "mc",
+          topic: "Source-filter theory",
+          prompt: "The filter function for vowels is shaped most directly by:",
+          options: ["vocal tract configuration", "the number of samples per second", "listener age", "whether the exam is on paper"],
+          answer: 0,
+          explanation: "The vocal tract is the resonator/filter. Its shape determines the formant pattern."
+        },
+        {
+          type: "tf",
+          topic: "Independence",
+          prompt: "In acoustic theory, source and filter are independent, meaning a speaker can change F0 without necessarily changing vocal tract shape.",
+          answer: 0,
+          explanation: "True. F0 can change at the vocal folds while vowel quality can stay similar; vocal tract shape can also change while F0 remains similar."
+        },
+        {
+          type: "mc",
+          topic: "Fourier analysis",
+          prompt: "Fourier analysis is used because a waveform alone does not show:",
+          options: ["the full set of component frequencies and amplitudes", "the passage of time", "whether air exists", "the speaker's grade in the class"],
+          answer: 0,
+          explanation: "Fourier analysis decomposes a complex time-domain waveform into frequency components, producing a spectrum."
+        },
+        {
+          type: "visual",
+          topic: "Source-filter diagram",
+          visual: "source-filter",
+          visualCaption: "Original diagram modeled on the course's source-filter logic.",
+          prompt: "Using the diagram, explain what source, filter, and output each refer to in vowel production.",
+          model: "Source = vocal fold vibration, which determines F0 and harmonic spacing. Filter = vocal tract configuration, which shapes resonances/formants. Output = the source spectrum after it has been shaped by the vocal tract transfer function.",
+          rubric: ["Names source as vocal folds/F0/harmonics.", "Names filter as vocal tract shape/resonance/formants.", "Explains output as shaped source spectrum."]
+        },
+        {
+          type: "short",
+          topic: "Independence",
+          prompt: "In two compact sentences, explain source-filter independence using a same-vowel example.",
+          model: "Source and filter are independent because the vocal folds determine F0/harmonic spacing while the vocal tract determines formant frequencies. Two speakers can produce the same vowel with different F0s or vocal tract lengths, and the vowel is still identified from the formant pattern.",
+          rubric: ["Separates F0/source from formants/filter.", "Uses a same-vowel/different-speaker or same-speaker example.", "Uses acoustic terms instead of vague description."]
+        }
+      ]
+    },
+    {
+      title: "Formant Rules and Perturbation",
+      desc: "Stevens and House rules are high-yield because they convert articulation into F1/F2 predictions.",
+      questions: [
+        {
+          type: "mc",
+          topic: "F1",
+          prompt: "As tongue height increases, F1 generally:",
+          options: ["decreases", "increases", "becomes the same as F0", "disappears"],
+          answer: 0,
+          explanation: "F1 varies inversely with tongue height. High vowels have low F1; low vowels have high F1."
+        },
+        {
+          type: "mc",
+          topic: "F2",
+          prompt: "As tongue advancement/fronting increases, F2 generally:",
+          options: ["increases", "decreases", "becomes the same as F1", "is determined by voicing only"],
+          answer: 0,
+          explanation: "Front vowels have higher F2. Back vowels have lower F2."
+        },
+        {
+          type: "tf",
+          topic: "Lip rounding",
+          prompt: "Lip rounding lengthens the vocal tract and tends to lower formant frequencies, especially F2.",
+          answer: 0,
+          explanation: "True. Rounding/protrusion lengthens the resonating tube, lowering formant frequencies."
+        },
+        {
+          type: "mc",
+          topic: "Corner vowels",
+          prompt: "A high front unrounded vowel like /i/ should have:",
+          options: ["low F1 and high F2", "high F1 and low F2", "high F1 and high F2", "low F1 and low F2"],
+          answer: 0,
+          explanation: "High tongue -> low F1. Front tongue -> high F2."
+        },
+        {
+          type: "mc",
+          topic: "Corner vowels",
+          prompt: "A high back rounded vowel like /u/ should have:",
+          options: ["low F1 and low F2", "high F1 and high F2", "high F1 and low F2", "low F1 and high F2"],
+          answer: 0,
+          explanation: "High tongue lowers F1. Back tongue plus rounding lowers F2."
+        },
+        {
+          type: "multi",
+          topic: "Perturbation theory",
+          prompt: "Select all statements that correctly apply perturbation theory.",
+          options: ["A constriction at a pressure maximum tends to raise the resonant frequency.", "A constriction at a velocity maximum/pressure minimum tends to lower the resonant frequency.", "Any constriction can affect all resonant frequencies of the tube.", "Perturbation theory says F0 and F1 are the same thing."],
+          answer: [0, 1, 2],
+          explanation: "Perturbation theory links constriction location to resonance changes. It does not collapse F0 and F1."
+        },
+        {
+          type: "visual",
+          topic: "Vowel space",
+          visual: "vowel-space",
+          visualCaption: "Original vowel-space diagram showing F1/F2 relationships and a diphthong trajectory.",
+          prompt: "Explain why the /i/ point and /u/ point sit in different parts of the vowel space.",
+          model: "/i/ is high and front, so it has low F1 and high F2. /u/ is high, back, and rounded, so it has low F1 and low F2, with rounding further lowering the formants.",
+          rubric: ["Uses tongue height for F1.", "Uses front/back tongue advancement for F2.", "Mentions rounding for /u/."]
+        }
+      ]
+    },
+    {
+      title: "Variation, Duration, and Diphthongs",
+      desc: "These questions target the final review's in-class T/F style and short-answer explanation style.",
+      questions: [
+        {
+          type: "tf",
+          topic: "Comparative acoustics",
+          prompt: "If a Korean vowel and an English vowel are written with the same IPA symbol, their acoustic characteristics must be very similar.",
+          answer: 1,
+          explanation: "False. The same IPA symbol does not guarantee identical acoustic formant patterns across languages."
+        },
+        {
+          type: "multi",
+          topic: "Across-speaker variability",
+          prompt: "Select all factors that can contribute to across-speaker vowel formant variability.",
+          options: ["age", "dialect/language background", "vocal tract size", "the x-axis label of a spectrogram"],
+          answer: [0, 1, 2],
+          explanation: "Across-speaker variation includes age, dialect/language, gender/sex, and vocal tract size. Axis labels are display knowledge, not speaker variation."
+        },
+        {
+          type: "multi",
+          topic: "Within-speaker variability",
+          prompt: "Select all factors that can contribute to within-speaker vowel variation.",
+          options: ["speaking rate", "stress", "speaking style", "phonetic context"],
+          answer: [0, 1, 2, 3],
+          explanation: "The review explicitly emphasized speaking rate, stress, style, and context."
+        },
+        {
+          type: "mc",
+          topic: "Undershoot",
+          prompt: "Articulatory undershoot is most likely when vowels are produced:",
+          options: ["quickly, casually, and with reduced stress", "slowly and with strong stress", "with no surrounding consonants", "only in written IPA"],
+          answer: 0,
+          explanation: "Undershoot increases when articulators do not have enough time or emphasis to reach the ideal vowel target."
+        },
+        {
+          type: "tf",
+          topic: "Duration",
+          prompt: "A vowel's duration difference caused by surrounding voiced versus voiceless consonants is an extrinsic factor.",
+          answer: 0,
+          explanation: "True. The surrounding consonant context is external to the vowel category itself."
+        },
+        {
+          type: "mc",
+          topic: "Duration",
+          prompt: "Which is an intrinsic vowel-duration factor?",
+          options: ["low vowels tend to be longer than high vowels", "phrase-final position", "slower speaking rate", "surrounding voiced consonants"],
+          answer: 0,
+          explanation: "Intrinsic factors belong to the vowel category itself. Low vs high and tense vs lax are intrinsic duration patterns."
+        },
+        {
+          type: "tf",
+          topic: "Diphthongs",
+          prompt: "Diphthongs are best characterized only by extracting F1 and F2 at one temporal midpoint.",
+          answer: 1,
+          explanation: "False. Diphthongs are dynamic; formant trajectories capture the movement better than one midpoint."
+        },
+        {
+          type: "short",
+          topic: "Diphthong measurement",
+          prompt: "Why are formant trajectories usually better than a single midpoint for characterizing diphthongs?",
+          model: "Diphthongs involve continuous articulatory movement, so F1 and F2 change across the vowel. A single midpoint can miss the onset-to-offset movement, while a formant trajectory captures the dynamic vowel pattern.",
+          rubric: ["States that diphthongs are dynamic/moving.", "Mentions F1/F2 changes across time.", "Contrasts trajectory with one midpoint."]
+        },
+        {
+          type: "short",
+          topic: "Undershoot",
+          prompt: "Define vowel undershoot and give one condition that increases it.",
+          model: "Vowel undershoot occurs when the speaker aims for an ideal vowel target but the articulators do not fully reach it before moving to the next sound. It increases with faster speaking rate, reduced stress, casual style, and shorter vowel duration.",
+          rubric: ["Defines missing or not reaching the ideal target.", "Names at least one correct condition.", "Connects the condition to insufficient articulatory time/emphasis."]
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./acoustics-quiz-engine.js"></script>
+</body>
+</html>
