@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professor Listing Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./language-disorders-quiz.css">
+</head>
+<body>
+<script>
+window.LANG_DIS_PAGE = {
+  type: "quiz",
+  course: "COMD 4382",
+  title: "Professor Listing Drill",
+  subtitle: "Auto-graded practice for the exact list-style questions flagged in the final review transcript.",
+  sourceNote: "Use this for the likely listing/definition items: choose complete lists, select all that belong, and reject the nearby wrong category.",
+  sections: [
+    {
+      title: "Fast Recall Lists",
+      desc: "These are the short lists she appears most likely to ask directly.",
+      questions: [
+        { type: "mc", points: 2, topic: "Bilingual speakers", prompt: "Which list gives the two broad types of bilingual speakers from the review?", options: ["Simultaneous and sequential bilinguals", "Transparent and opaque bilinguals", "Conceptual and practical bilinguals", "Immediate and delayed bilinguals"], answer: 0, explanation: "The two bilingual acquisition patterns are simultaneous and sequential. The other pairs belong to AAC, adaptive behavior, or echolalia." },
+        { type: "multi", points: 2, topic: "ID definition", prompt: "Select ALL parts that belong in the definition of intellectual disability.", options: ["Significant limitations in intellectual functioning", "Significant limitations in adaptive behavior", "Originates during the developmental period", "Requires autism diagnosis", "Requires no communication support needs"], answer: [0,1,2], explanation: "ID requires intellectual-functioning limitations, adaptive-behavior limitations, and developmental-period onset. ASD and communication support needs may co-occur but are not required definition pieces." },
+        { type: "mc", points: 2, topic: "ID definition", prompt: "Which list is the most complete definition-level list for ID?", options: ["Intellectual functioning, adaptive behavior, developmental-period onset", "Speech sound errors, hearing loss, school age", "Social Stories, NDBI, AAC", "Transparent, translucent, opaque"], answer: 0, explanation: "This is the compact ID definition list. The other lists are real-ish course terms but from the wrong category." },
+        { type: "mc", points: 2, topic: "NDBI", prompt: "NDBI stands for:", options: ["Naturalistic Developmental Behavioral Intervention", "Nonverbal Diagnostic Behavior Inventory", "Native Dialect Bilingual Input", "Natural Device-Based Instruction"], answer: 0, explanation: "NDBI means Naturalistic Developmental Behavioral Intervention." },
+        { type: "mc", points: 2, topic: "Joint attention", prompt: "Which population did she flag as more known for poor visual joint attention?", options: ["Autistic children", "All bilingual children", "AAC users as a whole", "Children with typical social reciprocity"], answer: 0, explanation: "Poor visual joint attention is an autism social-communication target." },
+        { type: "mc", points: 2, topic: "AAC symbols", prompt: "Which list gives the three AAC symbol relationship types?", options: ["Transparent, translucent, opaque", "Simultaneous, sequential, conceptual", "Intermittent, limited, pervasive", "Immediate, delayed, scripted"], answer: 0, explanation: "The AAC symbol relationship list is transparent, translucent, opaque." },
+        { type: "multi", points: 2, topic: "AAC components", prompt: "Select ALL four AAC components emphasized in class.", options: ["Symbols", "Aids", "Strategies", "Techniques", "Etiology"], answer: [0,1,2,3], explanation: "The four components are symbols, aids, strategies, and techniques. Etiology is not one of the four AAC components." },
+        { type: "mc", points: 2, topic: "Aided language stimulation", prompt: "Aided language stimulation is also called:", options: ["Aided AAC modeling", "Cognitive referencing", "Strategic scoring", "Stimulus overselectivity"], answer: 0, explanation: "The transcript says aided language stimulation may also be called aided modeling. The partner uses the AAC system while communicating." },
+        { type: "mc", points: 2, topic: "Bilingual theory", prompt: "Which theory/model did she say to reread because of the iceberg picture?", options: ["Iceberg Model/common underlying proficiency", "PECS phase model", "Support intensity model", "ADOS module model"], answer: 0, explanation: "The iceberg picture is the bilingual shared-underlying-base model, not AAC, supports, or autism assessment." },
+        { type: "multi", points: 2, topic: "Autism review list", prompt: "Select ALL autism content areas she directly flagged in the review.", options: ["Early warning signs", "Intervention strategies", "Gender prevalence", "National Research Council best-practice recommendations", "AAC symbol transparency only"], answer: [0,1,2,3], explanation: "She flagged early signs, interventions, gender prevalence, and NRC best-practice recommendations. AAC symbol transparency is AAC, not the autism list." }
+      ]
+    },
+    {
+      title: "Definition and Example Matching",
+      desc: "Match the term to the definition or clinical example she is likely to expect.",
+      questions: [
+        { type: "match", points: 2, topic: "Symbols", prompt: "Match the symbol type: transparent.", options: ["Meaning is obvious from the symbol's appearance", "Meaning makes sense only after context is explained", "Meaning is arbitrary and must be learned", "A second language learned later"], answer: 0, explanation: "Transparent symbols visually reveal their meaning." },
+        { type: "match", points: 2, topic: "Symbols", prompt: "Match the symbol type: translucent.", options: ["Meaning is arbitrary and cannot be guessed", "Meaning becomes clear after context is provided", "Meaning is always obvious immediately", "A parent-coaching autism program"], answer: 1, explanation: "Translucent symbols are not fully obvious until context makes the relationship clear." },
+        { type: "match", points: 2, topic: "Symbols", prompt: "Match the symbol type: opaque.", options: ["The symbol-to-meaning link is arbitrary and learned", "The symbol directly looks like the thing", "The symbol is a bilingual vocabulary method", "The symbol is an autism screener"], answer: 0, explanation: "Opaque symbols do not visually reveal meaning; the association must be learned." },
+        { type: "match", points: 2, topic: "More Than Words", prompt: "Match the intervention: Hanen More Than Words.", options: ["Parent-coaching model for young autistic children", "Direct observational autism diagnostic test", "AAC symbol relationship category", "ID support level"], answer: 0, explanation: "The key difference is parent coaching and parent-child interaction strategy practice." },
+        { type: "match", points: 2, topic: "ADOS", prompt: "Match the tool: ADOS.", options: ["Direct observational autism assessment concept", "Parent-report toddler autism screener", "Bilingual vocabulary score", "AAC access method"], answer: 0, explanation: "ADOS is tied to direct observation in autism diagnosis." },
+        { type: "match", points: 2, topic: "M-CHAT", prompt: "Match the tool: M-CHAT.", options: ["Parent-report autism screening tool for toddlers", "Direct observational autism assessment", "AAC partner modeling strategy", "Strengths-based CLD article"], answer: 0, explanation: "M-CHAT is the parent-report toddler screener." },
+        { type: "match", points: 2, topic: "Aided language stimulation", prompt: "A partner says 'go outside' while selecting outside/go on the child's AAC system. Match the strategy.", options: ["Aided language stimulation/modeling", "Facilitated communication", "Sequential bilingualism", "Oetting strategic scoring"], answer: 0, explanation: "The communication partner is modeling language on the AAC system during real interaction." },
+        { type: "match", points: 2, topic: "Iceberg Model", prompt: "Match the bilingual theory: Iceberg Model.", options: ["Surface languages share an underlying cognitive/linguistic base", "Bilingual children must keep languages separate", "AAC symbols are always obvious", "Autism intervention should ignore family training"], answer: 0, explanation: "The model explains how two visible languages can support one another through shared underlying proficiency." },
+        { type: "match", points: 2, topic: "Assigned reading", prompt: "Match the reading: Hoff & Core (2015).", options: ["Typical bilingual development principles clinicians need to know", "Parent-coaching autism intervention", "AAC transparency categories", "ID support intensity levels"], answer: 0, explanation: "Hoff & Core is the bilingual-development reading to name specifically if she asks for the article." },
+        { type: "match", points: 2, topic: "Assigned reading", prompt: "Match the reading: Lee-James & Washington (2018).", options: ["Strengths-based CLD assessment perspective", "Naturalistic Developmental Behavioral Intervention", "Transparent/translucent/opaque symbols", "Direct AAC selection"], answer: 0, explanation: "Lee-James & Washington is tied to a strengths-based CLD assessment lens." },
+        { type: "match", points: 2, topic: "Assigned reading", prompt: "Match the reading: Oetting et al. (2021).", options: ["Tense/agreement in AAE and SWE with dialect-aware scoring", "More Than Words video review", "National Research Council autism recommendations", "Complex communication needs definition"], answer: 0, explanation: "Oetting et al. is the dialect-aware tense/agreement article, not the autism or AAC content." }
+      ]
+    },
+    {
+      title: "NOT, EXCEPT, and Complete-List Traps",
+      desc: "This is the category-boundary style she described: know the list, then reject the one that is 80 percent plausible but wrong.",
+      questions: [
+        { type: "mc", points: 2, topic: "Bilingual speakers", prompt: "Which item does NOT belong in the two-type bilingual speaker list?", options: ["Simultaneous bilingual", "Sequential bilingual", "Transparent bilingual", "Both languages acquired early"], answer: 2, explanation: "Transparent belongs to AAC symbols, not bilingual speaker type. The last option describes simultaneous bilingualism." },
+        { type: "mc", points: 2, topic: "AAC symbols", prompt: "All are AAC symbol relationship types EXCEPT:", options: ["Transparent", "Translucent", "Opaque", "Sequential"], answer: 3, explanation: "Sequential is a bilingual acquisition term here, not an AAC symbol relationship type." },
+        { type: "mc", points: 2, topic: "NRC recommendations", prompt: "All fit National Research Council-style autism best-practice recommendations EXCEPT:", options: ["Intensive active instruction", "Repeated planned activities with clear structure", "Family and parent training", "No ongoing progress monitoring"], answer: 3, explanation: "Ongoing assessment and programming adjusted by progress are part of the best-practice list. No monitoring is the trap." },
+        { type: "mc", points: 2, topic: "More Than Words", prompt: "Which answer is LEAST consistent with More Than Words?", options: ["Parent coaching", "Small-group or 1:1 parent training", "Parent practice and video feedback", "SLP focuses only on direct child drills while parents are uninvolved"], answer: 3, explanation: "The professor emphasized that More Than Words differs from traditional direct therapy because the focus is parent coaching." },
+        { type: "mc", points: 2, topic: "AAC myths", prompt: "Which statement is FALSE about AAC?", options: ["AAC can support language development", "AAC can be used before speech is completely absent", "AAC can include partner modeling", "AAC prevents children from ever talking"], answer: 3, explanation: "The review transcript flagged this exact parent fear as a myth. AAC does not prevent speech development." },
+        { type: "mc", points: 2, topic: "Autism early signs", prompt: "Which item does NOT belong with early ASD warning signs?", options: ["Limited joint attention", "Reduced response to name", "Limited imitation or pretend play", "Consistently advanced shared pretend play"], answer: 3, explanation: "Advanced shared pretend play is the opposite of the early social-communication concern." },
+        { type: "mc", points: 2, topic: "Article specificity", prompt: "If she asks about the bilingual assigned reading, which answer is specific enough?", options: ["Hoff & Core (2015) explained typical bilingual development principles, including why dual language exposure does not confuse children and why total vocabulary matters", "The article had good strategies", "It was about language stuff", "It said assessment is important"], answer: 0, explanation: "The transcript warning was about specificity. Vague answers like 'good strategies' do not prove you read the article." },
+        { type: "mc", points: 2, topic: "Category boundary", prompt: "Which list is the cleanest 'review transcript' list for AAC?", options: ["Symbol types, aided language stimulation/modeling, AAC myths, AAC components", "Iceberg Model, Hoff & Core, conceptual vocabulary, sequential bilingualism", "ADOS, M-CHAT, joint attention, More Than Words", "Adaptive behavior, ID definition, support levels, cognitive processes"], answer: 0, explanation: "The first list is AAC. The other options are CLD, autism, or ID lists." }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./language-disorders-quiz-engine.js"></script>
+</body>
+</html>
