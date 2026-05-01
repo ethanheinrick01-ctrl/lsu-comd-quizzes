@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autism Spectrum Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./language-disorders-quiz.css">
+</head>
+<body>
+<script>
+window.LANG_DIS_PAGE = {
+  type: "quiz",
+  course: "COMD 4382",
+  title: "Autism Spectrum Drill",
+  subtitle: "Focused practice for autism diagnostic criteria, early signs, language/behavior profiles, and intervention approaches.",
+  sourceNote: "Built for Gonsoulin-style category discrimination: know the exact diagnostic bucket and the clinical example.",
+  sections: [
+    {
+      title: "Diagnostic Criteria and Early Signs",
+      desc: "Core deficits, early social-communication signs, and assessment tools.",
+      questions: [
+        { type: "multi", points: 2, topic: "DSM criteria", prompt: "Select ALL core ASD diagnostic domains.", options: ["Persistent social communication/social interaction deficits", "Restricted, repetitive patterns of behavior, interests, or activities", "Symptoms present during the developmental period", "Purely motor delay with no social communication concern"], answer: [0,1,2], explanation: "The core domains are social communication plus restricted/repetitive behavior, with developmental-period onset and functional impact." },
+        { type: "mc", points: 2, topic: "Diagnostic trap", prompt: "Which statement is FALSE about ASD diagnosis?", options: ["Social communication differences are central", "Restricted and repetitive behaviors are part of the criteria", "Symptoms can vary widely across individuals", "A language delay by itself is enough for ASD"], answer: 3, explanation: "Language delay alone is not sufficient. The trap is confusing one possible feature with the full diagnosis." },
+        { type: "multi", points: 2, topic: "Early signs", prompt: "Select ALL early signs that can suggest ASD risk.", options: ["Limited joint attention", "Reduced response to name", "Limited imitation or pretend play", "Advanced pretend play with strong social sharing"], answer: [0,1,2], explanation: "Early concern centers on social attention, imitation, play, and shared engagement. Strong social pretend play is not the risk sign." },
+        { type: "mc", points: 2, topic: "Kennedy Krieger", prompt: "A toddler intensely focuses on a toy phone and does not integrate another person into play. Which early-sign category is most relevant?", options: ["Reduced social reciprocity/play integration", "Typical advanced symbolic play", "Only a feeding problem", "A hearing-loss-only profile"], answer: 0, explanation: "The video material contrasts social opportunity through play with limited social integration." },
+        { type: "match", points: 2, topic: "Screening", prompt: "Match the tool: M-CHAT.", options: ["Parent-report autism screening for toddlers", "Direct observational autism diagnostic measure", "Vocabulary teaching intervention", "AAC access method"], answer: 0, explanation: "M-CHAT is a toddler screening tool, not a full direct observation or intervention." },
+        { type: "match", points: 2, topic: "Assessment", prompt: "Match the tool: ADOS.", options: ["Direct observational assessment used in autism diagnosis", "AAC vocabulary display", "Parent coaching model only", "A pragmatic language treatment plan"], answer: 0, explanation: "ADOS is the direct observational autism assessment concept emphasized in the notes." },
+        { type: "tf", points: 1, topic: "Autism precision", prompt: "Autistic children can have a wide spectrum of abilities and support needs.", answer: 0, explanation: "True. The spectrum framing is central." },
+        { type: "tf", points: 1, topic: "Autism precision", prompt: "Every autistic child has the exact same language profile.", answer: 1, explanation: "False. This is an overgeneralization trap." }
+      ]
+    },
+    {
+      title: "Language, Behavior, and Intervention",
+      desc: "Echolalia, behavioral characteristics, NDBI, Hanen, Social Stories, and intervention fit.",
+      questions: [
+        { type: "match", points: 2, topic: "Echolalia", prompt: "Match the term: immediate echolalia.", options: ["Repeating something right after hearing it", "Repeating language after a delay", "No spoken repetition at all", "Aided language input"], answer: 0, explanation: "Immediate echolalia occurs right after the model. Delayed echolalia occurs later." },
+        { type: "match", points: 2, topic: "Echolalia", prompt: "Match the term: delayed echolalia.", options: ["Repeating language after time has passed", "A motor access method", "An assessment of adaptive behavior", "A nonverbal IQ test"], answer: 0, explanation: "Delayed echolalia is repetition after a delay; it can still have communicative function." },
+        { type: "mc", points: 2, topic: "Language profile", prompt: "Which statement is the BEST professor-style answer about echolalia?", options: ["It is always meaningless and should be ignored", "It can serve communicative functions and should be interpreted in context", "It proves the child cannot understand language", "It is unrelated to autism content"], answer: 1, explanation: "The functional interpretation is the careful answer. 'Always meaningless' is the overbroad trap." },
+        { type: "multi", points: 2, topic: "Behavioral profile", prompt: "Select ALL behavioral characteristics commonly discussed with ASD.", options: ["Restricted interests", "Repetitive behaviors", "Sensory differences", "Identical social motivation in every child"], answer: [0,1,2], explanation: "Restricted/repetitive patterns and sensory differences are common. Identical profile for every child is false." },
+        { type: "match", points: 2, topic: "NDBI", prompt: "Match the term: NDBI.", options: ["Naturalistic developmental behavioral intervention", "A device-scanning method only", "A bilingual vocabulary score", "A hearing screening result"], answer: 0, explanation: "NDBI combines developmental and behavioral strategies in naturalistic contexts." },
+        { type: "mc", points: 2, topic: "Hanen", prompt: "Hanen More Than Words is best described as:", options: ["A parent-mediated intervention model for young autistic children", "A diagnostic instrument replacing all clinical judgment", "A speech-only articulation drill", "An AAC device brand"], answer: 0, explanation: "More Than Words is a parent-mediated model, which fits the professor's intervention-template questions." },
+        { type: "mc", points: 2, topic: "Social Stories", prompt: "Which answer BEST describes Social Stories?", options: ["Short individualized narratives that clarify social situations and expectations", "A test of nonverbal IQ", "A method for eliminating all autistic traits", "A synonym for PECS"], answer: 0, explanation: "Social Stories support understanding of situations; they are not PECS or a cure claim." },
+        { type: "multi", points: 2, topic: "Intervention recommendations", prompt: "Select ALL broad intervention features that fit young autistic children.", options: ["Early start when possible", "Family involvement", "Functional communication goals", "One identical treatment for every child regardless of profile"], answer: [0,1,2], explanation: "Intervention should be early, family-centered, functional, and individualized." },
+        { type: "mc", points: 2, topic: "Professor trap", prompt: "All are appropriate autism intervention considerations EXCEPT:", options: ["Use child interests strategically", "Support social communication", "Individualize intervention", "Ignore family context because autism intervention is only clinician-directed"], answer: 3, explanation: "EXCEPT format: the wrong answer denies family/context and overstates clinician direction." },
+        { type: "tf", points: 1, topic: "Intervention precision", prompt: "A child's restricted interests can sometimes be used as a bridge for engagement and communication.", answer: 0, explanation: "True. Clinically, interests can become an entry point rather than just a behavior to suppress." }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./language-disorders-quiz-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID and CLD Listing Drill</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./language-disorders-quiz.css">
+</head>
+<body>
+<script>
+window.LANG_DIS_PAGE = {
+  type: "quiz",
+  course: "COMD 4382",
+  title: "ID and CLD Listing Drill",
+  subtitle: "Auto-graded listing, labeling, and category-boundary practice for Chapter 8 intellectual disability and CLD content.",
+  sourceNote: "Use this to drill what belongs in each list, what does not belong, and which adjacent terms Dr. Gonsoulin can swap.",
+  sections: [
+    {
+      title: "Intellectual Disability Foundations",
+      desc: "Definition, criteria, supports, adaptive behavior, and cognitive processes.",
+      questions: [
+        { type: "multi", points: 2, topic: "ID definition", prompt: "Select ALL required pieces of the intellectual disability definition.", options: ["Significant limitations in intellectual functioning", "Significant limitations in adaptive behavior", "Originates during the developmental period", "Only a speech-sound impairment is required"], answer: [0,1,2], explanation: "ID requires limitations in intellectual functioning and adaptive behavior with developmental-period onset. A speech-sound impairment alone is not ID." },
+        { type: "mc", points: 2, topic: "DSM criteria", prompt: "Which list is the most complete DSM-style ID criteria list?", options: ["Low IQ only", "Low IQ plus poor academic performance only", "Deficits in intellectual functions, adaptive functioning, and developmental-period onset", "Language delay plus reduced speech intelligibility"], answer: 2, explanation: "The professor-style boundary is that all three broad criteria are needed, not just one score or one language behavior." },
+        { type: "mc", points: 2, topic: "Adaptive behavior", prompt: "Which item does NOT belong with adaptive behavior domains?", options: ["Conceptual skills", "Social skills", "Practical skills", "Pure-tone threshold pattern"], answer: 3, explanation: "Adaptive behavior is conceptual, social, and practical functioning. A hearing threshold pattern belongs somewhere else." },
+        { type: "match", points: 2, topic: "Support levels", prompt: "Match the term to the best definition: intermittent support.", options: ["As-needed support", "Consistent, time-limited support", "Regular support that is not time-limited", "High-intensity support across environments"], answer: 0, explanation: "Intermittent means support is provided as needed, not constantly." },
+        { type: "match", points: 2, topic: "Support levels", prompt: "Match the term to the best definition: pervasive support.", options: ["As-needed support", "Short-term support for a defined period", "High-intensity support across environments", "Only classroom-based consultation"], answer: 2, explanation: "Pervasive support is broad, consistent, and high intensity across settings." },
+        { type: "multi", points: 2, topic: "Cognitive processes", prompt: "Select ALL four cognitive processes emphasized for ID.", options: ["Attention and discrimination", "Organization", "Memory", "Generalization", "Phonological neighborhood density"], answer: [0,1,2,3], explanation: "The four-process list is attention/discrimination, organization, memory, and generalization." },
+        { type: "mc", points: 2, topic: "Cognitive trap", prompt: "A child focuses only on the first letter of a name and ignores other relevant cues. Which process is most directly implicated?", options: ["Stimulus overselectivity within attention/discrimination", "Pervasive support", "Facilitated communication", "Sequential bilingualism"], answer: 0, explanation: "The key phrase is focusing on one feature while missing relevant information: stimulus overselectivity." },
+        { type: "multi", points: 2, topic: "Teaching implications", prompt: "Select ALL teaching implications that fit children with ID.", options: ["Use explicit cues", "Break tasks into manageable chunks", "Teach strategies in the settings where they will be used", "Assume generalization will happen automatically"], answer: [0,1,2], explanation: "Teaching must be explicit, organized, and built for generalization. Automatic generalization is the trap." },
+        { type: "mc", points: 2, topic: "Cognitive referencing", prompt: "Which statement is FALSE about cognitive referencing?", options: ["It denies language service when language performance matches nonverbal ability", "It is discouraged by ASHA", "It assumes language cannot improve beyond cognitive level", "It is the preferred method for deciding therapy eligibility"], answer: 3, explanation: "The false statement is that it is preferred. The study guide frames cognitive referencing as discouraged." },
+        { type: "mc", points: 2, topic: "Syndrome profiles", prompt: "Which pairing is most accurate?", options: ["Down syndrome: morphosyntax is a relative strength", "Williams syndrome: language can be a relative strength compared with nonverbal cognition", "Fragile X: no pragmatic concerns ever appear", "ID profiles are identical across etiologies"], answer: 1, explanation: "Williams syndrome is often described with relative language strengths, while the other options flatten or reverse syndrome patterns." }
+      ]
+    },
+    {
+      title: "CLD and Bilingual Assessment",
+      desc: "Bilingual development, total vocabulary, assessment bias, and disorder within difference.",
+      questions: [
+        { type: "match", points: 2, topic: "Bilingualism", prompt: "Match the term: simultaneous bilingualism.", options: ["Two languages acquired from early childhood at the same time", "A second language learned after one language is established", "A child who cannot develop either language", "A disorder caused by exposure to two languages"], answer: 0, explanation: "Simultaneous bilingualism means both languages are acquired early; it is not a disorder." },
+        { type: "match", points: 2, topic: "Bilingualism", prompt: "Match the term: sequential bilingualism.", options: ["Two languages acquired from birth only", "A second language learned after first-language development has begun", "Stopping one language to protect the other", "A language impairment label"], answer: 1, explanation: "Sequential bilingualism means the second language comes after initial first-language development." },
+        { type: "mc", points: 2, topic: "Vocabulary", prompt: "Which answer BEST defines total vocabulary for a bilingual child?", options: ["Words known in only the school language", "All words known across both languages, counting translation equivalents separately", "Only words shared by both languages", "Only words that match adult pronunciation"], answer: 1, explanation: "Total vocabulary counts words across both languages and is often more informative than a single-language count." },
+        { type: "mc", points: 2, topic: "Vocabulary", prompt: "Which answer BEST defines conceptual vocabulary?", options: ["Every word form across both languages", "Concepts known across languages, counting translation equivalents once", "Only vocabulary produced in English", "Only nouns in the child's home language"], answer: 1, explanation: "Conceptual vocabulary counts concepts rather than every separate word form." },
+        { type: "multi", points: 2, topic: "Assessment", prompt: "Select ALL methods that can reduce bias when assessing bilingual or non-mainstream English-speaking children.", options: ["Use multiple data sources", "Assess both languages when possible", "Use interpreters or cultural informants appropriately", "Assume a single-language test tells the whole story"], answer: [0,1,2], explanation: "Multiple sources, both languages, and informed support reduce bias. The single-language shortcut is the trap." },
+        { type: "mc", points: 2, topic: "Disorder within difference", prompt: "Why is 'disorder within difference' better than a simple 'difference versus disorder' split?", options: ["It recognizes that a child can have a real language disorder while also using a legitimate language variety", "It says dialect features are always disorders", "It says bilingual children cannot have language disorders", "It removes the need for assessment"], answer: 0, explanation: "The point is to identify impairment within the child's linguistic context, not to label difference itself as disorder." },
+        { type: "mc", points: 2, topic: "Strengths-based assessment", prompt: "Which item does NOT belong in a strengths-based CLD assessment approach?", options: ["Identify linguistic strengths", "Consider cultural and language context", "Use dynamic and functional information", "Treat non-mainstream dialect forms as automatic errors"], answer: 3, explanation: "The NOT-belonging item is treating dialect difference as error. That is exactly what strengths-based assessment resists." },
+        { type: "tf", points: 1, topic: "CLD precision", prompt: "Bilingual children vary widely in input, dominance, and exposure patterns.", answer: 0, explanation: "True. Variability is a major theme and a likely T/F precision target." },
+        { type: "tf", points: 1, topic: "CLD precision", prompt: "A bilingual child should always be compared as if they had the same language history as a monolingual peer.", answer: 1, explanation: "False. That ignores bilingual exposure and context, which is the assessment bias trap." },
+        { type: "mc", points: 2, topic: "Professor trap", prompt: "All are appropriate CLD assessment considerations EXCEPT:", options: ["Gather language history", "Consider the language needed in home and school contexts", "Use culturally informed interpretation", "Evaluate only the language the clinician speaks and ignore the other language"], answer: 3, explanation: "EXCEPT format: the wrong option is the one-language-only shortcut." }
+      ]
+    }
+  ]
+};
+</script>
+<script src="./language-disorders-quiz-engine.js"></script>
+</body>
+</html>
