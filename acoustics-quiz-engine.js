@@ -158,7 +158,7 @@
   function questionHTML(q, number) {
     var id = "q" + number;
     var typeLabel = q.type === "multi" ? "Find All" : q.type === "short" || q.type === "visual" ? "Written" : q.type === "tf" ? "T/F" : "MC";
-    var visual = q.visual ? visualHTML(q.visual, q.visualCaption) : "";
+    var visual = q.visualImage ? imageVisualHTML(q.visualImage, q.visualCaption) : q.visual ? visualHTML(q.visual, q.visualCaption) : "";
     var prompt = [
       '<p class="q-prompt">' + escapeHTML(q.prompt) + ' <span class="pill paper">' + q.points + ' pt' + (q.points === 1 ? "" : "s") + '</span></p>',
       q.subprompt ? '<p class="q-subprompt">' + escapeHTML(q.subprompt) + '</p>' : ''
@@ -212,6 +212,15 @@
     return [
       '<figure class="visual-frame">',
       '  <canvas width="980" height="360" data-visual="' + escapeHTML(type) + '"></canvas>',
+      caption ? '  <figcaption class="visual-caption">' + escapeHTML(caption) + '</figcaption>' : '',
+      '</figure>'
+    ].join("");
+  }
+
+  function imageVisualHTML(src, caption) {
+    return [
+      '<figure class="visual-frame slide-visual">',
+      '  <img src="' + escapeHTML(src) + '" alt="' + escapeHTML(caption || "Acoustics slide example") + '" loading="eager" decoding="sync">',
       caption ? '  <figcaption class="visual-caption">' + escapeHTML(caption) + '</figcaption>' : '',
       '</figure>'
     ].join("");
@@ -361,7 +370,8 @@
     ctx.lineWidth = 1;
     ctx.strokeRect(1, 1, w - 2, h - 2);
 
-    if (type === "source-filter") drawSourceFilter(ctx, w, h);
+    if (type.indexOf("spec:") === 0) drawSpectrogramRecipe(canvas, type.slice(5));
+    else if (type === "source-filter") drawSourceFilter(ctx, w, h);
     else if (type === "vowel-space") drawVowelSpace(ctx, w, h);
     else if (type === "nasal-order") drawNasalOrder(ctx, w, h);
     else if (type === "nasalization") drawNasalization(ctx, w, h);
@@ -679,6 +689,441 @@
         label(ctx, "darkness = amplitude/intensity", p.x + 115, 292, 12, "#596573", "center");
       }
     });
+  }
+
+  var SR = 16000;
+  var SPEC_RECIPES = {
+    "vowel-a": {
+      title: "Vowel /ɑ/",
+      dur: 0.48,
+      segments: [{ type: "vowel", tStart: 0.04, tEnd: 0.44, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .92 }],
+      markers: [{ num: 1, tStart: .04, tEnd: .44 }]
+    },
+    "vowel-i": {
+      title: "Vowel /i/",
+      dur: 0.48,
+      segments: [{ type: "vowel", tStart: 0.04, tEnd: 0.44, formants: [280, 2350, 3100], amps: [.95, .9, .55], f0: 130, amp: .88 }],
+      markers: [{ num: 1, tStart: .04, tEnd: .44 }]
+    },
+    "diphthong-ai": {
+      title: "Diphthong /aI/",
+      dur: 0.62,
+      segments: [{ type: "vowel", tStart: .04, tEnd: .58, formants: [[720, 420], [1300, 2150], [2550, 3000]], amps: [1, .78, .48], f0: 122, amp: .9 }],
+      markers: [{ num: 1, tStart: .04, tEnd: .58 }]
+    },
+    "voiceless-fricative-sa": {
+      title: "/sɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "fricative", tStart: .04, tEnd: .29, lo: 3800, hi: 7900, peak: 6500, amp: .88, seed: 31 },
+        { type: "vowel", tStart: .29, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 122, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .29 }, { num: 2, tStart: .29, tEnd: .55 }]
+    },
+    "weak-fricative-fa": {
+      title: "/fɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "fricative", tStart: .04, tEnd: .29, lo: 1200, hi: 7600, peak: 4700, amp: .26, seed: 41 },
+        { type: "vowel", tStart: .29, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 122, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .29 }, { num: 2, tStart: .29, tEnd: .55 }]
+    },
+    "voiced-fricative-za": {
+      title: "/zɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "fricative", tStart: .04, tEnd: .29, lo: 3600, hi: 7800, peak: 6400, amp: .58, voiced: true, seed: 53 },
+        { type: "vowel", tStart: .29, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 122, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .29 }, { num: 2, tStart: .29, tEnd: .55 }]
+    },
+    "voiceless-stop-pa": {
+      title: "/pɑ/",
+      dur: 0.62,
+      segments: [
+        { type: "closure", tStart: .03, tEnd: .18 },
+        { type: "burst", tStart: .18, tEnd: .205, amp: .9, seed: 11 },
+        { type: "aspiration", tStart: .205, tEnd: .34, amp: .34, seed: 17 },
+        { type: "vowel", tStart: .34, tEnd: .58, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .03, tEnd: .18 }, { num: 2, tStart: .18, tEnd: .205 }, { num: 3, tStart: .205, tEnd: .34 }, { num: 4, tStart: .34, tEnd: .58 }]
+    },
+    "voiced-stop-ba": {
+      title: "/bɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "closure", tStart: .03, tEnd: .20 },
+        { type: "voicing_bar", tStart: .03, tEnd: .20, f0: 118 },
+        { type: "burst", tStart: .20, tEnd: .225, amp: .42, seed: 21 },
+        { type: "vowel", tStart: .225, tEnd: .54, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 118, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .03, tEnd: .20 }, { num: 2, tStart: .20, tEnd: .225 }, { num: 3, tStart: .225, tEnd: .54 }]
+    },
+    "voiceless-stop-ta": {
+      title: "/tɑ/",
+      dur: 0.62,
+      segments: [
+        { type: "closure", tStart: .03, tEnd: .17 },
+        { type: "burst", tStart: .17, tEnd: .195, amp: .95, seed: 29 },
+        { type: "aspiration", tStart: .195, tEnd: .32, amp: .36, seed: 37 },
+        { type: "vowel", tStart: .32, tEnd: .59, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .9 }
+      ],
+      markers: [{ num: 1, tStart: .03, tEnd: .17 }, { num: 2, tStart: .17, tEnd: .195 }, { num: 3, tStart: .195, tEnd: .32 }, { num: 4, tStart: .32, tEnd: .59 }]
+    },
+    "affricate-cha": {
+      title: "/tʃɑ/",
+      dur: 0.68,
+      segments: [
+        { type: "closure", tStart: .03, tEnd: .16 },
+        { type: "burst", tStart: .16, tEnd: .19, amp: .72, seed: 61 },
+        { type: "aff_fric", tStart: .19, tEnd: .39, lo: 2300, hi: 7600, peak: 4300, amp: .64, seed: 67 },
+        { type: "vowel", tStart: .39, tEnd: .64, formants: [720, 1250, 2600], amps: [.96, .72, .45], f0: 122, amp: .88 }
+      ],
+      markers: [{ num: 1, tStart: .03, tEnd: .16 }, { num: 2, tStart: .16, tEnd: .19 }, { num: 3, tStart: .19, tEnd: .39 }, { num: 4, tStart: .39, tEnd: .64 }]
+    },
+    "nasal-ma": {
+      title: "/mɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "nasal", tStart: .04, tEnd: .25, antires: 950, f0: 120 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    },
+    "nasal-na": {
+      title: "/nɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "nasal", tStart: .04, tEnd: .25, antires: 1450, f0: 124 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 124, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    },
+    "lateral-la": {
+      title: "/lɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "lateral", tStart: .04, tEnd: .25, f0: 120 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    },
+    "semivowel-wa": {
+      title: "/wɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "vowel", tStart: .04, tEnd: .25, formants: [[320, 720], [760, 1180], [1900, 2600]], amps: [.9, .6, .35], f0: 120, amp: .62 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 120, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    },
+    "semivowel-ja": {
+      title: "/jɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "vowel", tStart: .04, tEnd: .25, formants: [[300, 720], [2350, 1180], [3100, 2600]], amps: [.9, .82, .5], f0: 126, amp: .62 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 126, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    },
+    "semivowel-ra": {
+      title: "/rɑ/",
+      dur: 0.58,
+      segments: [
+        { type: "vowel", tStart: .04, tEnd: .25, formants: [[420, 720], [1320, 1180], [1550, 2600]], amps: [.9, .65, .55], f0: 122, amp: .62 },
+        { type: "vowel", tStart: .25, tEnd: .55, formants: [720, 1180, 2600], amps: [1, .72, .42], f0: 122, amp: .92 }
+      ],
+      markers: [{ num: 1, tStart: .04, tEnd: .25 }, { num: 2, tStart: .25, tEnd: .55 }]
+    }
+  };
+
+  function drawSpectrogramRecipe(canvas, key) {
+    var recipe = SPEC_RECIPES[key] || SPEC_RECIPES["voiceless-stop-pa"];
+    var ctx = canvas.getContext("2d");
+    var w = canvas.width;
+    var h = canvas.height;
+    var left = 58;
+    var right = 18;
+    var plotW = w - left - right;
+    var waveY = 34;
+    var waveH = 76;
+    var specY = 126;
+    var specH = h - specY - 34;
+    var signal = genSpecSignal(recipe);
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#f0ece4";
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#2f2a22";
+    ctx.font = "700 18px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText(recipe.title || "Spectrogram", left, 24);
+
+    drawPraatWave(ctx, signal, left, waveY, plotW, waveH);
+    ctx.fillStyle = "#9b917d";
+    ctx.fillRect(left, specY - 11, plotW, 1);
+    drawPraatSpec(ctx, signal, left, specY, plotW, specH);
+    drawPraatAxes(ctx, left, specY, plotW, specH, recipe.dur);
+    if (recipe.markers) drawSpecMarkers(ctx, left, waveY, plotW, waveH, specY, specH, recipe.dur, recipe.markers);
+  }
+
+  function genSpecSignal(recipe) {
+    var n = Math.floor(SR * recipe.dur);
+    var sig = new Float32Array(n);
+    recipe.segments.forEach(function (seg) {
+      var i0 = Math.max(0, Math.floor(seg.tStart * SR));
+      var i1 = Math.min(n, Math.floor(seg.tEnd * SR));
+      for (var i = i0; i < i1; i++) {
+        var st = (i - i0) / Math.max(1, i1 - i0);
+        sig[i] += synthSpecSeg(i / SR, i, seg, st);
+      }
+    });
+    var mx = 0;
+    for (var j = 0; j < sig.length; j++) mx = Math.max(mx, Math.abs(sig[j]));
+    if (mx > 0) for (var k = 0; k < sig.length; k++) sig[k] /= mx;
+    return sig;
+  }
+
+  function synthSpecSeg(t, i, seg, st) {
+    if (seg.type === "closure") return 0;
+    if (seg.type === "voicing_bar") return specVoicing(t, seg, .14);
+    if (seg.type === "burst") return specNoise(i, seg.seed || 7) * (seg.amp || .8) * Math.exp(-st * 10);
+    if (seg.type === "aspiration") return bandNoise(t, i, 1200, 5200, 2800, seg.amp || .32, seg.seed || 17) * specEnv(st, 9, 4);
+    if (seg.type === "fricative") return (bandNoise(t, i, seg.lo || 3000, seg.hi || 8000, seg.peak || 6000, seg.amp || .6, seg.seed || 23) + (seg.voiced ? specVoicing(t, seg, .16) : 0)) * specEnv(st, 8, 8);
+    if (seg.type === "aff_fric") return bandNoise(t, i, seg.lo || 2400, seg.hi || 7600, seg.peak || 4500, seg.amp || .55, seg.seed || 61) * Math.min(1, st * 5);
+    if (seg.type === "nasal") return specNasal(t, seg, st);
+    if (seg.type === "lateral") return specLateral(t, seg, st);
+    return specVowel(t, seg, st);
+  }
+
+  function specEnv(st, a, b) {
+    return Math.min(1, st * a) * Math.min(1, (1 - st) * b);
+  }
+
+  function interpFormant(value, st) {
+    return Array.isArray(value) ? value[0] + (value[1] - value[0]) * st : value;
+  }
+
+  function specVowel(t, seg, st) {
+    var f0 = seg.f0 || 120;
+    var formants = seg.formants || [500, 1500, 2500];
+    var amps = seg.amps || [1, .7, .4];
+    var out = 0;
+    for (var h = 1; h <= 42; h++) {
+      var hf = f0 * h;
+      if (hf > 7600) break;
+      var amp = .42 / Math.pow(h, 1.25);
+      for (var f = 0; f < formants.length; f++) {
+        amp *= 1 + gaussian(hf, interpFormant(formants[f], st), 85 + f * 58, amps[f] || .45) * 5.8;
+      }
+      out += amp * Math.sin(2 * Math.PI * hf * t);
+    }
+    return out * specEnv(st, 12, 12) * (seg.amp || .8);
+  }
+
+  function specNasal(t, seg, st) {
+    var f0 = seg.f0 || 120;
+    var anti = seg.antires || 1000;
+    var out = 0;
+    for (var h = 1; h <= 20; h++) {
+      var hf = f0 * h;
+      if (hf > 4500) break;
+      var amp = .22 / Math.pow(h, 1.55);
+      amp *= 1 + gaussian(hf, 280, 90, 4);
+      amp *= 1 - gaussian(hf, anti, 180, .72);
+      out += amp * Math.sin(2 * Math.PI * hf * t);
+    }
+    return out * specEnv(st, 8, 8) * .75;
+  }
+
+  function specLateral(t, seg, st) {
+    var f0 = seg.f0 || 120;
+    var out = 0;
+    for (var h = 1; h <= 30; h++) {
+      var hf = f0 * h;
+      if (hf > 5600) break;
+      var amp = .28 / Math.pow(h, 1.4);
+      amp *= 1 + gaussian(hf, 360, 80, 3.8) + gaussian(hf, 1100, 150, 2.8) + gaussian(hf, 2800, 250, 1.4);
+      amp *= 1 - gaussian(hf, 1800, 230, .68);
+      out += amp * Math.sin(2 * Math.PI * hf * t);
+    }
+    return out * specEnv(st, 8, 8) * .62;
+  }
+
+  function specVoicing(t, seg, amp) {
+    var f0 = seg.f0 || 120;
+    return amp * Math.sin(2 * Math.PI * f0 * t) + amp * .45 * Math.sin(2 * Math.PI * f0 * 2 * t);
+  }
+
+  function bandNoise(t, i, lo, hi, peak, amp, seed) {
+    var out = specNoise(i, seed) * amp * .12;
+    for (var f = lo; f <= hi; f += 260) {
+      var weight = Math.exp(-0.5 * Math.pow((f - peak) / Math.max(800, (hi - lo) / 2.4), 2));
+      out += Math.sin(2 * Math.PI * f * t + seed * .37 + f * .013) * weight * amp * .045;
+    }
+    return out;
+  }
+
+  function specNoise(i, seed) {
+    var x = Math.sin((i + 1) * (12.9898 + seed) + seed * 78.233) * 43758.5453;
+    return (x - Math.floor(x)) * 2 - 1;
+  }
+
+  function gaussian(x, center, bw, amp) {
+    return amp * Math.exp(-0.5 * Math.pow((x - center) / bw, 2));
+  }
+
+  function drawPraatWave(ctx, sig, x, y, width, height) {
+    ctx.fillStyle = "#f5f0e8";
+    ctx.fillRect(x, y, width, height);
+    ctx.strokeStyle = "#c8bfaa";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, y + height / 2);
+    ctx.lineTo(x + width, y + height / 2);
+    ctx.stroke();
+    ctx.strokeStyle = "#29251f";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    var spp = sig.length / width;
+    for (var px = 0; px < width; px++) {
+      var i0 = Math.floor(px * spp);
+      var i1 = Math.min(sig.length, Math.floor((px + 1) * spp));
+      var mn = 0;
+      var mx = 0;
+      for (var i = i0; i < i1; i++) {
+        mn = Math.min(mn, sig[i]);
+        mx = Math.max(mx, sig[i]);
+      }
+      ctx.moveTo(x + px, y + height / 2 - mx * height * .44);
+      ctx.lineTo(x + px, y + height / 2 - mn * height * .44);
+    }
+    ctx.stroke();
+  }
+
+  function drawPraatSpec(ctx, sig, x, y, width, height) {
+    var fftSz = 256;
+    var hop = 64;
+    var maxHz = 8000;
+    var maxBin = Math.floor(maxHz / SR * fftSz);
+    var spec = computeSpec(sig, fftSz, hop, maxBin);
+    var img = ctx.createImageData(width, height);
+    var gMax = 0;
+    spec.forEach(function (frame) {
+      for (var i = 0; i < maxBin; i++) gMax = Math.max(gMax, frame[i]);
+    });
+    for (var px = 0; px < width; px++) {
+      var frame = spec[Math.min(spec.length - 1, Math.floor(px / width * spec.length))];
+      for (var py = 0; py < height; py++) {
+        var bin = Math.max(0, Math.min(maxBin - 1, Math.floor((1 - py / height) * maxBin)));
+        var mag = frame ? frame[bin] || 0 : 0;
+        var dB = Math.max(0, Math.min(1, (Math.log10(mag / Math.max(gMax, .0001) + .001) + 3) / 3));
+        var shade = Math.floor(250 - Math.pow(dB, .72) * 232);
+        var idx = (py * width + px) * 4;
+        img.data[idx] = shade;
+        img.data[idx + 1] = shade;
+        img.data[idx + 2] = shade;
+        img.data[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, x, y);
+  }
+
+  function computeSpec(signal, fftSz, hop, maxBin) {
+    var frames = Math.floor((signal.length - fftSz) / hop) + 1;
+    var spec = [];
+    for (var fr = 0; fr < frames; fr++) {
+      var off = fr * hop;
+      var real = new Float32Array(fftSz);
+      for (var i = 0; i < fftSz; i++) {
+        real[i] = (signal[off + i] || 0) * (.54 - .46 * Math.cos(2 * Math.PI * i / (fftSz - 1)));
+      }
+      var mags = new Float32Array(maxBin);
+      for (var k = 0; k < maxBin; k++) {
+        var re = 0;
+        var im = 0;
+        for (var n = 0; n < fftSz; n++) {
+          var a = -2 * Math.PI * k * n / fftSz;
+          re += real[n] * Math.cos(a);
+          im += real[n] * Math.sin(a);
+        }
+        mags[k] = Math.sqrt(re * re + im * im);
+      }
+      spec.push(mags);
+    }
+    return spec;
+  }
+
+  function drawPraatAxes(ctx, x, y, width, height, dur) {
+    ctx.strokeStyle = "#a59b86";
+    ctx.lineWidth = 1;
+    [0, 2000, 4000, 6000, 8000].forEach(function (hz) {
+      var yy = y + height - hz / 8000 * height;
+      ctx.beginPath();
+      ctx.moveTo(x, yy);
+      ctx.lineTo(x + width, yy);
+      ctx.stroke();
+      ctx.fillStyle = "#6f6655";
+      ctx.font = "11px Arial";
+      ctx.textAlign = "right";
+      ctx.fillText(hz >= 1000 ? hz / 1000 + ".0" : "0", x - 8, yy + 4);
+    });
+    ctx.fillStyle = "#2f2a22";
+    ctx.font = "700 12px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("Frequency (kHz)", 8, y + 16);
+    ctx.textAlign = "center";
+    ctx.fillText("Time (ms)", x + width / 2, y + height + 24);
+    for (var t = 0; t <= dur + .001; t += .1) {
+      var xx = x + t / dur * width;
+      ctx.strokeStyle = "#554c3c";
+      ctx.beginPath();
+      ctx.moveTo(xx, y + height);
+      ctx.lineTo(xx, y + height + (Math.abs((t * 10) % 5) < .001 ? 13 : 7));
+      ctx.stroke();
+    }
+  }
+
+  function drawSpecMarkers(ctx, x, waveY, width, waveH, specY, specH, dur, markers) {
+    markers.forEach(function (m) {
+      drawOneMarker(ctx, x, waveY, width, waveH, dur, m);
+      drawOneMarker(ctx, x, specY, width, specH, dur, m);
+    });
+  }
+
+  function drawOneMarker(ctx, x, y, width, height, dur, m) {
+    var x1 = x + m.tStart / dur * width;
+    var x2 = x + m.tEnd / dur * width;
+    var mid = (x1 + x2) / 2;
+    ctx.strokeStyle = "rgba(190, 48, 71, .68)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y + height - 5);
+    ctx.lineTo(x1, y + height - 20);
+    ctx.lineTo(x2, y + height - 20);
+    ctx.lineTo(x2, y + height - 5);
+    ctx.stroke();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = "rgba(190, 48, 71, .28)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x1, y + height - 20);
+    ctx.moveTo(x2, y);
+    ctx.lineTo(x2, y + height - 20);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#1a1a2e";
+    ctx.beginPath();
+    ctx.arc(mid, y + height - 32, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#e94560";
+    ctx.font = "700 11px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(m.num, mid, y + height - 32);
+    ctx.textBaseline = "alphabetic";
   }
 
   function arrow(ctx, x1, y1, x2, y2) {

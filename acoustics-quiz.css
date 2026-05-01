@@ -547,6 +547,19 @@ textarea:focus-visible {
   min-height: 240px;
 }
 
+.visual-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.slide-visual {
+  background: #fff;
+}
+
 .visual-caption {
   padding: 9px 12px 11px;
   border-top: 1px solid #d9e0e8;

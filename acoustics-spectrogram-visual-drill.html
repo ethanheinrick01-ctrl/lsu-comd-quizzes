@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>COMD 4153 Spectrogram and Visual Feature Drill</title>
+  <title>COMD 4153 Final Spectrogram Practice</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./acoustics-quiz.css">
 </head>
@@ -12,168 +12,293 @@
 window.ACOUSTICS_PAGE = {
   type: "quiz",
   course: "COMD 4153",
-  title: "Waveform, Spectrum, Spectrogram Drill",
-  subtitle: "Visual recognition practice for the displays and sound-class features Dr. Chung kept returning to in review.",
-  sourceNote: "No raw classroom screenshots are used here; the visuals are original canvas diagrams built from the reviewed acoustic relationships.",
+  title: "Final Spectrogram Practice",
+  subtitle: "Slide-based examples plus new Praat-style final practice for vowels, nasals, semivowels, fricatives, stops, and affricates.",
+  sourceNote: "Built from the CH 11 class slide material, lab review examples, Test 2 spectrogram practice style, and final-review priorities.",
   sections: [
     {
-      title: "Display Recognition and Axes",
-      desc: "These should be automatic by exam day: display name, x-axis, y-axis, and z-axis when present.",
+      title: "Real Slide Examples",
+      desc: "These are the class-style figures: waveform plus spectrogram, formant tracks, spectra, and VOT panels. Practice naming the cue before reading the answer.",
       questions: [
         {
           type: "visual",
-          topic: "Three displays",
-          visual: "displays",
-          visualCaption: "Original display comparison: waveform, spectrum, and spectrogram.",
-          prompt: "Identify the three displays and give the x-axis and y-axis for each. Include the z-axis where needed.",
-          model: "Waveform: x-axis = time, y-axis = amplitude. Spectrum: x-axis = frequency, y-axis = amplitude. Spectrogram: x-axis = time, y-axis = frequency, z-axis/darkness = amplitude or intensity.",
-          rubric: ["Names all three displays.", "Gives correct x/y axes for waveform and spectrum.", "Gives spectrogram x/y plus darkness/intensity."]
-        },
-        {
-          type: "mc",
-          topic: "Waveform",
-          prompt: "A waveform shows amplitude as a function of:",
-          options: ["time", "frequency", "speaker age", "vocal tract length only"],
-          answer: 0,
-          explanation: "A waveform is a time-domain display: x = time, y = amplitude."
-        },
-        {
-          type: "mc",
-          topic: "Spectrum",
-          prompt: "A spectrum shows amplitude as a function of:",
-          options: ["frequency", "time", "vowel duration only", "nasalance only"],
-          answer: 0,
-          explanation: "A spectrum is a frequency-domain display: x = frequency, y = amplitude."
-        },
-        {
-          type: "mc",
-          topic: "Spectrogram",
-          prompt: "On a spectrogram, darker regions usually indicate:",
-          options: ["greater acoustic energy/amplitude", "lower time", "higher age", "more spelling regularity"],
-          answer: 0,
-          explanation: "Spectrogram darkness represents greater amplitude or intensity at that time-frequency region."
-        },
-        {
-          type: "tf",
-          topic: "Spectrogram axes",
-          prompt: "The x-axis of a spectrogram is frequency.",
-          answer: 1,
-          explanation: "False. A spectrogram's x-axis is time; frequency is on the y-axis."
-        },
-        {
-          type: "tf",
-          topic: "Spectrum axes",
-          prompt: "The x-axis of a spectrum is frequency.",
-          answer: 0,
-          explanation: "True. Spectrum = frequency domain."
-        },
-        {
-          type: "short",
-          topic: "Visual strategy",
-          prompt: "Give the first two things you should ask yourself when a display appears on the paper final.",
-          model: "First identify the display type: waveform, spectrum, or spectrogram. Then identify the axes before interpreting the sound class or acoustic cue.",
-          rubric: ["Starts with display type.", "Mentions axes.", "Connects axes to later interpretation."]
-        }
-      ]
-    },
-    {
-      title: "Sound-Class Visual Features",
-      desc: "Use the feature, not vibes: periodicity, silence, burst, frication, aspiration, formant bands, nasal murmur, and antiresonance.",
-      questions: [
-        {
-          type: "visual",
-          topic: "VOT",
-          visual: "stop-vot",
-          visualCaption: "Original stop-timing diagram for closure, burst, frication, aspiration, and vowel onset.",
-          prompt: "Which portion of the display is not included in VOT, and why?",
-          model: "The closure interval is not included in VOT. VOT starts at the burst release and ends at the first glottal pulse of the following vowel.",
-          rubric: ["Names closure as excluded.", "Defines VOT start at burst.", "Defines VOT end at first glottal pulse."]
-        },
-        {
-          type: "mc",
-          topic: "Voiceless stop",
-          prompt: "The strongest visual cue for a voiceless stop before the vowel is usually:",
-          options: ["silent closure, burst, and delayed voicing/aspiration", "continuous formants with no interruption", "only nasal murmur", "a flat spectrum with no time axis"],
-          answer: 0,
-          explanation: "Voiceless stops show closure silence, release burst, aspiration/noise, then vowel voicing."
-        },
-        {
-          type: "mc",
-          topic: "Voiced stop",
-          prompt: "A voiced stop closure can show:",
-          options: ["a low-frequency voicing bar", "a high-frequency sibilant peak only", "no possible periodic energy", "only nasal resonance"],
-          answer: 0,
-          explanation: "Voiced stops may maintain weak vocal fold vibration during closure, visible as a low-frequency voicing bar."
+          topic: "Display axes",
+          visualImage: "acoustics_assets/spectrograms/vowel-waveform-spectrogram.png",
+          visualCaption: "Slide example: waveform over a spectrogram for a vowel-like interval.",
+          prompt: "Identify the upper and lower displays. Then explain what the dark horizontal bands in the lower display represent.",
+          model: "The upper display is a waveform: time on the x-axis and amplitude on the y-axis. The lower display is a spectrogram: time on the x-axis, frequency on the y-axis, and darkness/intensity as amplitude. The dark horizontal bands are formant regions, meaning frequency bands with strong acoustic energy shaped by the vocal tract.",
+          rubric: ["Names waveform and spectrogram.", "Gives time/amplitude and time/frequency axes.", "Explains darkness as amplitude and bands as formants."]
         },
         {
           type: "visual",
-          topic: "Affricates",
-          visual: "affricate-compare",
-          visualCaption: "Original timing comparison of stop, fricative, and affricate patterns.",
-          prompt: "Explain how a visual display helps separate a fricative from an affricate.",
-          model: "A fricative has sustained frication without a preceding complete closure and burst. An affricate begins with stop-like closure and burst, then has a prolonged frication interval.",
-          rubric: ["Defines fricative as sustained frication only.", "Defines affricate as closure + burst + prolonged frication.", "Uses visual timing language."]
-        },
-        {
-          type: "mc",
-          topic: "Fricative spectra",
-          prompt: "A strong high-frequency spectral peak is most consistent with:",
-          options: ["a sibilant fricative such as /s/", "a nasal murmur only", "a low F0 vowel only", "silence during closure"],
-          answer: 0,
-          explanation: "Sibilants such as /s/ have intense high-frequency frication energy."
+          topic: "Diphthongs",
+          visualImage: "acoustics_assets/spectrograms/diphthong-formant-trajectory.png",
+          visualCaption: "Slide example: diphthong formant movement across time.",
+          prompt: "Why is a single steady-state formant measurement weaker for this kind of sound?",
+          model: "Diphthongs are dynamic. Their identity depends heavily on formant movement, especially the trajectory and slope over time. A single slice can miss the transitional segment that distinguishes the diphthong from a monophthong or from another diphthong.",
+          rubric: ["States diphthongs are dynamic.", "Mentions formant trajectory or slope.", "Explains why one time slice can miss the cue."]
         },
         {
           type: "visual",
-          topic: "Fricatives",
-          visual: "fricative-spectra",
-          visualCaption: "Original spectral sketch for /s/, /sh/, and /f/ style contrasts.",
-          prompt: "Why is peak frequency alone not always enough to identify every fricative?",
-          model: "Some fricatives, especially weak nonsibilants such as /f/ or theta, can have flatter spectra or unclear peaks. Fricatives are better characterized using multiple measures such as peak frequency, dynamic range, spectral moments, intensity, and temporal patterns.",
-          rubric: ["Names weak/flat nonsibilant spectra or unclear peak.", "States peak alone is insufficient.", "Mentions multiple acoustic measures."]
-        },
-        {
-          type: "visual",
-          topic: "Nasals",
-          visual: "nasal-order",
-          visualCaption: "Original nasal antiresonance order schematic.",
-          prompt: "In a spectrum, would antiresonance appear more like a peak or a dip/notch? Explain.",
-          model: "Antiresonance appears as a dip or notch because energy at that frequency is reduced or cancelled by the trapped side cavity. A resonance appears as a peak.",
-          rubric: ["Says dip/notch.", "Explains energy reduction/cancellation.", "Contrasts resonance peak."]
-        },
-        {
-          type: "mc",
           topic: "Nasal murmur",
-          prompt: "A nasal murmur on a spectrogram is expected to be:",
-          options: ["lower intensity than adjacent vowels with low-frequency periodic energy", "more intense than vowels with only high-frequency noise", "complete silence", "a stop burst only"],
-          answer: 0,
-          explanation: "Nasal murmurs are voiced but damped, so they show weaker periodic energy than neighboring vowels."
+          visualImage: "acoustics_assets/spectrograms/nasal-murmur-spectrum.png",
+          visualCaption: "Slide example: nasal murmur with F1n and a murmur spectrum.",
+          prompt: "What two visual clues tell you the consonant portion is nasal rather than a full vowel?",
+          model: "The nasal portion has lower intensity than the vowel and a low-frequency nasal murmur, often labeled around F1n. It also shows spectral damping/antiresonance effects, so the higher-frequency formants are weaker or harder to identify than in the adjacent vowel.",
+          rubric: ["Mentions low intensity/dimmer energy.", "Mentions low-frequency nasal murmur/F1n.", "Mentions damping, weak higher formants, or antiresonance."]
         },
         {
           type: "visual",
-          topic: "Nasalization",
-          visual: "nasalization",
-          visualCaption: "Original oral-vowel vs nasalized-vowel spectral sketch.",
-          prompt: "If this were a spectrogram, what would lower F1 amplitude in the nasalized vowel tell you?",
-          model: "Lower F1 amplitude suggests nasal coupling has introduced antiresonance near the first formant region. It is evidence that the oral and nasal tracts are coupled during the vowel.",
-          rubric: ["Mentions lower F1 amplitude.", "Links it to nasal coupling/antiresonance.", "States nasalized vowel has both oral and nasal tract involvement."]
+          topic: "Antiresonance",
+          visualImage: "acoustics_assets/spectrograms/nasal-murmur-antiresonance-annotated.png",
+          visualCaption: "Slide example: annotated /m/ versus /n/ murmur and antiresonance.",
+          prompt: "In professor-style wording: what is antiresonance, and how does it appear in this type of visual?",
+          model: "Antiresonance is a frequency region where acoustic energy is reduced because of side-branch coupling, especially the nasal tract or trapped oral cavity during nasals. Visually, it appears as a dip, notch, or weakened band rather than a peak.",
+          rubric: ["Defines antiresonance as reduced/cancelled energy.", "Connects it to nasal coupling or side cavities.", "Says it appears as a dip/notch/weakened band."]
         },
         {
           type: "visual",
           topic: "Semivowels",
-          visual: "semivowels",
-          visualCaption: "Original semivowel transition cue schematic.",
-          prompt: "Which semivowel is most associated with a low F3, and why is that visually useful?",
-          model: "/r/ is most associated with a low F3. On a spectrogram, the low F3 and its transition help separate /r/ from other semivowels such as /w/ and /j/.",
-          rubric: ["Names /r/.", "Mentions low F3.", "Explains spectrogram/transition usefulness."]
+          visualImage: "acoustics_assets/spectrograms/semivowel-transition-comparison.png",
+          visualCaption: "Slide example: /w/, /r/, /j/, and /l/ transition patterns.",
+          prompt: "Which semivowel is the low-F3 trap, and why does this figure make transitions more important than a static vowel chart?",
+          model: "/r/ is the low-F3 trap. Semivowels are identified by constriction intervals plus large formant transitions into and out of those intervals. A static vowel chart does not show the time-varying transition cue that separates /w/, /r/, /j/, and /l/.",
+          rubric: ["Names /r/ for low F3.", "Mentions formant transitions.", "Explains why the time-varying cue matters."]
         },
         {
           type: "visual",
-          topic: "Prosody",
-          visual: "prosody",
-          visualCaption: "Original stress timing diagram.",
-          prompt: "Name two acoustic cues that can make a stressed syllable stand out visually or acoustically.",
-          model: "A stressed syllable may show higher F0, greater intensity, longer duration, and a more distinctive vowel formant pattern.",
-          rubric: ["Names at least two correct cues.", "Uses acoustic terms.", "Connects them to stress."]
+          topic: "Sibilant vs nonsibilant",
+          visualImage: "acoustics_assets/spectrograms/fricatives-s-vs-f-spectrogram.png",
+          visualCaption: "Slide example: /s/ versus /f/ in VCV frames with spectra.",
+          prompt: "Use the spectrogram and spectra to explain why /s/ is easier to see than /f/.",
+          model: "/s/ is a sibilant with strong high-frequency frication energy, so it appears darker and louder in the spectrogram and has a stronger spectral peak. /f/ is a nonsibilant with weaker, more diffuse energy, so it can look faint and its peak is less reliable.",
+          rubric: ["Identifies /s/ as sibilant and /f/ as nonsibilant.", "Mentions stronger high-frequency energy for /s/.", "Mentions weaker/diffuse energy for /f/."]
+        },
+        {
+          type: "visual",
+          topic: "Fricative duration",
+          visualImage: "acoustics_assets/spectrograms/fricative-duration-voicing.png",
+          visualCaption: "Slide example: fricative duration difference in VCV frames.",
+          prompt: "What voicing-duration relationship is this slide testing?",
+          model: "Voiceless fricatives tend to have longer frication duration than voiced fricatives, all else equal. The voiceless fricative requires laryngeal spreading and sustained turbulent airflow, while voicing constrains the aerodynamic conditions needed for frication.",
+          rubric: ["States voiceless fricatives are longer.", "States voiced fricatives are shorter.", "Connects the difference to laryngeal/aerodynamic requirements."]
+        },
+        {
+          type: "visual",
+          topic: "Fricatives in connected speech",
+          visualImage: "acoustics_assets/spectrograms/fricatives-sentence-spectrogram.png",
+          visualCaption: "Slide example: connected-speech spectrogram with fricative intervals.",
+          prompt: "Why is connected-speech identification harder than a clean CV example?",
+          model: "Connected speech compresses and blends cues. Vowels, fricatives, stops, and transitions overlap in time, so the examiner expects you to use acoustic features such as high-frequency aperiodic noise, formant bands, closure gaps, and transitions rather than relying on a perfectly isolated segment.",
+          rubric: ["Mentions cue overlap or compression.", "Names at least two visual features.", "Explains why isolated-segment thinking is risky."]
+        },
+        {
+          type: "visual",
+          topic: "LDG and aspiration",
+          visualImage: "acoustics_assets/spectrograms/fricative-ldg-aspiration.png",
+          visualCaption: "Slide example: laryngeal and supralaryngeal timing for voiceless fricatives.",
+          prompt: "What timing relationship explains why a voiceless fricative can include aspiration-like noise?",
+          model: "For a voiceless fricative, the laryngeal devoicing gesture can overlap with the supralaryngeal fricative constriction. If the constriction is released while the glottis is still spread, aspiration-like noise may continue after the fricative constriction ends.",
+          rubric: ["Mentions laryngeal devoicing or glottal spreading.", "Mentions supralaryngeal constriction timing.", "Explains aspiration-like noise after release."]
+        },
+        {
+          type: "visual",
+          topic: "/h/ acoustics",
+          visualImage: "acoustics_assets/spectrograms/h-fricative-spectrogram.png",
+          visualCaption: "Slide example: /h/ in vowel contexts.",
+          prompt: "Why is /h/ a special fricative case on a spectrogram?",
+          model: "/h/ is generated at the glottis rather than at a tight oral constriction. Its noise is shaped by the vocal tract posture of the surrounding vowel, so its spectral pattern often resembles a weak, breathy version of the neighboring vowel formants.",
+          rubric: ["States glottal source.", "Contrasts with oral constriction fricatives.", "Mentions shaping by neighboring vowel/vocal tract."]
+        },
+        {
+          type: "visual",
+          topic: "Nasal place comparison",
+          visualImage: "acoustics_assets/spectrograms/nasal-m-n-ng-comparison.png",
+          visualCaption: "Slide example: /m/, /n/, and /ng/ nasal-vowel comparisons.",
+          prompt: "What should you compare when asked about nasal place of articulation?",
+          model: "Compare the murmur piece, the murmur-to-vowel transition, and the transition piece after release. Nasal place is not read from one obvious dark band alone; the murmur spectrum and F2/F3 transitions into the vowel both carry place information.",
+          rubric: ["Names murmur piece.", "Names transition or murmur-plus-transition information.", "Mentions F2/F3 transition or place cues."]
+        },
+        {
+          type: "visual",
+          topic: "Voiceless stop VOT",
+          visualImage: "acoustics_assets/spectrograms/ata-voiceless-stop-vot.png",
+          visualCaption: "Praat example: /ata/ with a selected VOT/aspiration interval.",
+          prompt: "For a voiceless stop, where does VOT begin and end? Name the portion that is not included.",
+          model: "VOT begins at stop release, visible as the burst, and ends at the onset of vocal fold vibration for the following vowel. The closure interval before the burst is not included in VOT.",
+          rubric: ["Starts VOT at burst/release.", "Ends VOT at first glottal pulse/voicing onset.", "Excludes closure interval."]
+        },
+        {
+          type: "visual",
+          topic: "Voiced stop VOT",
+          visualImage: "acoustics_assets/spectrograms/ada-voiced-stop-vot.png",
+          visualCaption: "Praat example: /ada/ with shorter selected timing.",
+          prompt: "Why should this voiced-stop example have shorter VOT than the voiceless-stop example?",
+          model: "For English voiced stops, the vocal folds are closer to phonation-ready position and voicing resumes quickly after release. That means the time from burst to vowel voicing is short compared with a voiceless aspirated stop.",
+          rubric: ["Names short VOT for voiced stops.", "Mentions rapid voicing after release.", "Contrasts with voiceless aspirated stops."]
+        },
+        {
+          type: "visual",
+          topic: "Stop place",
+          visualImage: "acoustics_assets/spectrograms/stop-burst-spectra-place.png",
+          visualCaption: "Slide example: /b/, /d/, and /g/ burst spectra.",
+          prompt: "Give the burst-spectrum pattern for /b/, /d/, and /g/ and explain what exam trap this creates.",
+          model: "/b/ is diffuse-falling, /d/ is diffuse-rising, and /g/ is compact. The trap is that stop place is not identified from closure alone; place cues rely on burst spectrum and formant transitions, and they vary with context.",
+          rubric: ["Maps /b/ to diffuse-falling.", "Maps /d/ to diffuse-rising and /g/ to compact.", "Mentions context/formant-transition trap."]
+        }
+      ]
+    },
+    {
+      title: "Final Practice Spectrograms",
+      desc: "These are new exam-style panels rendered like the old quiz: waveform on top, spectrogram below, and numbered intervals when Dr. Chung would expect you to label parts.",
+      questions: [
+        {
+          type: "visual",
+          topic: "Vowel formants",
+          visual: "spec:vowel-a",
+          visualCaption: "Generated final-practice spectrogram: vowel /ɑ/.",
+          prompt: "What makes this a vowel display rather than a fricative, stop, or nasal?",
+          model: "It is periodic, high-amplitude, and dominated by stable formant bands. There is no silent closure, no release burst, and no sustained high-frequency aperiodic frication. It also lacks the low-intensity murmur and antiresonance pattern expected for a nasal.",
+          rubric: ["Mentions periodicity.", "Mentions stable formant bands/high amplitude.", "Rules out closure/burst/frication/nasal murmur."]
+        },
+        {
+          type: "visual",
+          topic: "F1/F2 trap",
+          visual: "spec:vowel-i",
+          visualCaption: "Generated final-practice spectrogram: vowel /i/.",
+          prompt: "Describe the expected F1/F2 pattern for /i/ and the articulatory interpretation.",
+          model: "/i/ has low F1 and high F2. Low F1 corresponds to a high vowel, and high F2 corresponds to a front vowel.",
+          rubric: ["States low F1.", "States high F2.", "Maps F1 to height and F2 to advancement."]
+        },
+        {
+          type: "visual",
+          topic: "Diphthong",
+          visual: "spec:diphthong-ai",
+          visualCaption: "Generated final-practice spectrogram: dynamic diphthong trajectory.",
+          prompt: "What should you look for if the question asks whether this is a monophthong or diphthong?",
+          model: "Look for formant movement across the vowel nucleus. A diphthong has a characteristic trajectory, especially visible in F2 movement, rather than one steady-state target.",
+          rubric: ["Mentions formant movement.", "Mentions trajectory/slope.", "Contrasts with steady-state vowel."]
+        },
+        {
+          type: "mc",
+          topic: "Sound class ID",
+          visual: "spec:voiceless-fricative-sa",
+          visualCaption: "Generated final-practice spectrogram: /sɑ/.",
+          prompt: "The first interval is best identified as:",
+          options: ["voiceless sibilant fricative", "voiced stop closure", "nasal murmur", "vowel steady state"],
+          answer: 0,
+          explanation: "It has sustained aperiodic high-frequency energy before the vowel and no preceding closure/burst."
+        },
+        {
+          type: "visual",
+          topic: "Weak fricatives",
+          visual: "spec:weak-fricative-fa",
+          visualCaption: "Generated final-practice spectrogram: weak nonsibilant /fɑ/.",
+          prompt: "Why is this the kind of fricative that can be easy to miss visually?",
+          model: "Nonsibilants such as /f/ have weak, diffuse frication energy. They may not show a strong dark high-frequency band or a reliable sharp spectral peak, so duration and context become important.",
+          rubric: ["Names nonsibilant/weak fricative.", "Mentions diffuse or low-intensity energy.", "Mentions using duration/context rather than peak alone."]
+        },
+        {
+          type: "mc",
+          topic: "Voiced fricative",
+          visual: "spec:voiced-fricative-za",
+          visualCaption: "Generated final-practice spectrogram: /zɑ/.",
+          prompt: "The extra low-frequency energy during the fricative interval is most likely:",
+          options: ["a voicing bar from vocal fold vibration", "a stop burst", "F2 of /i/", "an antiresonance peak"],
+          answer: 0,
+          explanation: "Voiced fricatives combine turbulent frication with vocal fold vibration, visible as low-frequency voicing energy."
+        },
+        {
+          type: "visual",
+          topic: "Voiceless stop parts",
+          visual: "spec:voiceless-stop-pa",
+          visualCaption: "Generated final-practice spectrogram: voiceless stop plus vowel.",
+          prompt: "Label intervals 1-4 and state which interval(s) are counted in VOT.",
+          model: "1 = closure interval, 2 = release burst, 3 = aspiration/frication noise after release, 4 = vowel onset. VOT begins at the burst and includes the post-release aspiration/noise until the first glottal pulse of the vowel; closure is not counted.",
+          rubric: ["Labels closure, burst, aspiration, vowel.", "Starts VOT at burst.", "Excludes closure and ends at voicing onset."]
+        },
+        {
+          type: "visual",
+          topic: "Voiced stop trap",
+          visual: "spec:voiced-stop-ba",
+          visualCaption: "Generated final-practice spectrogram: voiced stop plus vowel.",
+          prompt: "How does this differ from the voiceless stop display?",
+          model: "The voiced stop has low-frequency voicing during closure and a short interval from burst to vowel voicing. The voiceless stop is more likely to show a fully silent closure and a longer aspiration/VOT interval.",
+          rubric: ["Mentions voicing bar during closure.", "Mentions short VOT.", "Contrasts with silent closure/long aspiration for voiceless."]
+        },
+        {
+          type: "visual",
+          topic: "Affricate vs stop",
+          visual: "spec:affricate-cha",
+          visualCaption: "Generated final-practice spectrogram: affricate plus vowel.",
+          prompt: "What feature makes this an affricate rather than just a stop?",
+          model: "It begins like a stop, with closure and a burst, but then has an extended frication interval before the vowel. A simple stop has only a brief burst/aspiration interval, not sustained frication at the constriction.",
+          rubric: ["Names closure and burst.", "Names extended frication.", "Contrasts with simple stop timing."]
+        },
+        {
+          type: "multi",
+          topic: "Fricative vs affricate",
+          visual: "spec:affricate-cha",
+          visualCaption: "Generated final-practice spectrogram: closure, burst, extended frication, vowel.",
+          prompt: "FIND TWO features that are required for the affricate answer here.",
+          options: ["complete closure before release", "extended frication after the burst", "steady vowel only", "no release burst", "only low-frequency nasal murmur"],
+          answer: [0, 1],
+          explanation: "An affricate is stop-like closure plus burst followed by a sustained frication interval."
+        },
+        {
+          type: "visual",
+          topic: "Nasal murmur",
+          visual: "spec:nasal-ma",
+          visualCaption: "Generated final-practice spectrogram: /mɑ/.",
+          prompt: "Name two cues that the first interval is a nasal murmur.",
+          model: "The first interval is voiced but lower in intensity than the vowel, with energy concentrated low in frequency. The nasal side branch creates antiresonance/damping, so higher formants are weaker or absent compared with the following vowel.",
+          rubric: ["Mentions low-frequency voiced murmur.", "Mentions lower intensity than vowel.", "Mentions antiresonance/damping."]
+        },
+        {
+          type: "mc",
+          topic: "Nasal place caution",
+          visual: "spec:nasal-na",
+          visualCaption: "Generated final-practice spectrogram: /nɑ/.",
+          prompt: "The professor's likely BEST answer for nasal place cues is:",
+          options: ["murmur plus transition information is useful; transitions after release can carry place cues", "only spelling tells nasal place", "nasals have no formant structure", "VOT is the main nasal cue"],
+          answer: 0,
+          explanation: "The slides emphasized murmur, transition, and murmur-plus-transition pieces for nasal place, with formant transitions as important place cues."
+        },
+        {
+          type: "visual",
+          topic: "Lateral",
+          visual: "spec:lateral-la",
+          visualCaption: "Generated final-practice spectrogram: /lɑ/.",
+          prompt: "What makes /l/ look vowel-like but still not identical to the vowel?",
+          model: "/l/ is periodic and has formant-like structure, so it can look vowel-like. But it is lower in intensity and has antiresonance/damping caused by the lateral constriction, so the formant pattern is weaker than the following vowel.",
+          rubric: ["Mentions periodic/formant-like structure.", "Mentions lower intensity.", "Mentions antiresonance/damping."]
+        },
+        {
+          type: "visual",
+          topic: "Semivowel /w/",
+          visual: "spec:semivowel-wa",
+          visualCaption: "Generated final-practice spectrogram: /wɑ/.",
+          prompt: "For /w/, what formant-transition pattern should you expect?",
+          model: "/w/ is associated with low F1 and low F2/F3 during the constriction, followed by transitions into the vowel. The key is the movement from the semivowel constriction interval into the vowel formant pattern.",
+          rubric: ["Mentions low F2/F3.", "Mentions transition into vowel.", "Uses constriction interval language."]
+        },
+        {
+          type: "visual",
+          topic: "Semivowel /j/",
+          visual: "spec:semivowel-ja",
+          visualCaption: "Generated final-practice spectrogram: /jɑ/.",
+          prompt: "How would /j/ contrast with /w/ on a spectrogram?",
+          model: "/j/ is associated with high F2/F3 values during the constriction because it is palatal/front. /w/ is associated with low F2/F3 because it is labial-velar/back-round. The contrast is visible in the transition pattern into the vowel.",
+          rubric: ["Mentions high F2/F3 for /j/.", "Mentions low F2/F3 for /w/.", "Connects both to transitions."]
+        },
+        {
+          type: "visual",
+          topic: "Semivowel /r/",
+          visual: "spec:semivowel-ra",
+          visualCaption: "Generated final-practice spectrogram: /rɑ/.",
+          prompt: "What is the classic /r/ cue, and how would Dr. Chung likely phrase the trap?",
+          model: "The classic /r/ cue is lowered F3. The trap is treating all semivowels as just vowel-like sounds; /r/ specifically is recognized by its low F3 and transition pattern, not by vowel formants alone.",
+          rubric: ["Names low/lowered F3.", "Mentions transition pattern.", "Warns against treating all semivowels the same."]
         }
       ]
     }
