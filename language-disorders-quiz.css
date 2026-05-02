@@ -37,7 +37,8 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -123,7 +124,8 @@ main.wrap {
 .hub-card:focus-visible,
 .action-btn:focus-visible,
 .choice-btn:focus-visible,
-.check-btn:focus-visible {
+.check-btn:focus-visible,
+.list-input:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
@@ -436,6 +438,30 @@ main.wrap {
   accent-color: var(--accent);
 }
 
+.list-response {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.list-input {
+  width: 100%;
+  min-height: 118px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ink);
+  resize: vertical;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.list-input:disabled {
+  background: #f8fafc;
+  color: #374151;
+}
+
 .check-btn {
   width: fit-content;
   margin-top: 10px;
@@ -482,6 +508,25 @@ main.wrap {
 
 .model.show {
   display: block;
+}
+
+.answer-key {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.answer-key li {
+  margin: 4px 0;
+}
+
+.answer-key .hit {
+  color: var(--good);
+  font-weight: 800;
+}
+
+.answer-key .miss {
+  color: var(--bad);
+  font-weight: 800;
 }
 
 @media (max-width: 860px) {

@@ -30,7 +30,7 @@
     if (!page.sections) page.sections = [{ title: page.title, questions: page.questions || [] }];
     page.sections.forEach(function (section) {
       section.questions.forEach(function (q) {
-        if (!q.points) q.points = q.type === "mc" ? 2 : 1;
+        if (!q.points) q.points = q.type === "list" && q.answers ? q.answers.length : q.type === "mc" ? 2 : 1;
         if ((q.type === "tf" || q.type === "match") && !q.options && q.type === "tf") q.options = ["True", "False"];
       });
     });
@@ -161,7 +161,7 @@
   function questionHTML(q, number) {
     var id = "q" + number;
     var displayQ = shuffleQuestionChoices(q);
-    var typeLabel = displayQ.type === "multi" ? "Find All" : displayQ.type === "match" ? "Match" : displayQ.type === "tf" ? "T/F" : "MC";
+    var typeLabel = displayQ.type === "multi" ? "Find All" : displayQ.type === "match" ? "Match" : displayQ.type === "tf" ? "T/F" : displayQ.type === "list" ? "List" : "MC";
     var prompt = [
       '<p class="q-prompt">' + escapeHTML(displayQ.prompt) + ' <span class="pill paper">' + displayQ.points + ' pt' + (displayQ.points === 1 ? "" : "s") + '</span></p>',
       displayQ.subprompt ? '<p class="q-subprompt">' + escapeHTML(displayQ.subprompt) + '</p>' : ''
@@ -176,6 +176,13 @@
       response = '<div class="option-list">' + displayQ.options.map(function (option, index) {
         return '<label class="multi-row" data-index="' + index + '"><input type="checkbox" data-qid="' + id + '" data-index="' + index + '"> <span>' + escapeHTML(option) + '</span></label>';
       }).join("") + '</div><button type="button" class="check-btn" data-action="check-multi" data-qid="' + id + '">Check Answer</button>';
+    } else if (displayQ.type === "list") {
+      response = [
+        '<div class="list-response">',
+        '  <textarea class="list-input" data-qid="' + id + '" rows="' + (displayQ.rows || 5) + '" placeholder="' + escapeHTML(displayQ.placeholder || "Type your list here. Commas, bullets, or one item per line all work.") + '"></textarea>',
+        '  <button type="button" class="check-btn" data-action="check-list" data-qid="' + id + '">Check List</button>',
+        '</div>'
+      ].join("");
     }
 
     window.__LANG_DIS_QS[id] = displayQ;
@@ -197,7 +204,7 @@
   }
 
   function shuffleQuestionChoices(q) {
-    if (!q.options || q.type === "tf") return q;
+    if (!q.options || q.type === "tf" || q.type === "list") return q;
 
     var copy = {};
     Object.keys(q).forEach(function (key) { copy[key] = q[key]; });
@@ -241,8 +248,20 @@
   }
 
   function modelHTML(q) {
+    if (q.type === "list") {
+      var pieces = ['<strong>Key list:</strong>', answerKeyHTML(answerSpecs(q))];
+      if (q.explanation) pieces.push('<p>' + escapeHTML(q.explanation) + '</p>');
+      return '<div class="model">' + pieces.join("") + '</div>';
+    }
     if (!q.explanation) return "";
     return '<div class="model">' + escapeHTML(q.explanation) + '</div>';
+  }
+
+  function answerKeyHTML(specs, matched) {
+    return '<ul class="answer-key">' + specs.map(function (spec, index) {
+      var className = matched ? matched[index] ? ' class="hit"' : ' class="miss"' : "";
+      return '<li' + className + '>' + escapeHTML(spec.label) + '</li>';
+    }).join("") + '</ul>';
   }
 
   function attachEvents() {
@@ -252,6 +271,7 @@
       var action = target.getAttribute("data-action");
       if (action === "choose") choose(target);
       if (action === "check-multi") checkMulti(target);
+      if (action === "check-list") checkList(target);
       if (action === "reveal-all") revealAll();
       if (action === "reset") window.location.reload();
       if (action === "print") window.print();
@@ -298,6 +318,53 @@
     showFeedback(qid, correct, q.explanation);
   }
 
+  function checkList(button) {
+    var qid = button.getAttribute("data-qid");
+    if (state.graded[qid]) return;
+    var q = window.__LANG_DIS_QS[qid];
+    var card = document.getElementById(qid);
+    var input = card.querySelector(".list-input");
+    var normalized = normalizeListText(input ? input.value : "");
+    var specs = answerSpecs(q);
+    var matched = specs.map(function (spec) {
+      return spec.aliases.some(function (alias) {
+        return containsListAnswer(normalized, alias);
+      });
+    });
+    var matchedCount = matched.filter(Boolean).length;
+    var points = specs.length === q.points ? matchedCount : Math.round((matchedCount / Math.max(1, specs.length)) * q.points);
+
+    if (input) input.disabled = true;
+    button.disabled = true;
+    mark(qid, points);
+    showListFeedback(qid, matchedCount, specs.length, points, q.points, q.explanation, specs, matched);
+  }
+
+  function answerSpecs(q) {
+    return (q.answers || []).map(function (entry) {
+      if (typeof entry === "string") return { label: entry, aliases: [entry] };
+      var aliases = (entry.aliases || []).slice();
+      aliases.unshift(entry.label);
+      return { label: entry.label, aliases: aliases };
+    });
+  }
+
+  function normalizeListText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/['’]/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function containsListAnswer(normalizedText, alias) {
+    var target = normalizeListText(alias);
+    if (!target) return false;
+    return (" " + normalizedText + " ").indexOf(" " + target + " ") !== -1;
+  }
+
   function mark(qid, points) {
     state.graded[qid] = true;
     state.earned += points;
@@ -310,6 +377,21 @@
     if (!feedback) return;
     feedback.className = "feedback show " + (correct ? "good" : "bad");
     feedback.innerHTML = '<strong>' + (correct ? "Correct." : "Review this.") + '</strong> ' + escapeHTML(text || "");
+    var model = document.getElementById(qid).querySelector(".model");
+    if (model) model.classList.add("show");
+  }
+
+  function showListFeedback(qid, matchedCount, total, points, possible, text, specs, matched) {
+    var feedback = document.querySelector('[data-feedback="' + qid + '"]');
+    if (!feedback) return;
+    var complete = matchedCount === total;
+    feedback.className = "feedback show " + (complete ? "good" : "bad");
+    feedback.innerHTML = [
+      '<strong>' + (complete ? "Complete." : "Keep drilling this.") + '</strong> ',
+      'Matched ' + matchedCount + '/' + total + ' key items for ' + points + '/' + possible + ' pts.',
+      text ? ' ' + escapeHTML(text) : '',
+      answerKeyHTML(specs, matched)
+    ].join("");
     var model = document.getElementById(qid).querySelector(".model");
     if (model) model.classList.add("show");
   }
