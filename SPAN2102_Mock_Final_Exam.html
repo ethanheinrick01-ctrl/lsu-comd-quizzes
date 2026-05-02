@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPAN 2102 — Mock Final Exam (Baldrizzt's Trial)</title>
+<style>
+  :root {
+    --bone:#e8dfc8; --dark:#0f0d10; --marrow:#1c1822; --blood:#7a1a2e;
+    --gold:#c9a84c; --accent:#3a2a5a; --correct:#1e6e1e; --wrong:#7a1010;
+    --neutral:#2a2230;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--dark);color:var(--bone);font-family:'Georgia',serif;line-height:1.6;min-height:100vh}
+  header{background:linear-gradient(135deg,#0a0810,#1a1424);border-bottom:2px solid var(--blood);padding:28px 32px;text-align:center}
+  header h1{font-size:1.9rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+  header .sub{color:#9080b0;font-style:italic;margin-top:6px;font-size:0.95rem}
+  header .meta{color:#7a6a90;margin-top:10px;font-size:0.82rem}
+  .progress-bar-wrap{background:#0a070d;height:6px;width:100%}
+  .progress-bar{height:6px;background:linear-gradient(90deg,var(--blood),var(--gold));width:0%;transition:width .4s ease}
+  main{max-width:900px;margin:0 auto;padding:32px 20px 80px}
+  .preamble{background:var(--marrow);border:1px solid #2a2230;border-radius:8px;padding:22px 26px;margin-bottom:32px;font-size:0.9rem;color:#c4bda8}
+  .preamble strong{color:var(--gold)}
+  .section-card{background:var(--marrow);border:1px solid #2a2230;border-radius:8px;padding:28px;margin-bottom:28px}
+  .section-title{font-size:1.15rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid #3a2a4a;padding-bottom:10px;margin-bottom:8px}
+  .section-pages{font-size:0.78rem;color:#7a6a90;font-style:italic;margin-bottom:16px}
+  .section-note{font-size:0.85rem;color:#a8a0c0;font-style:italic;margin-bottom:18px}
+  .q-row{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #241c2c}
+  .q-row:last-child{border-bottom:none}
+  .q-label{display:block;font-size:0.95rem;margin-bottom:10px;color:#d4cdb8}
+  .q-num{color:var(--gold);font-weight:bold;margin-right:6px}
+  .nosotros-tag{display:inline-block;background:#1a0e2a;border:1px solid #5a2a8a;border-radius:10px;color:#b080e0;font-size:0.7rem;letter-spacing:0.5px;padding:1px 8px;margin-left:8px;vertical-align:middle;text-transform:uppercase}
+  .trick-tag{display:inline-block;background:#2a0a14;border:1px solid #8a2a3a;border-radius:10px;color:#e08090;font-size:0.7rem;letter-spacing:0.5px;padding:1px 8px;margin-left:8px;vertical-align:middle;text-transform:uppercase}
+  .mc-options{display:flex;flex-direction:column;gap:6px;margin-left:8px}
+  .mc-option{display:flex;align-items:center;gap:10px;background:#141020;border:1px solid #2a2230;border-radius:5px;padding:9px 14px;cursor:pointer;transition:border-color .2s,background .2s;font-size:0.92rem;user-select:none}
+  .mc-option:hover:not(.locked){border-color:var(--gold);background:#1e1a2a}
+  .mc-option.locked{cursor:default}
+  .mc-option input[type="radio"]{accent-color:var(--blood)}
+  .mc-option .letter{color:var(--gold);font-style:italic;margin-right:4px;min-width:18px}
+  .mc-option.correct{border-color:var(--correct);background:#0d2a0d;color:#7edd7e}
+  .mc-option.wrong{border-color:var(--wrong);background:#2a0a0a;color:#e08080}
+  .inline-feedback{font-size:0.8rem;margin-top:6px;font-style:italic;min-height:18px}
+  .fb-correct{color:#5ebb5e}
+  .fb-wrong{color:#e08080}
+  .submit-row{text-align:center;margin-top:36px}
+  .btn-submit{background:var(--gold);border:none;border-radius:5px;color:var(--dark);cursor:pointer;font-family:'Georgia',serif;font-size:1rem;font-weight:bold;letter-spacing:2px;padding:14px 40px;text-transform:uppercase;transition:background .2s}
+  .btn-submit:hover{background:#e8c060}
+  .btn-reset{background:transparent;border:1px solid var(--blood);border-radius:5px;color:#c08090;cursor:pointer;font-family:'Georgia',serif;font-size:0.85rem;letter-spacing:1px;margin-top:20px;padding:8px 20px;text-transform:uppercase;transition:all .2s;display:block;margin-left:auto;margin-right:auto}
+  .btn-reset:hover{background:var(--blood);color:var(--bone)}
+  #score-panel{display:none;background:linear-gradient(135deg,#0a0810,var(--marrow));border:2px solid var(--gold);border-radius:10px;padding:40px;text-align:center;margin-top:40px}
+  #score-panel h2{color:var(--gold);font-size:1.8rem;margin-bottom:12px}
+  #score-panel .score-number{font-size:3.5rem;color:var(--bone);font-weight:bold}
+  #score-panel .score-sub{color:#a890c0;font-style:italic;margin-top:8px}
+  #score-panel .breakdown{margin-top:24px;font-size:0.88rem;color:#c4bda8;text-align:left;border-top:1px solid #3a2a4a;padding-top:18px}
+  #score-panel .breakdown table{width:100%;border-collapse:collapse}
+  #score-panel .breakdown td{padding:5px 8px;border-bottom:1px solid #241c2c}
+  #score-panel .breakdown td:last-child{text-align:right;color:var(--gold)}
+  #score-panel .baldrizzt-remark{color:#c4bda8;font-style:italic;margin-top:22px;font-size:0.95rem;border-top:1px solid #3a2a4a;padding-top:18px;line-height:1.7}
+  .nav-section{position:sticky;top:0;background:rgba(15,13,16,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #2a2230;padding:8px 12px;z-index:10;font-size:0.78rem;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .nav-section a{color:#9080b0;text-decoration:none;padding:3px 8px;border-radius:3px;border:1px solid transparent}
+  .nav-section a:hover{color:var(--gold);border-color:#3a2a4a}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚱ SPAN 2102 — La Prueba Final ⚱</h1>
+  <div class="sub">Mock Final Exam · Baldrizzt's Trial of the Bone Throne</div>
+  <div class="meta">8 sections · 80 multiple-choice questions · matches the raw study-guide skeleton</div>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<nav class="nav-section">
+  <a href="#sec1">I · Vocab</a>
+  <a href="#sec2">II · Pres. Perfect</a>
+  <a href="#sec3">III · Antecedents</a>
+  <a href="#sec4">IV · Purpose/Conting.</a>
+  <a href="#sec5">V · Time Conjunc.</a>
+  <a href="#sec6">VI · Futuro</a>
+  <a href="#sec7">VII · Past Subj.</a>
+  <a href="#sec8">VIII · Cond. + Si</a>
+</nav>
+
+<main>
+
+<div class="preamble">
+  <strong>Instructions, apprentice:</strong> Each section has 10 multiple-choice questions. No type-ins — your professor wouldn't dare. Three questions per section target the <em>nosotros</em> form (purple tag), because the SPAN final feasts on those endings every spring. A scattering of obscure verbs (red tag) wear the same coat as common ones — read carefully or get gutted. Answer all 80, then summon your score at the bottom.
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION I — VOCABULARY (CH 15-18)
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec1">
+  <div class="section-title">I · Vocabulario (Capítulos 15–18)</div>
+  <div class="section-pages">pp. 474–475, 499, 526–527, 557 — work, environment, transportation, politics &amp; media</div>
+  <div class="section-note">Complete las oraciones con la palabra más apropiada. Indicate the correct answer.</div>
+  <div id="sec1q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION II — PRESENT PERFECT IND/SUBJ
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec2">
+  <div class="section-title">II · Present Perfect Indicative &amp; Subjunctive</div>
+  <div class="section-pages">pp. 462–465 — he/has/ha/hemos/habéis/han + past participle · subj: haya/hayas/haya/hayamos/hayáis/hayan + past participle</div>
+  <div class="section-note">Indicate the correct answer.</div>
+  <div id="sec2q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION III — NONEXISTENT/INDEFINITE ANTECEDENTS
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec3">
+  <div class="section-title">III · Subjunctive after Nonexistent &amp; Indefinite Antecedents</div>
+  <div class="section-pages">pp. 482–485 — if the antecedent doesn't exist or is unknown/sought-but-unfound → subjunctive</div>
+  <div class="section-note">Indicate the correct form (present indicative or present subjunctive).</div>
+  <div id="sec3q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION IV — PURPOSE & CONTINGENCY
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec4">
+  <div class="section-title">IV · Subjunctive after Conjunctions of Purpose &amp; Contingency</div>
+  <div class="section-pages">pp. 487–489 — ESCAPA: en caso de que · sin que · con tal de que · antes de que · para que · a menos que (always subj). Single-subject + antes de/para/sin → infinitive.</div>
+  <div class="section-note">Indicate the correct form (infinitive or present subjunctive).</div>
+  <div id="sec4q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION V — TIME CONJUNCTIONS
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec5">
+  <div class="section-title">V · Subjunctive &amp; Indicative after Conjunctions of Time</div>
+  <div class="section-pages">pp. 515–518 — cuando · en cuanto · tan pronto como · hasta que · después de que · mientras. Future/pending → subj. Habitual or completed past → indicative.</div>
+  <div class="section-note">Indicate the correct answer.</div>
+  <div id="sec5q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION VI — EL FUTURO
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec6">
+  <div class="section-title">VI · El Futuro</div>
+  <div class="section-pages">pp. 509–512 — infinitive + -é/-ás/-á/-emos/-éis/-án. Irregular stems: dir-, har-, podr-, pondr-, querr-, sabr-, saldr-, tendr-, vendr-, habr-.</div>
+  <div class="section-note">Indicate the correct simple future form.</div>
+  <div id="sec6q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION VII — IMPERFECTO DEL SUBJUNTIVO
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec7">
+  <div class="section-title">VII · El Imperfecto del Subjuntivo (Past Subjunctive)</div>
+  <div class="section-pages">pp. 536–541 — built off ellos preterite stem + -ara/-iera. Triggers: WEIRDO/ESCAPA in past contexts, como si, si-clauses.</div>
+  <div class="section-note">Indicate the correct answer.</div>
+  <div id="sec7q"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION VIII — CONDICIONAL & SI
+═════════════════════════════════════════ -->
+<div class="section-card" id="sec8">
+  <div class="section-title">VIII · El Condicional &amp; Cláusulas con <em>si</em></div>
+  <div class="section-pages">pp. 546–548 — infinitive + -ía/-ías/-ía/-íamos/-íais/-ían. Same irregular stems as future. Si + past subj → conditional.</div>
+  <div class="section-note">Indicate the correct answer.</div>
+  <div id="sec8q"></div>
+</div>
+
+<div class="submit-row">
+  <button class="btn-submit" onclick="submitAll()">⚱ Summon Final Score ⚱</button>
+</div>
+
+<div id="score-panel">
+  <h2>⚰ Trial Complete ⚰</h2>
+  <div class="score-number" id="finalScore">—</div>
+  <div class="score-sub" id="scoreSub"></div>
+  <div class="breakdown" id="breakdown"></div>
+  <div class="baldrizzt-remark" id="baldrizztRemark"></div>
+  <button class="btn-reset" onclick="resetAll()">Reset &amp; Retake</button>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+// QUESTION DATA — 8 sections × 10 MC each
+// answer = index of correct option (0-3)
+// flags: nosotros = nosotros-target | trick = obscure verb trap
+// ═══════════════════════════════════════
+
+const SECTIONS = {
+
+// ─── SECTION I: VOCAB (CH 15-18) ───
+1: {
+  title: "Vocabulario (Caps. 15-18)",
+  questions: [
+    { q: "La _______ de comunicación entre el jefe y los empleados causó muchos malentendidos.",
+      options: ["solicitud","falta","fábrica","licencia"], answer: 1,
+      explain: "<em>falta</em> = lack/absence. CH 15 work-vocab." },
+    { q: "Nosotros _______ a la entrevista bien preparados, con currículums actualizados.",
+      options: ["llegamos","renunciamos","despedimos","contaminamos"], answer: 0, nosotros: true,
+      explain: "Context: showing up to interview = <em>llegamos</em>. The other three would torch your job prospects." },
+    { q: "La _______ del aire en las grandes ciudades es un problema mundial.",
+      options: ["multa","huelga","contaminación","escasez"], answer: 2,
+      explain: "<em>contaminación</em> = pollution. CH 16 environment." },
+    { q: "Después de las _______, el presidente electo dio un discurso conmovedor.",
+      options: ["fábricas","elecciones","autopistas","huelgas"], answer: 1,
+      explain: "<em>las elecciones</em> = elections. CH 18 política." },
+    { q: "Nosotros _______ del trabajo cuando los jefes nos trataban mal.",
+      options: ["renunciábamos","votábamos","reciclábamos","manejábamos"], answer: 0, nosotros: true,
+      explain: "<em>renunciar</em> = to quit/resign. The verb in the model list." },
+    { q: "El _______ no funcionaba, así que hubo un accidente en la intersección.",
+      options: ["periódico","semáforo","gerente","ciudadano"], answer: 1,
+      explain: "<em>semáforo</em> = traffic light. Comes from CH 17 transport vocab." },
+    { q: "Los obreros decidieron hacer una _______ porque no recibían sueldos justos.",
+      options: ["huelga","solicitud","campaña","licencia"], answer: 0,
+      explain: "<em>huelga</em> = labor strike. Common CH 18 term." },
+    { q: "Mis hermanos y yo _______ todos los periódicos viejos los miércoles.",
+      options: ["votamos","reciclamos","despedimos","contaminamos"], answer: 1, nosotros: true,
+      explain: "<em>reciclar</em> = to recycle. CH 16 environment vocab." },
+    { q: "El periodista _______ las noticias en el noticiero de las seis.",
+      options: ["renunció","reportó","manejó","reclamó"], answer: 1, trick: true,
+      explain: "<em>reportar</em> looks like English on purpose — the verb is real but the trap is <em>reclamar</em> (to demand/complain), which sounds plausible." },
+    { q: "Antes de manejar un coche viejo, hay que _______ los frenos.",
+      options: ["votar","revisar","renunciar","reciclar"], answer: 1,
+      explain: "<em>revisar</em> = to check / inspect. CH 17 mechanics." },
+  ]
+},
+
+// ─── SECTION II: PRESENT PERFECT IND/SUBJ ───
+2: {
+  title: "Present Perfect Indicative & Subjunctive",
+  questions: [
+    { q: "Mis padres se sorprenden de que nosotros _______ tantos sitios este verano.",
+      options: ["hemos visitado","hayamos visitado","visitamos","visitaríamos"], answer: 1, nosotros: true,
+      explain: "<em>se sorprenden de que</em> = emotion (WEIRDO E) → present perfect SUBJUNCTIVE. Nosotros = hayamos + visitado." },
+    { q: "Yo nunca _______ en un avión hasta el año pasado.",
+      options: ["habría viajado","he viajado","haya viajado","viajaría"], answer: 1,
+      explain: "Statement of fact about your life experience → present perfect indicative: <em>he viajado</em>." },
+    { q: "Es probable que la profesora ya _______ los exámenes.",
+      options: ["ha corregido","corrigió","haya corregido","corrige"], answer: 2,
+      explain: "<em>es probable que</em> = doubt (WEIRDO D) → subjunctive: <em>haya corregido</em>." },
+    { q: "Nosotros _______ en esta ciudad por más de quince años.",
+      options: ["hayamos vivido","hemos vivido","vivamos","viviríamos"], answer: 1, nosotros: true,
+      explain: "Plain assertion, no trigger → present perfect indicative. Nosotros = <em>hemos vivido</em>." },
+    { q: "Dudo que tú _______ leído el libro completo en una sola noche.",
+      options: ["hayas","has","habrás","habías"], answer: 0,
+      explain: "<em>dudar que</em> = doubt → subjunctive auxiliary <em>hayas</em>." },
+    { q: "¿Alguna vez _______ paella valenciana?",
+      options: ["has comido","hayas comido","comías","comiste"], answer: 0,
+      explain: "Direct question about life experience, no doubt trigger → indicative <em>has comido</em>." },
+    { q: "Es bueno que nosotros _______ aprendido a usar el subjuntivo perfecto.",
+      options: ["hayamos","hemos","habemos","habríamos"], answer: 0, nosotros: true,
+      explain: "<em>es bueno que</em> = impersonal expression (R) → subjunctive. Nosotros = <em>hayamos</em>. (<em>habemos</em> is not standard Spanish — that's the trap.)" },
+    { q: "La policía está segura de que el ladrón ya _______ por la ventana.",
+      options: ["ha entrado","haya entrado","entrara","habría entrado"], answer: 0,
+      explain: "<em>está segura de que</em> = certainty → indicative <em>ha entrado</em>." },
+    { q: "Me alegro de que ustedes _______ a tiempo a la cena.",
+      options: ["han llegado","hayan llegado","llegan","llegarán"], answer: 1,
+      explain: "<em>me alegro de que</em> = emotion → subjunctive <em>hayan llegado</em>." },
+    { q: "El profesor no cree que sus estudiantes _______ las páginas asignadas.",
+      options: ["han hojeado","hayan hojeado","hojearon","hojearían"], answer: 1, trick: true,
+      explain: "<em>hojear</em> = to skim/leaf through (often confused with <em>ojear</em> 'to glance'). <em>no creer que</em> = doubt → subjunctive <em>hayan hojeado</em>." },
+  ]
+},
+
+// ─── SECTION III: NONEXISTENT/INDEFINITE ANTECEDENTS ───
+3: {
+  title: "Subjunctive after Nonexistent & Indefinite Antecedents",
+  questions: [
+    { q: "No conozco a nadie que _______ ocho idiomas con fluidez.",
+      options: ["habla","hable","hablará","hablaba"], answer: 1,
+      explain: "<em>nadie que</em> = nonexistent antecedent → subjunctive <em>hable</em>." },
+    { q: "Busco un apartamento que _______ vista al mar.",
+      options: ["tiene","tenga","tendrá","tuvo"], answer: 1,
+      explain: "Indefinite antecedent (looking for one that may or may not exist) → subjunctive <em>tenga</em>." },
+    { q: "Tengo un amigo que _______ en Argentina desde hace cinco años.",
+      options: ["viva","vive","viviera","haya vivido"], answer: 1,
+      explain: "Specific, real friend → DEFINITE antecedent → INDICATIVE <em>vive</em>. Don't get tricked by 'que'." },
+    { q: "Nosotros buscamos un restaurante que _______ comida vegana auténtica.",
+      options: ["sirve","sirva","sirvió","servirá"], answer: 1, nosotros: true,
+      explain: "Indefinite (looking for ANY restaurant that fits) → subjunctive <em>sirva</em>. Sneaky 'nosotros' triggers main-verb but the focus is the dependent verb form." },
+    { q: "¿Hay alguien aquí que _______ reparar computadoras?",
+      options: ["sabe","sepa","supo","sabrá"], answer: 1,
+      explain: "<em>¿hay alguien que…?</em> = uncertain existence → subjunctive <em>sepa</em>." },
+    { q: "Quiero un coche que no _______ mucha gasolina.",
+      options: ["consume","consuma","consumió","consumirá"], answer: 1,
+      explain: "Indefinite (any such car) → subjunctive <em>consuma</em>." },
+    { q: "Nosotros necesitamos empleados que _______ trabajar bajo presión sin quejarse.",
+      options: ["pueden","puedan","podrán","pudieron"], answer: 1, nosotros: true,
+      explain: "Indefinite hire — they don't yet exist for us → subjunctive <em>puedan</em>." },
+    { q: "Conozco a una abogada que _______ casos de inmigración en Nueva Orleans.",
+      options: ["maneja","maneje","manejara","haya manejado"], answer: 0,
+      explain: "Specific known lawyer = DEFINITE → indicative <em>maneja</em>. Mirror trap of Q3." },
+    { q: "Nosotros queremos contratar a un guía que _______ los Andes como su propio jardín.",
+      options: ["conoce","conozca","conocía","conocerá"], answer: 1, nosotros: true,
+      explain: "Indefinite hire → subjunctive <em>conozca</em>. (Bonus: <em>conocer</em> is irregular yo, but here it's él form.)" },
+    { q: "No hay ningún plato peruano que me _______ tanto como el ceviche.",
+      options: ["apetece","apetezca","apetecía","apetecerá"], answer: 1, trick: true,
+      explain: "<em>apetecer</em> = to appeal to / be appetizing — uses gustar-style construction. Nonexistent antecedent (<em>ningún plato</em>) → subjunctive <em>apetezca</em>." },
+  ]
+},
+
+// ─── SECTION IV: PURPOSE/CONTINGENCY ───
+4: {
+  title: "Subjunctive after Purpose & Contingency",
+  questions: [
+    { q: "Te llamaré en caso de que _______ ayuda con la tarea.",
+      options: ["necesitas","necesites","necesitarás","necesitabas"], answer: 1,
+      explain: "<em>en caso de que</em> always takes subjunctive → <em>necesites</em>." },
+    { q: "No iré a la fiesta a menos que tú _______ también.",
+      options: ["vas","vayas","irás","ibas"], answer: 1,
+      explain: "<em>a menos que</em> always takes subjunctive → <em>vayas</em>." },
+    { q: "Cierra la puerta antes de _______. (mismo sujeto)",
+      options: ["salgas","sales","salir","saliste"], answer: 2,
+      explain: "Same subject + <em>antes de</em> → INFINITIVE <em>salir</em>. The <em>que</em> is missing — that's the giveaway." },
+    { q: "Pedro nos prestará el coche con tal de que nosotros _______ con cuidado.",
+      options: ["manejamos","manejemos","manejaremos","manejábamos"], answer: 1, nosotros: true,
+      explain: "<em>con tal de que</em> → subjunctive. Nosotros manejar → <em>manejemos</em>." },
+    { q: "Mis padres ahorran dinero para que nosotros _______ ir a la universidad.",
+      options: ["podemos","podamos","podremos","pudimos"], answer: 1, nosotros: true,
+      explain: "<em>para que</em> → subjunctive. Nosotros poder → <em>podamos</em> (irregular)." },
+    { q: "Los estudiantes salieron del aula sin que el profesor _______ cuenta.",
+      options: ["se da","se dé","se dará","se daba"], answer: 1,
+      explain: "<em>sin que</em> → subjunctive. <em>darse cuenta</em> él/ella → <em>se dé</em>." },
+    { q: "En caso de que nosotros _______ tarde, llámanos al celular.",
+      options: ["llegamos","lleguemos","llegaremos","llegábamos"], answer: 1, nosotros: true,
+      explain: "<em>en caso de que</em> + nosotros llegar → <em>lleguemos</em> (note the spelling change g→gu)." },
+    { q: "Vamos a comer algo antes de _______ al cine.",
+      options: ["vamos","vayamos","ir","iremos"], answer: 2,
+      explain: "Same subject (we) + <em>antes de</em> + INFINITIVE → <em>ir</em>. No <em>que</em>." },
+    { q: "Te ayudaré con la mudanza con tal de que tú no me _______ nada a cambio.",
+      options: ["dices","digas","dirás","decías"], answer: 1,
+      explain: "<em>con tal de que</em> + tú decir → subjunctive <em>digas</em>." },
+    { q: "La cirujana opera al paciente sin que él se _______ cuenta del dolor.",
+      options: ["percata","percate","percató","percatará"], answer: 1, trick: true,
+      explain: "<em>percatarse</em> = to notice/realize (less common cousin of <em>darse cuenta</em>). <em>sin que</em> → subjunctive <em>se percate</em>." },
+  ]
+},
+
+// ─── SECTION V: TIME CONJUNCTIONS ───
+5: {
+  title: "Subj. & Ind. after Time Conjunctions",
+  questions: [
+    { q: "Te llamaré cuando _______ a casa esta noche.",
+      options: ["llego","llegue","llegaré","llegaba"], answer: 1,
+      explain: "Future pending action → subjunctive <em>llegue</em>." },
+    { q: "Siempre desayuno cuando _______ del trabajo.",
+      options: ["vuelvo","vuelva","volveré","volvía"], answer: 0,
+      explain: "Habitual present action → INDICATIVE <em>vuelvo</em>. <em>Cuando</em> only triggers subj for pending events." },
+    { q: "Mi mamá me llamó tan pronto como _______ las noticias del huracán.",
+      options: ["oye","oiga","oyó","oirá"], answer: 2,
+      explain: "Past completed event → INDICATIVE preterite <em>oyó</em>." },
+    { q: "Te llamaré en cuanto el sol _______.",
+      options: ["sale","salga","saldrá","salía"], answer: 1,
+      explain: "Future pending action → subjunctive <em>salga</em>." },
+    { q: "No comeremos hasta que ustedes _______.",
+      options: ["llegan","lleguen","llegarán","llegaron"], answer: 1,
+      explain: "Future pending → subjunctive <em>lleguen</em>." },
+    { q: "Nosotros estudiaremos hasta que _______ todo el material del examen.",
+      options: ["entendemos","entendamos","entenderemos","entendíamos"], answer: 1, nosotros: true,
+      explain: "Future pending + nosotros entender → subjunctive <em>entendamos</em>." },
+    { q: "Vamos a comprar comida en cuanto nosotros _______ el supermercado.",
+      options: ["encontramos","encontremos","encontraremos","encontrábamos"], answer: 1, nosotros: true,
+      explain: "Future pending → subjunctive. Nosotros encontrar → <em>encontremos</em>." },
+    { q: "En cuanto Marta _______ el examen ayer, salió a celebrar con sus amigas.",
+      options: ["termina","termine","terminó","terminará"], answer: 2,
+      explain: "Past completed (note <em>ayer</em>) → INDICATIVE preterite <em>terminó</em>." },
+    { q: "Cuando éramos niños, jugábamos al fútbol cada vez que _______ buen tiempo.",
+      options: ["hace","haga","hizo","hacía"], answer: 3,
+      explain: "Habitual past action → IMPERFECT indicative <em>hacía</em>." },
+    { q: "Te avisaré tan pronto como nosotros _______ una decisión definitiva.",
+      options: ["tomamos","tomemos","tomaremos","tomábamos"], answer: 1, nosotros: true,
+      explain: "Future pending + nosotros tomar → subjunctive <em>tomemos</em>." },
+  ]
+},
+
+// ─── SECTION VI: EL FUTURO ───
+6: {
+  title: "El Futuro",
+  questions: [
+    { q: "Mañana yo _______ con mi profesor de español sobre la tesis.",
+      options: ["hablar","hablaré","hablaría","hablo"], answer: 1,
+      explain: "Regular future yo: <em>hablaré</em>." },
+    { q: "Mis amigos me _______ en el aeropuerto cuando llegue.",
+      options: ["esperan","esperarán","esperarían","esperaron"], answer: 1,
+      explain: "Future ellos: <em>esperarán</em>." },
+    { q: "Nosotros _______ visitar a nuestros abuelos en Florida este verano.",
+      options: ["podemos","podremos","podríamos","pudimos"], answer: 1, nosotros: true,
+      explain: "Irregular stem podr- + nosotros emos = <em>podremos</em>." },
+    { q: "¿Qué _______ tú con tu hermana esta noche en Baton Rouge?",
+      options: ["haces","harás","harías","hacías"], answer: 1,
+      explain: "Irregular stem har- + tú ás = <em>harás</em>." },
+    { q: "Para el final del semestre, María _______ todas sus clases con honores.",
+      options: ["termina","terminará","terminaría","terminó"], answer: 1,
+      explain: "Future ella: <em>terminará</em>." },
+    { q: "Nosotros _______ en una semana para Madrid con la beca.",
+      options: ["salimos","saldremos","saldríamos","salíamos"], answer: 1, nosotros: true,
+      explain: "Irregular stem saldr- + nosotros emos = <em>saldremos</em>." },
+    { q: "Mis padres no _______ venir a la graduación porque tienen otro compromiso.",
+      options: ["pueden","podrán","podrían","podían"], answer: 1,
+      explain: "Future ellos with stem podr- = <em>podrán</em>." },
+    { q: "La doctora _______ los resultados en un par de días.",
+      options: ["tiene","tendrá","tendría","tenía"], answer: 1,
+      explain: "Irregular stem tendr- + ella á = <em>tendrá</em>." },
+    { q: "Nosotros _______ la verdad cuando llegue el momento adecuado.",
+      options: ["decimos","diremos","diríamos","decíamos"], answer: 1, nosotros: true,
+      explain: "Irregular stem dir- + nosotros emos = <em>diremos</em>. (Decir is brutal — only THREE letters in the stem.)" },
+    { q: "¿Crees que _______ buen tiempo durante el viaje a Sevilla?",
+      options: ["hay","habrá","habría","había"], answer: 1, trick: true,
+      explain: "Irregular stem habr- (from haber) → <em>habrá</em> = 'there will be'. Singular even when followed by plural." },
+  ]
+},
+
+// ─── SECTION VII: PAST SUBJUNCTIVE ───
+7: {
+  title: "El Imperfecto del Subjuntivo",
+  questions: [
+    { q: "Cuando era niña, mi mamá quería que yo _______ los platos cada noche.",
+      options: ["lavo","lave","lavara","lavaría"], answer: 2,
+      explain: "Past wish (querer past + que) → past subjunctive <em>lavara</em>." },
+    { q: "Era importante que los empleados _______ a tiempo a las reuniones.",
+      options: ["llegaron","lleguen","llegaran","llegarán"], answer: 2,
+      explain: "Impersonal expression in past → past subjunctive <em>llegaran</em>." },
+    { q: "La maestra esperaba que nosotros _______ la tarea para el lunes.",
+      options: ["terminamos","terminemos","termináramos","terminaríamos"], answer: 2, nosotros: true,
+      explain: "Past wish + nosotros terminar → past subj <em>termináramos</em>. Note the accent." },
+    { q: "Si yo _______ tiempo libre, leería más novelas en español.",
+      options: ["tengo","tenga","tuviera","tendría"], answer: 2,
+      explain: "Hypothetical si-clause → past subjunctive <em>tuviera</em>. Conditional in the result clause." },
+    { q: "El presidente pidió que la Guardia Nacional _______ al lugar del desastre natural.",
+      options: ["fue","iba","fuera","va"], answer: 2,
+      explain: "Past request + ir/ser past subj = <em>fuera</em> (same form for both verbs)." },
+    { q: "Era una verdadera lástima que nosotros no _______ ir al concierto de flamenco.",
+      options: ["pudimos","podamos","pudiéramos","podríamos"], answer: 2, nosotros: true,
+      explain: "Past emotion + nosotros poder → past subj <em>pudiéramos</em>. Built from pud- (3rd plural pret stem)." },
+    { q: "El candidato hablaba como si _______ todas las respuestas a los problemas del país.",
+      options: ["sabe","sepa","supiera","sabría"], answer: 2,
+      explain: "<em>como si</em> ALWAYS takes past subjunctive → <em>supiera</em>." },
+    { q: "Mis padres me dieron dinero para que yo _______ mis libros del semestre.",
+      options: ["compro","compre","comprara","compraría"], answer: 2,
+      explain: "Past <em>para que</em> → past subj <em>comprara</em>." },
+    { q: "Ojalá que nosotros _______ ganado el partido de fútbol ayer.",
+      options: ["hemos","hayamos","hubiéramos","habríamos"], answer: 2, nosotros: true,
+      explain: "<em>Ojalá</em> + past wish about completed past = past PERFECT subjunctive: <em>hubiéramos</em> + ganado = 'I wish we had won.'" },
+    { q: "El periodista dudaba que el dictador _______ la verdad ante las cámaras.",
+      options: ["dice","diga","dijera","diría"], answer: 2, trick: true,
+      explain: "Past doubt → past subj. Decir built off dij- → <em>dijera</em> (no -i in -era ending after j: dij-era, not dij-iera)." },
+  ]
+},
+
+// ─── SECTION VIII: CONDITIONAL & SI CLAUSES ───
+8: {
+  title: "El Condicional & Cláusulas con si",
+  questions: [
+    { q: "Si yo tuviera un millón de dólares, _______ por todo el mundo.",
+      options: ["viajo","viajaba","viajaré","viajaría"], answer: 3,
+      explain: "Si + past subj (tuviera) → CONDITIONAL <em>viajaría</em>." },
+    { q: "Mis amigos y yo _______ a España si pudiéramos pagar el vuelo.",
+      options: ["vamos","fuéramos","iríamos","iremos"], answer: 2, nosotros: true,
+      explain: "Conditional of ir is regular: <em>iríamos</em> = we would go. (ir takes -ía endings on the full infinitive.)" },
+    { q: "Si Marta _______ rica, compraría una casa en la playa de Cádiz.",
+      options: ["fue","era","fuera","sería"], answer: 2,
+      explain: "Si + past subj of ser = <em>fuera</em>. Pairs with conditional in result clause." },
+    { q: "Yo _______ la verdad, pero no quiero hacerle daño a nadie.",
+      options: ["digo","dije","diría","decía"], answer: 2,
+      explain: "Conditional of decir uses irregular stem dir- → yo <em>diría</em>." },
+    { q: "Nosotros _______ ese problema en cinco minutos si nos dejaran.",
+      options: ["resolvemos","resolveríamos","resolvamos","resolveremos"], answer: 1, nosotros: true,
+      explain: "Conditional of resolver = regular (just keep infinitive) + nosotros íamos = <em>resolveríamos</em>." },
+    { q: "Si fueras presidente del país, ¿qué _______ con los problemas de inmigración?",
+      options: ["haces","hagas","harás","harías"], answer: 3,
+      explain: "Conditional of hacer uses irregular stem har- → tú <em>harías</em>." },
+    { q: "¿_______ ustedes ayudarme con la mudanza el próximo sábado?",
+      options: ["Pueden","Podrán","Podrían","Podrías"], answer: 2,
+      explain: "Polite request → conditional. Stem podr- + ustedes ían = <em>Podrían</em>. (Podrías is tú, doesn't agree with ustedes.)" },
+    { q: "Nosotros _______ una fiesta de graduación si tuviéramos más espacio en casa.",
+      options: ["damos","daríamos","demos","daremos"], answer: 1, nosotros: true,
+      explain: "Si + past subj (tuviéramos) → conditional. Dar regular: <em>daríamos</em>." },
+    { q: "Si yo _______ tú, no haría eso bajo ninguna circunstancia.",
+      options: ["soy","sea","fuera","sería"], answer: 2,
+      explain: "The classic 'if I were you' → si + past subj of ser = <em>fuera</em>." },
+    { q: "Carlos dijo que _______ a la fiesta más tarde porque tenía una cita previa.",
+      options: ["viene","vendrá","vendría","viniera"], answer: 2, trick: true,
+      explain: "Reported speech: future-from-the-past = CONDITIONAL. Stem vendr- + él ía = <em>vendría</em>." },
+  ]
+},
+
+};
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+
+let totalQuestions = 0;
+
+function renderSection(secNum) {
+  const sec = SECTIONS[secNum];
+  const el = document.getElementById('sec'+secNum+'q');
+  let html = '';
+  sec.questions.forEach((q, qi) => {
+    let tag = '';
+    if (q.nosotros) tag += ' <span class="nosotros-tag">nosotros</span>';
+    if (q.trick) tag += ' <span class="trick-tag">trap verb</span>';
+    html += `<div class="q-row" id="row_${secNum}_${qi}">`;
+    html += `<div class="q-label"><span class="q-num">${qi+1}.</span> ${q.q}${tag}</div>`;
+    html += `<div class="mc-options">`;
+    const letters = ['a','b','c','d','e'];
+    q.options.forEach((opt, oi) => {
+      html += `<label class="mc-option" id="opt_${secNum}_${qi}_${oi}">
+        <input type="radio" name="q_${secNum}_${qi}" value="${oi}">
+        <span class="letter">${letters[oi]}.</span> ${opt}
+      </label>`;
+    });
+    html += `</div>`;
+    html += `<div class="inline-feedback" id="fb_${secNum}_${qi}"></div>`;
+    html += `</div>`;
+    totalQuestions++;
+  });
+  el.innerHTML = html;
+}
+
+for (let i = 1; i <= 8; i++) renderSection(i);
+
+// Listen for changes to update progress
+document.querySelectorAll('input[type="radio"]').forEach(r => {
+  r.addEventListener('change', updateProgress);
+});
+
+function updateProgress() {
+  let answered = 0;
+  for (let s = 1; s <= 8; s++) {
+    SECTIONS[s].questions.forEach((q, qi) => {
+      const radios = document.querySelectorAll(`input[name="q_${s}_${qi}"]`);
+      radios.forEach(r => { if (r.checked) answered++; });
+    });
+  }
+  const pct = Math.min(100, Math.round((answered / totalQuestions) * 100));
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════
+// SCORING
+// ═══════════════════════════════════════
+
+function submitAll() {
+  let totalCorrect = 0;
+  let totalAttempted = 0;
+  const sectionStats = [];
+
+  for (let s = 1; s <= 8; s++) {
+    const sec = SECTIONS[s];
+    let secCorrect = 0;
+    let secAttempted = 0;
+
+    sec.questions.forEach((q, qi) => {
+      const radios = document.querySelectorAll(`input[name="q_${s}_${qi}"]`);
+      let selected = null;
+      radios.forEach(r => { if (r.checked) selected = parseInt(r.value); });
+
+      // lock & color
+      radios.forEach(r => r.disabled = true);
+      const fb = document.getElementById(`fb_${s}_${qi}`);
+
+      if (selected === null) {
+        // unanswered — reveal correct
+        document.getElementById(`opt_${s}_${qi}_${q.answer}`).classList.add('correct');
+        document.querySelectorAll(`[id^="opt_${s}_${qi}_"]`).forEach(el => el.classList.add('locked'));
+        if (fb) {
+          fb.className = 'inline-feedback fb-wrong';
+          fb.innerHTML = '— No respondiste. Correcto: <em>' + q.options[q.answer] + '</em>. ' + q.explain;
+        }
+      } else {
+        secAttempted++;
+        totalAttempted++;
+        document.querySelectorAll(`[id^="opt_${s}_${qi}_"]`).forEach(el => el.classList.add('locked'));
+        if (selected === q.answer) {
+          secCorrect++;
+          totalCorrect++;
+          document.getElementById(`opt_${s}_${qi}_${selected}`).classList.add('correct');
+          if (fb) {
+            fb.className = 'inline-feedback fb-correct';
+            fb.innerHTML = '✓ Correcto. ' + q.explain;
+          }
+        } else {
+          document.getElementById(`opt_${s}_${qi}_${selected}`).classList.add('wrong');
+          document.getElementById(`opt_${s}_${qi}_${q.answer}`).classList.add('correct');
+          if (fb) {
+            fb.className = 'inline-feedback fb-wrong';
+            fb.innerHTML = '✗ Incorrecto. La respuesta correcta es <em>' + q.options[q.answer] + '</em>. ' + q.explain;
+          }
+        }
+      }
+    });
+    sectionStats.push({ num: s, title: sec.title, correct: secCorrect, total: 10, attempted: secAttempted });
+  }
+
+  const pct = Math.round((totalCorrect / 80) * 100);
+  document.getElementById('finalScore').textContent = totalCorrect + ' / 80';
+  document.getElementById('scoreSub').textContent = pct + '% — across all 80 questions';
+
+  // breakdown table
+  let bd = '<table>';
+  sectionStats.forEach(st => {
+    const sectionPct = Math.round((st.correct / st.total) * 100);
+    bd += `<tr><td>${st.num}. ${st.title}</td><td>${st.correct}/${st.total} (${sectionPct}%)</td></tr>`;
+  });
+  bd += '</table>';
+  document.getElementById('breakdown').innerHTML = bd;
+
+  // Baldrizzt remarks (8 tiers)
+  const remarks = [
+    [95, "*Baldrizzt rises from the bone throne. Slow applause echoes through the crypt.* Va'xul... my apprentice... you have learned. Eight chapters of subjunctive sorcery, conditional incantations, future divinations — and you walk out with the thing in tatters at your feet. The exam is no longer a trial. It is a formality. Go, claim what is yours."],
+    [88, "*A long, satisfied exhale that smells faintly of grave-mold.* Strong work, apprentice. The bones hold. Your subjunctive triggers are sharp, your irregular stems memorized. A handful of slips on nosotros forms or trap verbs — drill those once more before exam day and you will leave Lockett B5 with the necro-grade you deserve."],
+    [80, "*Baldrizzt taps a yellowed phalanx on the obsidian desk.* Solid B+ territory. You know the rules. You stumble where the obscure verbs hide and where 'nosotros' demands its accent. Run through every -áramos, -iéramos, -íamos one more time. Memorize, don't guess."],
+    [70, "*A measured, hollow exhale.* Acceptable. Not glorious. The foundation is intact but cracking — you fumble the present perfect subjunctive vs. indicative split, and the conditional irregulars still bite you. Drill the nine irregular stems (dir-, har-, podr-, pondr-, querr-, sabr-, saldr-, tendr-, vendr-) until they live in your bones."],
+    [60, "*Baldrizzt removes his skull-rimmed reading glasses.* Below the line, apprentice. You're guessing on triggers — WEIRDO, ESCAPA, time conjunctions — when you should be RECOGNIZING them. Take the raw study guide and write each trigger out by hand. Then come back."],
+    [50, "*A long stare. Long enough that bats begin to roost in his orbital sockets.* Half marks. The exam is in days, not weeks. Stop studying broadly. Pick the three sections you bombed and drill ONLY those until they stop bleeding. Don't waste hours re-reading what you already know."],
+    [35, "*Baldrizzt slams a femur on the desk. The candles flicker out.* Apprentice. APPRENTICE. This is not a knowledge problem — this is a recognition problem. You don't know which trigger is which. Print the raw SG. Make a flashcard for every grammar bullet. WEIRDO on one side, ESCAPA on the other, the four time conjunctions on a third. Memorize before you practice."],
+    [0, "*Silence. Just the drip of unholy water on bone.* I have taught corpses that conjugated better. Start over. Section I onward. Do not skip. Do not guess. THINK before you click."]
+  ];
+  let remark = remarks[remarks.length-1][1];
+  for (const [thresh, r] of remarks) { if (pct >= thresh) { remark = r; break; } }
+  document.getElementById('baldrizztRemark').innerHTML = remark;
+
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+  document.querySelectorAll('.mc-option').forEach(el => el.classList.remove('correct','wrong','locked'));
+  document.querySelectorAll('.inline-feedback').forEach(el => { el.innerHTML = ''; el.className = 'inline-feedback'; });
+  document.getElementById('score-panel').style.display = 'none';
+  document.getElementById('progressBar').style.width = '0%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

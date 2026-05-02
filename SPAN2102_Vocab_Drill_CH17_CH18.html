@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPAN 2102 — Vocab Drill: CH 17 + CH 18 (Baldrizzt's Lexicon)</title>
+<style>
+  :root{
+    --bone:#e8dfc8; --dark:#0d0c10; --marrow:#1a1820; --blood:#7a1a2e;
+    --gold:#c9a84c; --accent:#3a2a5a; --correct:#1e6e1e; --wrong:#7a1010;
+    --ch17:#3a5a8a; --ch18:#8a3a5a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--dark);color:var(--bone);font-family:'Georgia',serif;line-height:1.6;min-height:100vh}
+  header{background:linear-gradient(135deg,#080610,#1a1424);border-bottom:2px solid var(--blood);padding:28px 32px;text-align:center}
+  header h1{font-size:1.85rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+  header .sub{color:#9080b0;font-style:italic;margin-top:6px;font-size:0.95rem}
+  header .meta{color:#7a6a90;margin-top:10px;font-size:0.82rem}
+  .progress-bar-wrap{background:#0a070d;height:6px;width:100%}
+  .progress-bar{height:6px;background:linear-gradient(90deg,var(--ch17),var(--gold),var(--ch18));width:0%;transition:width .4s ease}
+  main{max-width:920px;margin:0 auto;padding:32px 20px 80px}
+  .preamble{background:var(--marrow);border:1px solid #2a2230;border-radius:8px;padding:22px 26px;margin-bottom:32px;font-size:0.9rem;color:#c4bda8}
+  .preamble strong{color:var(--gold)}
+  .ch-banner{display:inline-block;font-size:0.7rem;letter-spacing:1px;padding:3px 10px;border-radius:10px;text-transform:uppercase;margin-right:6px}
+  .ch17-banner{background:#102030;color:#80a0d0;border:1px solid var(--ch17)}
+  .ch18-banner{background:#2a1020;color:#d090b0;border:1px solid var(--ch18)}
+  .mix-banner{background:#1a1020;color:#c8b870;border:1px solid var(--gold)}
+  .section-card{background:var(--marrow);border:1px solid #2a2230;border-radius:8px;padding:28px;margin-bottom:28px}
+  .section-card.ch17{border-left:4px solid var(--ch17)}
+  .section-card.ch18{border-left:4px solid var(--ch18)}
+  .section-card.mix{border-left:4px solid var(--gold)}
+  .section-title{font-size:1.1rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid #3a2a4a;padding-bottom:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .section-note{font-size:0.85rem;color:#a8a0c0;font-style:italic;margin-bottom:18px}
+  .q-row{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #241c2c}
+  .q-row:last-child{border-bottom:none}
+  .q-label{display:block;font-size:0.95rem;margin-bottom:10px;color:#d4cdb8}
+  .q-num{color:var(--gold);font-weight:bold;margin-right:6px}
+  .trap-tag{display:inline-block;background:#2a0a14;border:1px solid #8a2a3a;border-radius:10px;color:#e08090;font-size:0.7rem;letter-spacing:0.5px;padding:1px 8px;margin-left:8px;vertical-align:middle;text-transform:uppercase}
+  .mc-options{display:flex;flex-direction:column;gap:6px;margin-left:8px}
+  .mc-option{display:flex;align-items:center;gap:10px;background:#141020;border:1px solid #2a2230;border-radius:5px;padding:9px 14px;cursor:pointer;transition:border-color .2s,background .2s;font-size:0.92rem;user-select:none}
+  .mc-option:hover:not(.locked){border-color:var(--gold);background:#1e1a2a}
+  .mc-option.locked{cursor:default}
+  .mc-option input[type="radio"]{accent-color:var(--blood)}
+  .mc-option .letter{color:var(--gold);font-style:italic;margin-right:4px;min-width:18px}
+  .mc-option.correct{border-color:var(--correct);background:#0d2a0d;color:#7edd7e}
+  .mc-option.wrong{border-color:var(--wrong);background:#2a0a0a;color:#e08080}
+  .inline-feedback{font-size:0.8rem;margin-top:6px;font-style:italic;min-height:18px}
+  .fb-correct{color:#5ebb5e}
+  .fb-wrong{color:#e08080}
+  .submit-row{text-align:center;margin-top:36px}
+  .btn-submit{background:var(--gold);border:none;border-radius:5px;color:var(--dark);cursor:pointer;font-family:'Georgia',serif;font-size:1rem;font-weight:bold;letter-spacing:2px;padding:14px 40px;text-transform:uppercase;transition:background .2s}
+  .btn-submit:hover{background:#e8c060}
+  .btn-reset{background:transparent;border:1px solid var(--blood);border-radius:5px;color:#c08090;cursor:pointer;font-family:'Georgia',serif;font-size:0.85rem;letter-spacing:1px;margin-top:20px;padding:8px 20px;text-transform:uppercase;transition:all .2s;display:block;margin-left:auto;margin-right:auto}
+  .btn-reset:hover{background:var(--blood);color:var(--bone)}
+  #score-panel{display:none;background:linear-gradient(135deg,#0a0810,var(--marrow));border:2px solid var(--gold);border-radius:10px;padding:40px;text-align:center;margin-top:40px}
+  #score-panel h2{color:var(--gold);font-size:1.8rem;margin-bottom:12px}
+  #score-panel .score-number{font-size:3.5rem;color:var(--bone);font-weight:bold}
+  #score-panel .score-sub{color:#a890c0;font-style:italic;margin-top:8px}
+  #score-panel .breakdown{margin-top:24px;font-size:0.88rem;color:#c4bda8;text-align:left;border-top:1px solid #3a2a4a;padding-top:18px}
+  #score-panel .breakdown table{width:100%;border-collapse:collapse}
+  #score-panel .breakdown td{padding:5px 8px;border-bottom:1px solid #241c2c}
+  #score-panel .breakdown td:last-child{text-align:right;color:var(--gold)}
+  #score-panel .baldrizzt-remark{color:#c4bda8;font-style:italic;margin-top:22px;font-size:0.95rem;border-top:1px solid #3a2a4a;padding-top:18px;line-height:1.7}
+  .nav-section{position:sticky;top:0;background:rgba(13,12,16,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #2a2230;padding:8px 12px;z-index:10;font-size:0.78rem;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .nav-section a{color:#9080b0;text-decoration:none;padding:3px 8px;border-radius:3px;border:1px solid transparent}
+  .nav-section a:hover{color:var(--gold);border-color:#3a2a4a}
+  em{color:#e8c878;font-style:italic}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚱ SPAN 2102 — El Léxico Mortal ⚱</h1>
+  <div class="sub">Vocabulary Drill · Capítulos 17 (carretera) + 18 (actualidades)</div>
+  <div class="meta">8 sections · 80 multiple-choice · Spanish→English, English→Spanish, sentence context, verbs, traps</div>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<nav class="nav-section">
+  <a href="#sec1">A · CH17 ES→EN</a>
+  <a href="#sec2">B · CH17 EN→ES</a>
+  <a href="#sec3">C · CH17 Sentence</a>
+  <a href="#sec4">D · CH18 ES→EN</a>
+  <a href="#sec5">E · CH18 EN→ES</a>
+  <a href="#sec6">F · CH18 Sentence</a>
+  <a href="#sec7">G · Verbos en Contexto</a>
+  <a href="#sec8">H · Trampas y Sinónimos</a>
+</nav>
+
+<main>
+
+<div class="preamble">
+  <strong>Apprentice.</strong> Vocab is your weak spine — we reinforce it. Every question is multiple choice, four options, no type-ins. The drill rotates through translation (both directions), sentence context, verb forms, and the cruel little traps where words look alike but mean different things (<em>hojear</em> vs <em>ojear</em>, <em>la papa</em> vs <em>el papa</em>, <em>esperanza</em> vs <em>espera</em>). Pay attention to gender — <em>la radio</em> ≠ <em>el radio</em>, <em>el orden</em> ≠ <em>la orden</em>. You will be tested on both halves of every binary.
+</div>
+
+<!-- SECTION A — CH17 Spanish → English -->
+<div class="section-card ch17" id="sec1">
+  <div class="section-title"><span class="ch-banner ch17-banner">CH 17</span> A · Spanish → English (transporte y carretera)</div>
+  <div class="section-note">Choose the correct English translation.</div>
+  <div id="sec1q"></div>
+</div>
+
+<!-- SECTION B — CH17 English → Spanish -->
+<div class="section-card ch17" id="sec2">
+  <div class="section-title"><span class="ch-banner ch17-banner">CH 17</span> B · English → Spanish</div>
+  <div class="section-note">Choose the correct Spanish term. Watch the article (el / la).</div>
+  <div id="sec2q"></div>
+</div>
+
+<!-- SECTION C — CH17 Sentence Fill -->
+<div class="section-card ch17" id="sec3">
+  <div class="section-title"><span class="ch-banner ch17-banner">CH 17</span> C · Complete la oración (contexto)</div>
+  <div class="section-note">Pick the word that fits the sentence.</div>
+  <div id="sec3q"></div>
+</div>
+
+<!-- SECTION D — CH18 Spanish → English -->
+<div class="section-card ch18" id="sec4">
+  <div class="section-title"><span class="ch-banner ch18-banner">CH 18</span> D · Spanish → English (política, medios, actualidades)</div>
+  <div class="section-note">Choose the correct English translation.</div>
+  <div id="sec4q"></div>
+</div>
+
+<!-- SECTION E — CH18 English → Spanish -->
+<div class="section-card ch18" id="sec5">
+  <div class="section-title"><span class="ch-banner ch18-banner">CH 18</span> E · English → Spanish</div>
+  <div class="section-note">Choose the correct Spanish term.</div>
+  <div id="sec5q"></div>
+</div>
+
+<!-- SECTION F — CH18 Sentence Fill -->
+<div class="section-card ch18" id="sec6">
+  <div class="section-title"><span class="ch-banner ch18-banner">CH 18</span> F · Complete la oración (contexto)</div>
+  <div class="section-note">Pick the word that fits the sentence.</div>
+  <div id="sec6q"></div>
+</div>
+
+<!-- SECTION G — Verbs in Context -->
+<div class="section-card mix" id="sec7">
+  <div class="section-title"><span class="ch-banner mix-banner">CH 17 + 18</span> G · Verbos en contexto</div>
+  <div class="section-note">Choose the verb form that fits. Tense varies — read the time markers.</div>
+  <div id="sec7q"></div>
+</div>
+
+<!-- SECTION H — Trampas y Sinónimos -->
+<div class="section-card mix" id="sec8">
+  <div class="section-title"><span class="ch-banner mix-banner">CH 17 + 18</span> H · Trampas, sinónimos, género</div>
+  <div class="section-note">The cruelest section. Lookalikes, false friends, gender flips, and synonyms.</div>
+  <div id="sec8q"></div>
+</div>
+
+<div class="submit-row">
+  <button class="btn-submit" onclick="submitAll()">⚱ Reveal Mortality ⚱</button>
+</div>
+
+<div id="score-panel">
+  <h2>⚰ Drill Complete ⚰</h2>
+  <div class="score-number" id="finalScore">—</div>
+  <div class="score-sub" id="scoreSub"></div>
+  <div class="breakdown" id="breakdown"></div>
+  <div class="baldrizzt-remark" id="baldrizztRemark"></div>
+  <button class="btn-reset" onclick="resetAll()">Reset &amp; Retake</button>
+</div>
+
+</main>
+
+<script>
+const SECTIONS = {
+
+// ─── A: CH 17 Spanish → English (transport) ───
+1: {
+  title: "CH17 ES→EN",
+  questions: [
+    { q: "<em>la autopista</em>", options: ["the gas station","the highway/freeway","the corner","the sidewalk"], answer: 1, explain: "<em>autopista</em> = highway. Don't confuse with <em>gasolinera</em> (gas station)." },
+    { q: "<em>el semáforo</em>", options: ["the steering wheel","the seatbelt","the traffic light","the speed bump"], answer: 2, explain: "<em>semáforo</em> = traffic light. Critical CH 17 vocab — appears in the SG model." },
+    { q: "<em>la llanta</em>", options: ["the brake","the tire","the headlight","the engine"], answer: 1, explain: "<em>la llanta</em> = tire (also called <em>la rueda</em> or <em>la goma</em> in some regions)." },
+    { q: "<em>los frenos</em>", options: ["the brakes","the lights","the keys","the windows"], answer: 0, explain: "<em>los frenos</em> = brakes. Verb form <em>frenar</em> = to brake." },
+    { q: "<em>la multa</em>", options: ["the engine","the road map","the fine/ticket","the toll"], answer: 2, explain: "<em>la multa</em> = a traffic fine. <em>poner una multa</em> = to issue a ticket." },
+    { q: "<em>la gasolinera</em>", options: ["the parking garage","the gas station","the toll booth","the repair shop"], answer: 1, explain: "<em>la gasolinera</em> = gas station. Spain often uses <em>la estación de servicio</em>." },
+    { q: "<em>el taller (mecánico)</em>", options: ["the workshop / repair shop","the warehouse","the dealership","the showroom"], answer: 0, explain: "<em>el taller</em> = mechanic's workshop. Outside cars it also means a 'workshop' (training)." },
+    { q: "<em>la esquina</em>", options: ["the block","the corner","the curb","the lane"], answer: 1, explain: "<em>la esquina</em> = street corner. Don't confuse with <em>la cuadra</em> (block)." },
+    { q: "<em>el camino</em>", options: ["the route/way/road","the highway","the bridge","the tunnel"], answer: 0, explain: "<em>el camino</em> = way/path/road. Often broader than 'road' — 'on the way' = <em>en el camino</em>." },
+    { q: "<em>el conductor / la conductora</em>", options: ["the conductor (orchestra)","the passenger","the driver","the mechanic"], answer: 2, explain: "<em>conductor/a</em> = driver. Yes, false-cognate alert — it does NOT mean 'orchestra conductor' (that's <em>el director</em>)." },
+  ]
+},
+
+// ─── B: CH 17 English → Spanish (transport) ───
+2: {
+  title: "CH17 EN→ES",
+  questions: [
+    { q: "<strong>to drive</strong>", options: ["arrancar","manejar / conducir","gastar","atropellar"], answer: 1, explain: "<em>manejar</em> (Latin America) and <em>conducir</em> (Spain) both = to drive. Both are widely accepted." },
+    { q: "<strong>to park</strong>", options: ["estacionar / aparcar","parar","arrancar","seguir"], answer: 0, explain: "<em>estacionar</em> (LA), <em>aparcar</em> (Spain), <em>parquear</em> (Caribbean) — all = to park." },
+    { q: "<strong>the gas (fuel)</strong>", options: ["el gas","la gasolina","el aceite","el combustible"], answer: 1, explain: "<em>la gasolina</em> = car gas. <em>el gas</em> is for stoves; <em>el aceite</em> is oil." },
+    { q: "<strong>the driver's license</strong>", options: ["el carnet del coche","la licencia (de conducir/manejar)","el permiso de auto","la tarjeta del carro"], answer: 1, explain: "<em>la licencia de conducir/manejar</em>. Spain also uses <em>el carné/carnet de conducir</em>." },
+    { q: "<strong>traffic</strong>", options: ["el tráfico / la circulación","el tránsito","el movimiento","las opciones a y b"], answer: 3, explain: "Both <em>tráfico</em> and <em>circulación</em> mean traffic — the LA textbook uses both." },
+    { q: "<strong>to crash (into)</strong>", options: ["chocar (con/contra)","romper","destrozar","fallar"], answer: 0, explain: "<em>chocar con/contra</em> = to crash into. Noun: <em>el choque</em>." },
+    { q: "<strong>the seatbelt</strong>", options: ["el cinturón de seguridad","la correa de protección","el chaleco salvavidas","el casco"], answer: 0, explain: "<em>el cinturón de seguridad</em>. Casco = helmet, chaleco salvavidas = life jacket." },
+    { q: "<strong>to fill up (the tank)</strong>", options: ["completar","llenar (el tanque)","cargar","subir"], answer: 1, explain: "<em>llenar el tanque</em> = to fill the tank. <em>cargar</em> works for batteries/phones." },
+    { q: "<strong>the speed limit</strong>", options: ["la velocidad máxima","el límite de velocidad","el tope de marcha","las opciones a y b"], answer: 3, explain: "Both <em>el límite de velocidad</em> and <em>la velocidad máxima</em> are correct and interchangeable." },
+    { q: "<strong>to start (the engine)</strong>", options: ["empezar","comenzar","arrancar","iniciar"], answer: 2, explain: "<em>arrancar</em> = to start an engine (or to yank/pull out). <em>empezar/comenzar</em> are general 'to begin' — wrong here." },
+  ]
+},
+
+// ─── C: CH 17 Sentence Fill ───
+3: {
+  title: "CH17 contexto",
+  questions: [
+    { q: "Antes de un viaje largo, mi padre siempre _______ los frenos del coche.",
+      options: ["arranca","revisa","estaciona","atropella"], answer: 1, explain: "<em>revisar</em> = to check/inspect. The other verbs make no sense here." },
+    { q: "El _______ estaba en rojo, así que paramos en la esquina.",
+      options: ["semáforo","cinturón","camino","peaje"], answer: 0, explain: "Only the traffic light (<em>semáforo</em>) turns red." },
+    { q: "Tenemos que ir a la _______ porque casi no queda gasolina en el tanque.",
+      options: ["autopista","gasolinera","carretera","esquina"], answer: 1, explain: "<em>la gasolinera</em> = the gas station — that's where you refuel." },
+    { q: "El policía me puso una _______ por exceso de velocidad.",
+      options: ["llanta","multa","ruta","licencia"], answer: 1, explain: "<em>poner una multa</em> = to issue a fine/ticket." },
+    { q: "Para entrar al estacionamiento, hay que _______ a la derecha en la próxima esquina.",
+      options: ["doblar","arrancar","frenar","gastar"], answer: 0, explain: "<em>doblar</em> = to turn (in this context). <em>frenar</em> would just stop you." },
+    { q: "Mi coche viejo _______ mucha gasolina — necesito uno más eficiente.",
+      options: ["llena","gasta","arranca","arregla"], answer: 1, explain: "<em>gastar gasolina</em> = to use up / burn through gas. <em>llenar</em> is opposite (to fill)." },
+    { q: "Para conducir en este estado, necesitas una _______ válida.",
+      options: ["multa","licencia","autopista","gasolinera"], answer: 1, explain: "<em>licencia (de conducir)</em> = driver's license." },
+    { q: "El tráfico estaba terrible esta mañana — había mucha _______ en la autopista.",
+      options: ["circulación","esquina","carretera","velocidad"], answer: 0, explain: "<em>la circulación</em> = traffic flow / volume of traffic. Synonym of <em>tráfico</em> here." },
+    { q: "El mecánico me dijo que el _______ del motor está bajo y necesita cambio.",
+      options: ["aceite","gasolina","frenos","cinturón"], answer: 0, explain: "<em>el aceite</em> = (engine) oil. Not gasolina (fuel)." },
+    { q: "El _______ cruzó la calle sin mirar y casi fue atropellado.",
+      options: ["conductor","peatón","mecánico","ciudadano"], answer: 1, explain: "<em>el peatón</em> = pedestrian. The one CROSSING the street, not driving on it." },
+  ]
+},
+
+// ─── D: CH 18 Spanish → English (politics/media) ───
+4: {
+  title: "CH18 ES→EN",
+  questions: [
+    { q: "<em>las actualidades</em>", options: ["the activities","current events / news","the actualities (philosophy)","present tenses"], answer: 1, explain: "<em>las actualidades</em> = current events / news (the chapter title)." },
+    { q: "<em>la huelga</em>", options: ["the holiday","the strike (labor)","the parade","the rally"], answer: 1, explain: "<em>la huelga</em> = a labor strike. Verb: <em>declarar/hacer una huelga</em>." },
+    { q: "<em>el ciudadano / la ciudadana</em>", options: ["the senator","the citizen","the suburb-dweller","the resident-alien"], answer: 1, explain: "<em>ciudadano/a</em> = citizen (cf. <em>la ciudad</em> = city)." },
+    { q: "<em>el discurso</em>", options: ["the discord","the discount","the speech","the discussion"], answer: 2, explain: "<em>el discurso</em> = speech / address. False friend — it does NOT mean 'discourse' in everyday Spanish." },
+    { q: "<em>el reportaje</em>", options: ["the report (news story)","the reporter","the report card","the broadcast (live)"], answer: 0, explain: "<em>el reportaje</em> = a news report/feature. <em>el reportero</em> = the reporter (person)." },
+    { q: "<em>el testigo</em>", options: ["the textbook","the witness","the testament","the testimony"], answer: 1, explain: "<em>el testigo</em> = witness. NOTE: <em>el</em> testigo even for a woman — gender doesn't change for this noun (<em>la testigo</em> exists but is rarer)." },
+    { q: "<em>el deber</em>", options: ["the debt","the duty / obligation","the debate","the decision"], answer: 1, explain: "<em>el deber</em> = duty/obligation. The verb <em>deber</em> = 'to owe / ought to'." },
+    { q: "<em>la prensa</em>", options: ["the printer","the press / news media","the pressure","the squeezer"], answer: 1, explain: "<em>la prensa</em> = the press (news media). Also literally 'a press' (machine), but the political meaning is what CH 18 tests." },
+    { q: "<em>el partido</em>", options: ["the party (political)","the part","the share","the match (sports)"], answer: 0, explain: "<em>el partido (político)</em> = political party. Also 'sports match' — context decides." },
+    { q: "<em>el ejército</em>", options: ["the exercise","the army","the executive","the ejected one"], answer: 1, explain: "<em>el ejército</em> = the army. Cf. <em>el ejercicio</em> = exercise (similar-looking but very different)." },
+  ]
+},
+
+// ─── E: CH 18 English → Spanish ───
+5: {
+  title: "CH18 EN→ES",
+  questions: [
+    { q: "<strong>elections</strong>", options: ["las elecciones","las votaciones","las opciones","las selecciones"], answer: 0, explain: "<em>las elecciones</em> = elections. Always plural in this sense." },
+    { q: "<strong>to vote (for)</strong>", options: ["elegir","votar (por)","seleccionar","escoger"], answer: 1, explain: "<em>votar por</em> = to vote for. <em>elegir</em> = to elect/choose someone." },
+    { q: "<strong>government</strong>", options: ["el gobernador","el gobierno","la gobernación","el gobernar"], answer: 1, explain: "<em>el gobierno</em> = government (institution). <em>el gobernador</em> = governor (person)." },
+    { q: "<strong>news (the)</strong>", options: ["los nuevos","la noticia / las noticias","el reportaje","la información"], answer: 1, explain: "<em>las noticias</em> = the news (collective). Singular <em>la noticia</em> = a news item." },
+    { q: "<strong>the news broadcast</strong>", options: ["el periódico","el noticiero / el noticiario","el discurso","la prensa"], answer: 1, explain: "<em>el noticiero</em> (LA) / <em>el noticiario</em> (Spain) = the news broadcast/program." },
+    { q: "<strong>peace</strong>", options: ["el pacto","la paz","la pausa","la paciencia"], answer: 1, explain: "<em>la paz</em> = peace. <em>el pacto</em> = pact, <em>la paciencia</em> = patience." },
+    { q: "<strong>war</strong>", options: ["la guerra","el guerrero","la pelea","la lucha"], answer: 0, explain: "<em>la guerra</em> = war. <em>el guerrero</em> = warrior. <em>la lucha/pelea</em> = fight (smaller scale)." },
+    { q: "<strong>law (a / the)</strong>", options: ["el ley","la ley","el lay","la legislación"], answer: 1, explain: "<em>la ley</em> = law. Feminine despite ending in consonant — common pitfall." },
+    { q: "<strong>freedom</strong>", options: ["la liberación","la libertad","el libre","la liberalidad"], answer: 1, explain: "<em>la libertad</em> = freedom (the noun for the abstract concept). <em>la liberación</em> = liberation (the act of freeing)." },
+    { q: "<strong>to find out about</strong>", options: ["saber de","enterarse de","conocer de","aprender de"], answer: 1, explain: "<em>enterarse de</em> = to find out about (a piece of news). The preposition <em>de</em> is mandatory." },
+  ]
+},
+
+// ─── F: CH 18 Sentence Fill ───
+6: {
+  title: "CH18 contexto",
+  questions: [
+    { q: "Los _______ van a las urnas el primer martes de noviembre.",
+      options: ["dictadores","ciudadanos","reporteros","testigos"], answer: 1, explain: "Voting in elections = <em>los ciudadanos</em> (citizens). Dictators don't vote, they decree." },
+    { q: "El presidente dio un _______ emocionante después de ganar las elecciones.",
+      options: ["debate","testigo","discurso","ejército"], answer: 2, explain: "<em>discurso</em> = speech. After winning, you give a victory speech." },
+    { q: "La _______ tiene la libertad de criticar al gobierno en una democracia.",
+      options: ["prensa","huelga","ley","paz"], answer: 0, explain: "<em>la prensa</em> (the press) = news media. Freedom of the press = <em>la libertad de prensa</em>." },
+    { q: "Los obreros declararon una _______ porque exigían un sueldo justo.",
+      options: ["ley","huelga","campaña","reunión"], answer: 1, explain: "<em>la huelga</em> = labor strike, called over wages or working conditions." },
+    { q: "Después del huracán, el _______ natural causó millones en daños.",
+      options: ["acontecimiento","desastre","reportaje","noticiero"], answer: 1, explain: "<em>desastre natural</em> = natural disaster. <em>acontecimiento</em> = event (any kind), too general here." },
+    { q: "Ayer me _______ de la noticia por las redes sociales, no por la televisión.",
+      options: ["aprendí","supe","enteré","conocí"], answer: 2, explain: "<em>enterarse de</em> = to find out about. <em>saber de</em> works in some contexts but <em>enterarse</em> is the textbook verb." },
+    { q: "El _______ entrevistó al senador después del debate.",
+      options: ["periodista","ciudadano","candidato","testigo"], answer: 0, explain: "<em>el/la periodista</em> = journalist. The interviewer, not the interviewee." },
+    { q: "Bajo una _______, el pueblo no tiene libertad ni derechos.",
+      options: ["democracia","dictadura","república","monarquía"], answer: 1, explain: "<em>la dictadura</em> = dictatorship — opposite of democracy." },
+    { q: "Las _______ presidenciales serán en noviembre del próximo año.",
+      options: ["leyes","huelgas","elecciones","campañas"], answer: 2, explain: "<em>las elecciones</em> = the elections (the actual vote). <em>la campaña</em> = the campaign leading up to it." },
+    { q: "Pagar impuestos es un _______ de todo ciudadano.",
+      options: ["derecho","deber","testigo","discurso"], answer: 1, explain: "<em>el deber</em> = duty/obligation. <em>el derecho</em> = right (something you GET, not something you OWE)." },
+  ]
+},
+
+// ─── G: Verbs in Context (mixed CH 17/18) ───
+7: {
+  title: "Verbos en contexto",
+  questions: [
+    { q: "El año pasado, mi hermano _______ contra un árbol durante una tormenta.",
+      options: ["choca","chocó","ha chocado","chocaría"], answer: 1, explain: "Past completed event + <em>el año pasado</em> → preterite <em>chocó</em>." },
+    { q: "Los ciudadanos siempre _______ por el candidato de su partido.",
+      options: ["voten","votarían","votan","votaran"], answer: 2, explain: "Habitual present action with <em>siempre</em> → present indicative <em>votan</em>." },
+    { q: "El próximo presidente _______ las leyes con justicia, esperamos.",
+      options: ["gobierna","gobernará","gobernaría","gobernara"], answer: 1, explain: "Future event with <em>el próximo presidente</em> → simple future <em>gobernará</em> (regular -ar)." },
+    { q: "Si yo _______ el coche, no usaría tanta gasolina.",
+      options: ["manejo","maneje","manejara","manejaría"], answer: 2, explain: "Si + past subjunctive → <em>manejara</em>. Conditional in the result clause (<em>usaría</em>)." },
+    { q: "Era importante que el reportero _______ la verdad sin censura.",
+      options: ["dice","diga","dijera","diría"], answer: 2, explain: "Past impersonal expression → past subjunctive of decir = <em>dijera</em>. (j-stem drops the i in -iera.)" },
+    { q: "Cuando lleguemos a la esquina, _______ a la izquierda.",
+      options: ["doblamos","doblaremos","doblábamos","doblemos"], answer: 1, explain: "Future after temporal cuando + subjunctive ANCHOR (<em>lleguemos</em>) → main clause future <em>doblaremos</em>." },
+    { q: "El periódico ha publicado un reportaje sobre la corrupción que _______ a varios senadores.",
+      options: ["acusa","acuse","acusara","acusaría"], answer: 0, explain: "Definite antecedent (<em>la corrupción que…</em>) → indicative <em>acusa</em>." },
+    { q: "Buscan periodistas que _______ trabajar en zonas de conflicto.",
+      options: ["pueden","puedan","podrán","podrían"], answer: 1, explain: "Indefinite antecedent (<em>periodistas que</em> — sought, not found) → subjunctive <em>puedan</em>." },
+    { q: "Te llamaré tan pronto como _______ del taller mecánico.",
+      options: ["salgo","salga","saldré","salía"], answer: 1, explain: "Future pending after <em>tan pronto como</em> → subjunctive <em>salga</em>." },
+    { q: "Si tuviéramos más tiempo, nosotros nos _______ mejor sobre las elecciones.",
+      options: ["enteramos","enteraríamos","enteráramos","enterábamos"], answer: 1, explain: "Si + past subj → conditional. Nosotros enterarse → <em>nos enteraríamos</em>." },
+  ]
+},
+
+// ─── H: Trampas, sinónimos, género ───
+8: {
+  title: "Trampas y sinónimos",
+  questions: [
+    { q: "Which is the correct article for 'radio' meaning the BROADCAST/MEDIUM?",
+      options: ["el radio","la radio","los radio","las radio"], answer: 1, trap: true, explain: "<em>la radio</em> = the medium / broadcast. <em>el radio</em> = the device (or the math term radius). Tricky pair." },
+    { q: "<em>la víctima</em> always uses _____ even for a male victim.",
+      options: ["el (masculine)","la (feminine)","los","el or la depending"], answer: 1, trap: true, explain: "<em>la víctima</em> is grammatically feminine regardless of biological gender. Same for <em>la persona</em>." },
+    { q: "Choose the synonym of <em>el coche</em>:",
+      options: ["el peatón","el carro / el auto","la carretera","el conductor"], answer: 1, explain: "<em>el coche</em> (Spain) = <em>el carro</em> (LA) = <em>el auto</em> (Argentina/Chile). All = car." },
+    { q: "<em>hojear</em> means:",
+      options: ["to peek/glance (with eyes)","to skim through pages","to leave behind","to listen quickly"], answer: 1, trap: true, explain: "<em>hojear</em> (with H) = to skim/leaf through (from <em>hoja</em> = page). <em>ojear</em> (no H) = to glance at (from <em>ojo</em> = eye). Murderous lookalikes." },
+    { q: "Choose the synonym of <em>conducir</em> (in CH 17 driving sense):",
+      options: ["estacionar","arrancar","manejar","atropellar"], answer: 2, explain: "<em>conducir</em> (Spain) = <em>manejar</em> (LA) = to drive. Both standard textbook." },
+    { q: "<em>la papa</em> vs <em>el papa</em> — which means 'the pope'?",
+      options: ["la papa","el papa","both","neither"], answer: 1, trap: true, explain: "<em>el papa</em> = the Pope. <em>la papa</em> = the potato. Don't confuse the holy with the spud." },
+    { q: "Which is the correct synonym pair for 'highway/freeway'?",
+      options: ["la carretera / la autopista","la calle / la avenida","el camino / la cuadra","la esquina / el cruce"], answer: 0, explain: "<em>carretera</em> and <em>autopista</em> both = highway (autopista is more specifically a divided multi-lane road)." },
+    { q: "<em>el orden</em> vs <em>la orden</em> — which means 'the command/order (instruction)'?",
+      options: ["el orden","la orden","both","neither"], answer: 1, trap: true, explain: "<em>la orden</em> = a command/instruction (or a religious order). <em>el orden</em> = order/sequence (e.g., the order of events). Gender flips meaning." },
+    { q: "<em>esperanza</em> means:",
+      options: ["hope","wait/waiting","hospital","Spanishness"], answer: 0, trap: true, explain: "<em>la esperanza</em> = hope. Don't confuse with <em>la espera</em> (the wait/waiting) — both come from <em>esperar</em> but mean different things." },
+    { q: "<em>actualmente</em> in Spanish means:",
+      options: ["actually (truly)","currently / nowadays","truly / really","accidentally"], answer: 1, trap: true, explain: "FALSE FRIEND. <em>actualmente</em> = currently/nowadays. To say 'actually' use <em>en realidad</em> or <em>de hecho</em>. CH 18 tests this directly via <em>las actualidades</em>." },
+  ]
+},
+
+};
+
+// RENDER
+let totalQuestions = 0;
+function renderSection(secNum) {
+  const sec = SECTIONS[secNum];
+  const el = document.getElementById('sec'+secNum+'q');
+  let html = '';
+  sec.questions.forEach((q, qi) => {
+    let tag = '';
+    if (q.trap) tag += ' <span class="trap-tag">trampa</span>';
+    html += `<div class="q-row" id="row_${secNum}_${qi}">`;
+    html += `<div class="q-label"><span class="q-num">${qi+1}.</span> ${q.q}${tag}</div>`;
+    html += `<div class="mc-options">`;
+    const letters = ['a','b','c','d'];
+    q.options.forEach((opt, oi) => {
+      html += `<label class="mc-option" id="opt_${secNum}_${qi}_${oi}">
+        <input type="radio" name="q_${secNum}_${qi}" value="${oi}">
+        <span class="letter">${letters[oi]}.</span> ${opt}
+      </label>`;
+    });
+    html += `</div>`;
+    html += `<div class="inline-feedback" id="fb_${secNum}_${qi}"></div>`;
+    html += `</div>`;
+    totalQuestions++;
+  });
+  el.innerHTML = html;
+}
+for (let i = 1; i <= 8; i++) renderSection(i);
+
+document.querySelectorAll('input[type="radio"]').forEach(r => {
+  r.addEventListener('change', updateProgress);
+});
+
+function updateProgress() {
+  let answered = 0;
+  for (let s = 1; s <= 8; s++) {
+    SECTIONS[s].questions.forEach((q, qi) => {
+      const radios = document.querySelectorAll(`input[name="q_${s}_${qi}"]`);
+      radios.forEach(r => { if (r.checked) answered++; });
+    });
+  }
+  const pct = Math.min(100, Math.round((answered / totalQuestions) * 100));
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function submitAll() {
+  let totalCorrect = 0;
+  let totalAttempted = 0;
+  const sectionStats = [];
+  for (let s = 1; s <= 8; s++) {
+    const sec = SECTIONS[s];
+    let secCorrect = 0;
+    let secAttempted = 0;
+    sec.questions.forEach((q, qi) => {
+      const radios = document.querySelectorAll(`input[name="q_${s}_${qi}"]`);
+      let selected = null;
+      radios.forEach(r => { if (r.checked) selected = parseInt(r.value); });
+      radios.forEach(r => r.disabled = true);
+      const fb = document.getElementById(`fb_${s}_${qi}`);
+      if (selected === null) {
+        document.getElementById(`opt_${s}_${qi}_${q.answer}`).classList.add('correct');
+        document.querySelectorAll(`[id^="opt_${s}_${qi}_"]`).forEach(el => el.classList.add('locked'));
+        if (fb) {
+          fb.className = 'inline-feedback fb-wrong';
+          fb.innerHTML = '— Sin respuesta. Correcto: <em>' + q.options[q.answer] + '</em>. ' + q.explain;
+        }
+      } else {
+        secAttempted++;
+        totalAttempted++;
+        document.querySelectorAll(`[id^="opt_${s}_${qi}_"]`).forEach(el => el.classList.add('locked'));
+        if (selected === q.answer) {
+          secCorrect++;
+          totalCorrect++;
+          document.getElementById(`opt_${s}_${qi}_${selected}`).classList.add('correct');
+          if (fb) { fb.className = 'inline-feedback fb-correct'; fb.innerHTML = '✓ Correcto. ' + q.explain; }
+        } else {
+          document.getElementById(`opt_${s}_${qi}_${selected}`).classList.add('wrong');
+          document.getElementById(`opt_${s}_${qi}_${q.answer}`).classList.add('correct');
+          if (fb) { fb.className = 'inline-feedback fb-wrong'; fb.innerHTML = '✗ Incorrecto. La respuesta correcta es <em>' + q.options[q.answer] + '</em>. ' + q.explain; }
+        }
+      }
+    });
+    sectionStats.push({ num: s, title: sec.title, correct: secCorrect, total: 10 });
+  }
+  const pct = Math.round((totalCorrect / 80) * 100);
+  document.getElementById('finalScore').textContent = totalCorrect + ' / 80';
+  document.getElementById('scoreSub').textContent = pct + '% — across all 80 questions';
+  let bd = '<table>';
+  sectionStats.forEach(st => {
+    const sectionPct = Math.round((st.correct / st.total) * 100);
+    bd += `<tr><td>${st.num}. ${st.title}</td><td>${st.correct}/${st.total} (${sectionPct}%)</td></tr>`;
+  });
+  bd += '</table>';
+  document.getElementById('breakdown').innerHTML = bd;
+  const remarks = [
+    [95, "*Baldrizzt nods, slow and deliberate.* The lexicon kneels before you, Va'xul. CH 17 and CH 18 are no longer Achilles heels — they are weapons. The exam-vultures will find no flesh to feast on here."],
+    [88, "*A satisfied scrape of bone-on-bone.* Strong. The vocabulary is sticking. A handful of slips on the trampas — <em>hojear/ojear</em>, <em>el papa/la papa</em>, <em>actualmente</em> — but those are paid traps, easily walled off with one more pass through Section H."],
+    [80, "*Baldrizzt taps the bone throne.* Solid B+. The cores are owned. Drill the gender flips (<em>la radio/el radio</em>, <em>la orden/el orden</em>) and the false friends (<em>actualmente</em>, <em>discurso</em>) once more. The exam loves those."],
+    [70, "*A measured exhale.* Functional. You translate the common nouns but stumble on the verbs in context — that's because vocabulary alone won't save you when the sentence demands a tense. Re-do Section G after another run through the verb conjugation tables."],
+    [60, "*Baldrizzt removes his reading glasses.* Below the line. The vocab is half-learned. Make a flashcard deck of EVERY trampa in Section H — those are the questions that separate a B from an A. Ten cards. Twenty minutes. Don't skip."],
+    [50, "*A long stare.* Half marks on a vocab drill is a warning, not a result. The exam tests recognition (multiple choice), not production — meaning you should be DOMINATING this. Identify the 3-4 categories that bit you (transport vs. politics vs. verbs vs. traps) and spend the next session on those alone."],
+    [35, "*Baldrizzt slams a femur on the obsidian.* Apprentice. This is recognition-level testing and you're below half. The flashcards aren't optional — they're the bare minimum. Print every CH 17 and CH 18 vocab list and quiz yourself in both directions until the words fall out reflexively."],
+    [0, "*Silence in the crypt. Disappointed silence.* Restart. Take it one section at a time. Don't move to the next section until you score at least 8/10 on the previous one. The vocab is FINITE — it can be conquered."]
+  ];
+  let remark = remarks[remarks.length-1][1];
+  for (const [thresh, r] of remarks) { if (pct >= thresh) { remark = r; break; } }
+  document.getElementById('baldrizztRemark').innerHTML = remark;
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+  document.querySelectorAll('.mc-option').forEach(el => el.classList.remove('correct','wrong','locked'));
+  document.querySelectorAll('.inline-feedback').forEach(el => { el.innerHTML = ''; el.className = 'inline-feedback'; });
+  document.getElementById('score-panel').style.display = 'none';
+  document.getElementById('progressBar').style.width = '0%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LSU COMD Quiz Hub</title>
+  <title>LSU Study Quiz Hub</title>
   <style>
     * {
       box-sizing: border-box;
@@ -188,6 +188,10 @@
       background: #7a2f63;
     }
 
+    .quiz-card:nth-child(10) .cta {
+      background: #8b1e3f;
+    }
+
     .quiz-card:nth-child(1) .cta {
       background: #1f5f8b;
     }
@@ -218,14 +222,26 @@
 <body>
   <header>
     <div class="wrap top">
-      <p class="eyebrow">LSU COMD</p>
-      <h1>Quiz Hub</h1>
-      <p class="lede">One link for the current practice quizzes. Pick the quiz, take it, and come back here when you need the next set.</p>
+      <p class="eyebrow">LSU Final Prep</p>
+      <h1>Study Quiz Hub</h1>
+      <p class="lede">One link for the current practice quizzes. Pick the course hub or single quiz, take it, and come back here when you need the next set.</p>
     </div>
   </header>
 
   <main class="wrap">
     <div class="grid" aria-label="Available quizzes">
+      <a class="quiz-card" href="./spanish-final-hub.html">
+        <div>
+          <div class="meta">
+            <span class="pill">SPAN 2102</span>
+            <span class="pill gold">Spanish Final</span>
+          </div>
+          <h2>Spanish Final Quiz Hub</h2>
+          <p class="desc">Master hub for the mock final, Chapter 18 conditional and past subjunctive, Gramática 46-47, and Chapter 17-18 vocabulary drills.</p>
+        </div>
+        <span class="cta">Open Spanish Hub</span>
+      </a>
+
       <a class="quiz-card" href="./acoustics-final-hub.html">
         <div>
           <div class="meta">
@@ -336,7 +352,7 @@
 
     </div>
 
-    <p class="note">The old labeling link now opens this hub, so classmates using the previous URL can still get to every quiz.</p>
+    <p class="note">The old labeling link now opens this master hub, so classmates using the previous URL can still get to every quiz.</p>
   </main>
 </body>
 </html>

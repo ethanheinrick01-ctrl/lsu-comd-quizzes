@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPAN 2102 – Gramática 46 & 47 Practice</title>
+  <style>
+    :root {
+      --teal: #007a8c;
+      --teal-light: #e6f4f6;
+      --teal-mid: #b2dde3;
+      --red: #c0392b;
+      --green: #1a7a4a;
+      --green-light: #e6f4ee;
+      --red-light: #fdecea;
+      --gray: #4a4a4a;
+      --gray-light: #f5f5f5;
+      --border: #d0d0d0;
+      --white: #ffffff;
+      --font: 'Segoe UI', Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: #eef2f5;
+      color: var(--gray);
+      min-height: 100vh;
+      padding: 0 0 60px 0;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    .header {
+      background: var(--teal);
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .header-left h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: .3px; }
+    .header-left p  { font-size: 0.8rem; opacity: .85; margin-top: 2px; }
+    .header-score {
+      background: rgba(255,255,255,0.18);
+      border-radius: 8px;
+      padding: 8px 18px;
+      text-align: center;
+      min-width: 90px;
+    }
+    .header-score .score-num { font-size: 1.5rem; font-weight: 800; }
+    .header-score .score-lbl { font-size: 0.7rem; opacity: .85; text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ── Progress bar ───────────────────────────────── */
+    .progress-wrap {
+      background: white;
+      padding: 10px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .progress-bar-outer {
+      flex: 1;
+      height: 8px;
+      background: #dde3e7;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: var(--teal);
+      border-radius: 99px;
+      transition: width .4s ease;
+      width: 0%;
+    }
+    .progress-text { font-size: 0.78rem; color: #777; white-space: nowrap; }
+
+    /* ── Section tabs ───────────────────────────────── */
+    .section-tabs {
+      display: flex;
+      gap: 0;
+      padding: 16px 32px 0;
+      border-bottom: 2px solid var(--border);
+      background: white;
+    }
+    .tab-btn {
+      padding: 8px 22px;
+      border: none;
+      background: transparent;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color .2s, border-color .2s;
+    }
+    .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .tab-btn:hover:not(.active) { color: #444; }
+
+    /* ── Main content ───────────────────────────────── */
+    .main { max-width: 820px; margin: 28px auto; padding: 0 20px; }
+
+    /* ── Section header ─────────────────────────────── */
+    .section-header {
+      background: white;
+      border-left: 5px solid var(--teal);
+      border-radius: 6px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    }
+    .section-header h2 { font-size: 1rem; color: var(--teal); font-weight: 700; }
+    .section-header p  { font-size: 0.83rem; color: #666; margin-top: 5px; line-height: 1.5; }
+    .rule-box {
+      background: var(--teal-light);
+      border: 1px solid var(--teal-mid);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #1a5060;
+      line-height: 1.6;
+    }
+    .rule-box strong { color: var(--teal); }
+
+    /* ── Question card ──────────────────────────────── */
+    .q-card {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 5px rgba(0,0,0,.06);
+      transition: border-color .2s;
+    }
+    .q-card.correct  { border-color: var(--green); background: var(--green-light); }
+    .q-card.wrong    { border-color: var(--red);   background: var(--red-light); }
+
+    .q-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .q-text {
+      font-size: 0.97rem;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .q-text em { font-style: italic; color: #555; }
+
+    /* Fill-in-the-blank input */
+    .blank-input {
+      border: none;
+      border-bottom: 2px solid var(--teal);
+      background: transparent;
+      font-size: 1rem;
+      color: var(--teal);
+      font-weight: 700;
+      width: 130px;
+      text-align: center;
+      padding: 2px 6px;
+      outline: none;
+      transition: border-color .2s;
+      font-family: var(--font);
+    }
+    .blank-input:focus { border-bottom-color: #004f5f; }
+    .blank-input.correct-input { border-bottom-color: var(--green); color: var(--green); }
+    .blank-input.wrong-input   { border-bottom-color: var(--red);   color: var(--red);   }
+    .blank-input[disabled] { cursor: not-allowed; opacity: .9; }
+
+    /* Multiple choice */
+    .mc-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+    .mc-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: background .15s, border-color .15s;
+      user-select: none;
+    }
+    .mc-option:hover:not(.disabled) { background: var(--teal-light); border-color: var(--teal); }
+    .mc-option.selected { background: #dff0f3; border-color: var(--teal); }
+    .mc-option.correct  { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 600; }
+    .mc-option.wrong    { background: var(--red-light);   border-color: var(--red);   color: var(--red); }
+    .mc-option.reveal   { background: var(--green-light); border-color: var(--green); color: var(--green); opacity: .7; }
+    .mc-option.disabled { cursor: default; }
+    .mc-letter {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .mc-option.correct .mc-letter { background: var(--green); }
+    .mc-option.wrong   .mc-letter { background: var(--red); }
+    .mc-option.reveal  .mc-letter { background: var(--green); }
+
+    /* Feedback */
+    .q-feedback {
+      font-size: 0.83rem;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      display: none;
+      line-height: 1.5;
+    }
+    .q-feedback.show { display: block; }
+    .q-feedback.correct { background: #d4edda; color: #1a5c35; }
+    .q-feedback.wrong   { background: #f8d7da; color: #7b1c24; }
+
+    /* Check button */
+    .check-btn {
+      margin-top: 12px;
+      padding: 7px 20px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .check-btn:hover { background: #005f70; }
+    .check-btn:disabled { background: #aaa; cursor: default; }
+
+    /* ── Section divider ────────────────────────────── */
+    .section-divider {
+      text-align: center;
+      margin: 30px 0 20px;
+      position: relative;
+    }
+    .section-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-divider span {
+      position: relative;
+      background: #eef2f5;
+      padding: 0 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: #999;
+    }
+
+    /* ── Results panel ──────────────────────────────── */
+    .results-panel {
+      display: none;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid var(--teal);
+      padding: 30px;
+      text-align: center;
+      margin-top: 24px;
+      box-shadow: 0 2px 12px rgba(0,122,140,.15);
+    }
+    .results-panel.show { display: block; }
+    .results-panel h2 { font-size: 1.3rem; color: var(--teal); margin-bottom: 8px; }
+    .results-big { font-size: 3rem; font-weight: 800; color: var(--teal); }
+    .results-sub { font-size: 0.9rem; color: #666; margin: 6px 0 20px; }
+    .results-grade {
+      display: inline-block;
+      padding: 8px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    .grade-A { background: #d4edda; color: #1a5c35; }
+    .grade-B { background: #d1ecf1; color: #0c5460; }
+    .grade-C { background: #fff3cd; color: #856404; }
+    .grade-D { background: #f8d7da; color: #7b1c24; }
+
+    .retry-btn {
+      padding: 10px 32px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .retry-btn:hover { background: #005f70; }
+
+    /* ── Submit all btn ─────────────────────────────── */
+    .submit-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .submit-all-btn {
+      padding: 12px 40px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,122,140,.3);
+      transition: background .15s;
+    }
+    .submit-all-btn:hover { background: #005f70; }
+
+    /* ── Section visibility ─────────────────────────── */
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+
+    /* icon checks */
+    .icon { font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>SPAN 2102 — Gramática Práctica</h1>
+    <p>Sections 46 &amp; 47 · Future Tense + Subjunctive After Time Conjunctions</p>
+  </div>
+  <div class="header-score">
+    <div class="score-num" id="scoreDisplay">0</div>
+    <div class="score-lbl">Points</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 / 0 answered</div>
+</div>
+
+<div class="section-tabs" style="background:#eef2f5; padding-left:32px; border-bottom:2px solid #ccc;">
+  <button class="tab-btn active" onclick="showSection('sec46')">§46 Future Tense</button>
+  <button class="tab-btn" onclick="showSection('sec47')">§47 Subjunctive + Time</button>
+  <button class="tab-btn" onclick="showSection('secMix')">🔥 Mixed Challenge</button>
+</div>
+
+<div class="main">
+
+  <!-- ═══════════════ SECTION 46 ═══════════════ -->
+  <div class="section-panel active" id="sec46">
+    <div class="section-header">
+      <h2>§46 — The Future Tense</h2>
+      <p>Conjugate each verb in the <strong>future tense</strong>. Remember: regular verbs attach endings directly to the infinitive. Irregular verbs use a modified stem.</p>
+      <div class="rule-box">
+        <strong>Regular endings:</strong> -é, -ás, -á, -emos, -éis, -án<br>
+        <strong>Irregular stems:</strong> dir-, habr-, har-, podr-, pondr-, querr-, sabr-, saldr-, tendr-, vendr-
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="q1">
+      <div class="q-number">Question 1 of 10 — Fill in the blank</div>
+      <div class="q-text">Mañana (yo) <input class="blank-input" id="q1_ans" placeholder="hablar"> con el profesor.</div>
+      <button class="check-btn" onclick="checkFill('q1','hablaré','hablar → regular: hablar + é = hablaré','hablar',1)">Check</button>
+      <div class="q-feedback" id="q1_fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="q2">
+      <div class="q-number">Question 2 of 10 — Fill in the blank</div>
+      <div class="q-text">¿Cuándo (tú) <input class="blank-input" id="q2_ans" placeholder="venir"> a la fiesta?</div>
+      <button class="check-btn" onclick="checkFill('q2','vendrás','venir → irregular stem: vendr- + ás = vendrás','venir',1)">Check</button>
+      <div class="q-feedback" id="q2_fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="q3">
+      <div class="q-number">Question 3 of 10 — Fill in the blank</div>
+      <div class="q-text">Ella <input class="blank-input" id="q3_ans" placeholder="tener"> tiempo libre este fin de semana.</div>
+      <button class="check-btn" onclick="checkFill('q3','tendrá','tener → irregular stem: tendr- + á = tendrá','tener',1)">Check</button>
+      <div class="q-feedback" id="q3_fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="q4">
+      <div class="q-number">Question 4 of 10 — Fill in the blank</div>
+      <div class="q-text">Nosotros <input class="blank-input" id="q4_ans" placeholder="poder"> salir si terminamos.</div>
+      <button class="check-btn" onclick="checkFill('q4','podremos','poder → irregular stem: podr- + emos = podremos','poder',1)">Check</button>
+      <div class="q-feedback" id="q4_fb"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="q5">
+      <div class="q-number">Question 5 of 10 — Fill in the blank</div>
+      <div class="q-text">Ustedes <input class="blank-input" id="q5_ans" placeholder="saber"> los resultados pronto.</div>
+      <button class="check-btn" onclick="checkFill('q5','sabrán','saber → irregular stem: sabr- + án = sabrán','saber',1)">Check</button>
+      <div class="q-feedback" id="q5_fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-card" id="q6">
+      <div class="q-number">Question 6 of 10 — Fill in the blank</div>
+      <div class="q-text">Yo <input class="blank-input" id="q6_ans" placeholder="decir"> la verdad.</div>
+      <button class="check-btn" onclick="checkFill('q6','diré','decir → irregular stem: dir- + é = diré','decir',1)">Check</button>
+      <div class="q-feedback" id="q6_fb"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-card" id="q7">
+      <div class="q-number">Question 7 of 10 — Multiple choice</div>
+      <div class="q-text">¿Cuál es la forma correcta del futuro de <em>hacer</em> para <em>vosotros</em>?</div>
+      <div class="mc-options" id="q7_opts">
+        <div class="mc-option" onclick="selectMC('q7',this,'haréis')"><span class="mc-letter">A</span> haréis</div>
+        <div class="mc-option" onclick="selectMC('q7',this,'haremos')"><span class="mc-letter">B</span> haremos</div>
+        <div class="mc-option" onclick="selectMC('q7',this,'hacéis')"><span class="mc-letter">C</span> hacéis</div>
+        <div class="mc-option" onclick="selectMC('q7',this,'haréeis')"><span class="mc-letter">D</span> haréeis</div>
+      </div>
+      <button class="check-btn" id="q7_btn" onclick="checkMC('q7','haréis','hacer → irregular stem: har- + éis = haréis. Note: -éis for vosotros.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q7_fb"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-card" id="q8">
+      <div class="q-number">Question 8 of 10 — Fill in the blank</div>
+      <div class="q-text">Él <input class="blank-input" id="q8_ans" placeholder="salir"> a las ocho.</div>
+      <button class="check-btn" onclick="checkFill('q8','saldrá','salir → irregular stem: saldr- + á = saldrá','salir',1)">Check</button>
+      <div class="q-feedback" id="q8_fb"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-card" id="q9">
+      <div class="q-number">Question 9 of 10 — Multiple choice</div>
+      <div class="q-text">Select the correct future form of <em>querer</em> for <em>ella</em>:</div>
+      <div class="mc-options" id="q9_opts">
+        <div class="mc-option" onclick="selectMC('q9',this,'querrá')"><span class="mc-letter">A</span> querrá</div>
+        <div class="mc-option" onclick="selectMC('q9',this,'querrará')"><span class="mc-letter">B</span> querrará</div>
+        <div class="mc-option" onclick="selectMC('q9',this,'quererá')"><span class="mc-letter">C</span> quererá</div>
+        <div class="mc-option" onclick="selectMC('q9',this,'querremos')"><span class="mc-letter">D</span> querremos</div>
+      </div>
+      <button class="check-btn" id="q9_btn" onclick="checkMC('q9','querrá','querer → irregular stem: querr- + á = querrá. Double R is part of the stem.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q9_fb"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" id="q10">
+      <div class="q-number">Question 10 of 10 — Fill in the blank</div>
+      <div class="q-text">Tú <input class="blank-input" id="q10_ans" placeholder="poner"> la mesa.</div>
+      <button class="check-btn" onclick="checkFill('q10','pondrás','poner → irregular stem: pondr- + ás = pondrás','poner',1)">Check</button>
+      <div class="q-feedback" id="q10_fb"></div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-all-btn" onclick="showResults('sec46')">Ver resultados §46</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 47 ═══════════════ -->
+  <div class="section-panel" id="sec47">
+    <div class="section-header">
+      <h2>§47 — Subjunctive After Conjunctions of Time</h2>
+      <p>Choose or conjugate the verb using the <strong>subjunctive</strong> (future/pending event) or <strong>indicative</strong> (habitual/past). <em>Antes (de) que</em> always takes subjunctive.</p>
+      <div class="rule-box">
+        <strong>Future/Pending → Subjunctive</strong> &nbsp;|&nbsp; <strong>Habitual/Past → Indicative</strong><br>
+        <strong>antes (de) que</strong> → always subjunctive<br>
+        Conjunctions: <em>antes (de) que, cuando, después (de) que, en cuanto, hasta que, tan pronto como</em>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="q11">
+      <div class="q-number">Question 1 of 10 — Multiple choice</div>
+      <div class="q-text">Voy a llamarte <em>cuando</em> (yo) _____ (llegar) al aeropuerto.</div>
+      <div class="mc-options" id="q11_opts">
+        <div class="mc-option" onclick="selectMC('q11',this,'llegue')"><span class="mc-letter">A</span> llegue</div>
+        <div class="mc-option" onclick="selectMC('q11',this,'llego')"><span class="mc-letter">B</span> llego</div>
+        <div class="mc-option" onclick="selectMC('q11',this,'llegaré')"><span class="mc-letter">C</span> llegaré</div>
+        <div class="mc-option" onclick="selectMC('q11',this,'llegaba')"><span class="mc-letter">D</span> llegaba</div>
+      </div>
+      <button class="check-btn" id="q11_btn" onclick="checkMC('q11','llegue','cuando + future/pending event → subjunctive. "Voy a llamarte" signals this is a future action, so use present subjunctive: llegue.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q11_fb"></div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="q12">
+      <div class="q-number">Question 2 of 10 — Multiple choice</div>
+      <div class="q-text">Siempre como <em>cuando</em> (yo) _____ (tener) hambre.</div>
+      <div class="mc-options" id="q12_opts">
+        <div class="mc-option" onclick="selectMC('q12',this,'tengo')"><span class="mc-letter">A</span> tengo</div>
+        <div class="mc-option" onclick="selectMC('q12',this,'tenga')"><span class="mc-letter">B</span> tenga</div>
+        <div class="mc-option" onclick="selectMC('q12',this,'tendré')"><span class="mc-letter">C</span> tendré</div>
+        <div class="mc-option" onclick="selectMC('q12',this,'tuviera')"><span class="mc-letter">D</span> tuviera</div>
+      </div>
+      <button class="check-btn" id="q12_btn" onclick="checkMC('q12','tengo','cuando + habitual action (siempre como...) → indicative. This is a recurring habit, not a pending future event, so use present indicative: tengo.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q12_fb"></div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="q13">
+      <div class="q-number">Question 3 of 10 — Fill in the blank</div>
+      <div class="q-text">Te escribiré <em>en cuanto</em> <input class="blank-input" id="q13_ans" placeholder="llegar"> a casa. (yo)</div>
+      <button class="check-btn" onclick="checkFill('q13','llegue','en cuanto + future/pending → subjunctive. "Te escribiré" (future tense) confirms this is a pending event. llegue = present subjunctive of llegar (yo).','llegar',1)">Check</button>
+      <div class="q-feedback" id="q13_fb"></div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="q14">
+      <div class="q-number">Question 4 of 10 — Multiple choice</div>
+      <div class="q-text">Debes estudiar <em>hasta que</em> _____ (entender, tú) la lección.</div>
+      <div class="mc-options" id="q14_opts">
+        <div class="mc-option" onclick="selectMC('q14',this,'entiendas')"><span class="mc-letter">A</span> entiendas</div>
+        <div class="mc-option" onclick="selectMC('q14',this,'entiendes')"><span class="mc-letter">B</span> entiendes</div>
+        <div class="mc-option" onclick="selectMC('q14',this,'entendías')"><span class="mc-letter">C</span> entendías</div>
+        <div class="mc-option" onclick="selectMC('q14',this,'entenderás')"><span class="mc-letter">D</span> entenderás</div>
+      </div>
+      <button class="check-btn" id="q14_btn" onclick="checkMC('q14','entiendas','hasta que + pending/future → subjunctive. The outcome is not yet achieved (you haven\'t understood yet), so entiendas (present subjunctive, tú) is correct.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q14_fb"></div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="q15">
+      <div class="q-number">Question 5 of 10 — Multiple choice</div>
+      <div class="q-text">Siempre me siento bien <em>después de que</em> _____ (hacer, yo) ejercicio.</div>
+      <div class="mc-options" id="q15_opts">
+        <div class="mc-option" onclick="selectMC('q15',this,'hago')"><span class="mc-letter">A</span> hago</div>
+        <div class="mc-option" onclick="selectMC('q15',this,'haga')"><span class="mc-letter">B</span> haga</div>
+        <div class="mc-option" onclick="selectMC('q15',this,'haré')"><span class="mc-letter">C</span> haré</div>
+        <div class="mc-option" onclick="selectMC('q15',this,'hacía')"><span class="mc-letter">D</span> hacía</div>
+      </div>
+      <button class="check-btn" id="q15_btn" onclick="checkMC('q15','hago','después de que + habitual (siempre me siento...) → indicative. This describes a recurring pattern. Present indicative: hago.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q15_fb"></div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="q16">
+      <div class="q-number">Question 6 of 10 — Fill in the blank</div>
+      <div class="q-text">Saldremos <em>tan pronto como</em> <input class="blank-input" id="q16_ans" placeholder="terminar"> él el trabajo.</div>
+      <button class="check-btn" onclick="checkFill('q16','termine','tan pronto como + future/pending → subjunctive. "Saldremos" (future) confirms pending event. termine = present subjunctive of terminar (él).','terminar',1)">Check</button>
+      <div class="q-feedback" id="q16_fb"></div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="q17">
+      <div class="q-number">Question 7 of 10 — Multiple choice</div>
+      <div class="q-text"><em>Antes de que</em> _____ (irse, tú), apaga las luces.</div>
+      <div class="mc-options" id="q17_opts">
+        <div class="mc-option" onclick="selectMC('q17',this,'te vayas')"><span class="mc-letter">A</span> te vayas</div>
+        <div class="mc-option" onclick="selectMC('q17',this,'te vas')"><span class="mc-letter">B</span> te vas</div>
+        <div class="mc-option" onclick="selectMC('q17',this,'te fueras')"><span class="mc-letter">C</span> te fueras</div>
+        <div class="mc-option" onclick="selectMC('q17',this,'irás')"><span class="mc-letter">D</span> irás</div>
+      </div>
+      <button class="check-btn" id="q17_btn" onclick="checkMC('q17','te vayas','antes de que ALWAYS takes subjunctive — no exceptions, regardless of past or future context. te vayas = present subjunctive of irse (tú).',1)" disabled>Check</button>
+      <div class="q-feedback" id="q17_fb"></div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" id="q18">
+      <div class="q-number">Question 8 of 10 — Fill in the blank</div>
+      <div class="q-text">Comíamos juntos <em>cuando</em> <input class="blank-input" id="q18_ans" placeholder="vivir"> cerca. (nosotros)</div>
+      <button class="check-btn" onclick="checkFill('q18','vivíamos','cuando + habitual past → indicative (imperfect). This describes a repeated past habit. vivíamos = imperfect indicative of vivir (nosotros).','vivir',1)">Check</button>
+      <div class="q-feedback" id="q18_fb"></div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" id="q19">
+      <div class="q-number">Question 9 of 10 — Multiple choice</div>
+      <div class="q-text">Llámame <em>en cuanto</em> _____ (saber, tú) los resultados.</div>
+      <div class="mc-options" id="q19_opts">
+        <div class="mc-option" onclick="selectMC('q19',this,'sepas')"><span class="mc-letter">A</span> sepas</div>
+        <div class="mc-option" onclick="selectMC('q19',this,'sabes')"><span class="mc-letter">B</span> sabes</div>
+        <div class="mc-option" onclick="selectMC('q19',this,'sabrás')"><span class="mc-letter">C</span> sabrás</div>
+        <div class="mc-option" onclick="selectMC('q19',this,'supieras')"><span class="mc-letter">D</span> supieras</div>
+      </div>
+      <button class="check-btn" id="q19_btn" onclick="checkMC('q19','sepas','en cuanto + pending future → subjunctive. The command "Llámame" signals a future/pending action. sepas = present subjunctive of saber (tú). Note: saber → irregular subj. stem sep-.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q19_fb"></div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="q20">
+      <div class="q-number">Question 10 of 10 — Fill in the blank</div>
+      <div class="q-text">Siempre descansaba <em>después de que</em> <input class="blank-input" id="q20_ans" placeholder="terminar"> la clase. (ella)</div>
+      <button class="check-btn" onclick="checkFill('q20','terminaba','después de que + habitual past → indicative (imperfect). "Siempre descansaba" is habitual past, so use imperfect indicative: terminaba.','terminar',1)">Check</button>
+      <div class="q-feedback" id="q20_fb"></div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-all-btn" onclick="showResults('sec47')">Ver resultados §47</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION MIX ═══════════════ -->
+  <div class="section-panel" id="secMix">
+    <div class="section-header">
+      <h2>🔥 Mixed Challenge — §46 + §47</h2>
+      <p>These questions combine both grammar points. You'll need to decide: future tense OR subjunctive/indicative after a time conjunction?</p>
+      <div class="rule-box">
+        <strong>Strategy:</strong> First identify if there's a conjunction of time. If yes → apply §47 rules. If it's a standalone future statement → §46 future tense.
+      </div>
+    </div>
+
+    <!-- Q21 -->
+    <div class="q-card" id="q21">
+      <div class="q-number">Question 1 of 8 — Multiple choice</div>
+      <div class="q-text">El próximo año (yo) _____ (vivir) en México.</div>
+      <div class="mc-options" id="q21_opts">
+        <div class="mc-option" onclick="selectMC('q21',this,'viviré')"><span class="mc-letter">A</span> viviré</div>
+        <div class="mc-option" onclick="selectMC('q21',this,'viva')"><span class="mc-letter">B</span> viva</div>
+        <div class="mc-option" onclick="selectMC('q21',this,'vivía')"><span class="mc-letter">C</span> vivía</div>
+        <div class="mc-option" onclick="selectMC('q21',this,'viviera')"><span class="mc-letter">D</span> viviera</div>
+      </div>
+      <button class="check-btn" id="q21_btn" onclick="checkMC('q21','viviré','No conjunction of time — this is a simple future statement. Use future tense: viviré (vivir + é).',1)" disabled>Check</button>
+      <div class="q-feedback" id="q21_fb"></div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="q-card" id="q22">
+      <div class="q-number">Question 2 of 8 — Fill in the blank</div>
+      <div class="q-text">Nos vamos <em>antes de que</em> <input class="blank-input" id="q22_ans" placeholder="llegar"> él.</div>
+      <button class="check-btn" onclick="checkFill('q22','llegue','antes de que → always subjunctive. No exceptions. llegue = present subjunctive of llegar (él).','llegar',1)">Check</button>
+      <div class="q-feedback" id="q22_fb"></div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="q-card" id="q23">
+      <div class="q-number">Question 3 of 8 — Multiple choice</div>
+      <div class="q-text">¿Qué _____ (hacer, tú) este verano?</div>
+      <div class="mc-options" id="q23_opts">
+        <div class="mc-option" onclick="selectMC('q23',this,'harás')"><span class="mc-letter">A</span> harás</div>
+        <div class="mc-option" onclick="selectMC('q23',this,'hagas')"><span class="mc-letter">B</span> hagas</div>
+        <div class="mc-option" onclick="selectMC('q23',this,'hacías')"><span class="mc-letter">C</span> hacías</div>
+        <div class="mc-option" onclick="selectMC('q23',this,'haces')"><span class="mc-letter">D</span> haces</div>
+      </div>
+      <button class="check-btn" id="q23_btn" onclick="checkMC('q23','harás','No time conjunction — simple future question. hacer → irregular stem: har- + ás = harás.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q23_fb"></div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="q-card" id="q24">
+      <div class="q-number">Question 4 of 8 — Fill in the blank</div>
+      <div class="q-text">Lo haré <em>tan pronto como</em> <input class="blank-input" id="q24_ans" placeholder="poder"> (yo).</div>
+      <button class="check-btn" onclick="checkFill('q24','pueda','tan pronto como + future pending → subjunctive. poder → irregular subj. stem: pued- → pueda (yo).','poder',1)">Check</button>
+      <div class="q-feedback" id="q24_fb"></div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="q-card" id="q25">
+      <div class="q-number">Question 5 of 8 — Multiple choice</div>
+      <div class="q-text">Ellos _____ (venir) a la boda el mes que viene.</div>
+      <div class="mc-options" id="q25_opts">
+        <div class="mc-option" onclick="selectMC('q25',this,'vendrán')"><span class="mc-letter">A</span> vendrán</div>
+        <div class="mc-option" onclick="selectMC('q25',this,'vengan')"><span class="mc-letter">B</span> vengan</div>
+        <div class="mc-option" onclick="selectMC('q25',this,'vienen')"><span class="mc-letter">C</span> vienen</div>
+        <div class="mc-option" onclick="selectMC('q25',this,'venían')"><span class="mc-letter">D</span> venían</div>
+      </div>
+      <button class="check-btn" id="q25_btn" onclick="checkMC('q25','vendrán','No time conjunction — simple future statement. venir → irregular stem: vendr- + án = vendrán.',1)" disabled>Check</button>
+      <div class="q-feedback" id="q25_fb"></div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="q-card" id="q26">
+      <div class="q-number">Question 6 of 8 — Fill in the blank</div>
+      <div class="q-text">Ella te llamó <em>cuando</em> <input class="blank-input" id="q26_ans" placeholder="saber"> la noticia.</div>
+      <button class="check-btn" onclick="checkFill('q26','supo','cuando + completed past event → indicative (preterite). This already happened — she called when she found out. supo = preterite of saber (ella).','saber',1)">Check</button>
+      <div class="q-feedback" id="q26_fb"></div>
+    </div>
+
+    <!-- Q27 -->
+    <div class="q-card" id="q27">
+      <div class="q-number">Question 7 of 8 — Multiple choice</div>
+      <div class="q-text">¿Cuándo _____ (poder, nosotros) hablar? — Lo haremos <em>en cuanto</em> _____ (tener, tú) un momento.</div>
+      <div class="mc-options" id="q27_opts">
+        <div class="mc-option" onclick="selectMC('q27',this,'podremos / tengas')"><span class="mc-letter">A</span> podremos / tengas</div>
+        <div class="mc-option" onclick="selectMC('q27',this,'podamos / tienes')"><span class="mc-letter">B</span> podamos / tienes</div>
+        <div class="mc-option" onclick="selectMC('q27',this,'podremos / tienes')"><span class="mc-letter">C</span> podremos / tienes</div>
+        <div class="mc-option" onclick="selectMC('q27',this,'podemos / tengas')"><span class="mc-letter">D</span> podemos / tengas</div>
+      </div>
+      <button class="check-btn" id="q27_btn" onclick="checkMC('q27','podremos / tengas','Two-part: (1) simple future question → podremos (poder: podr- + emos). (2) en cuanto + pending future → subjunctive → tengas (tener, tú: present subjunctive).',2)" disabled>Check</button>
+      <div class="q-feedback" id="q27_fb"></div>
+    </div>
+
+    <!-- Q28 -->
+    <div class="q-card" id="q28">
+      <div class="q-number">Question 8 of 8 — Fill in the blank</div>
+      <div class="q-text">Siempre lloraba <em>hasta que</em> <input class="blank-input" id="q28_ans" placeholder="dormir"> el bebé. (quedarse)</div>
+      <button class="check-btn" onclick="checkFill('q28','se dormía','hasta que + habitual past → indicative (imperfect). Siempre + imperfect in main clause = habitual past. se dormía = imperfect of dormirse (él/ella).','dormirse',1)">Check</button>
+      <div class="q-feedback" id="q28_fb"></div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-all-btn" onclick="showResults('secMix')">Ver resultados — Mixed</button>
+    </div>
+  </div>
+
+  <!-- Results panels -->
+  <div class="results-panel" id="results_sec46"></div>
+  <div class="results-panel" id="results_sec47"></div>
+  <div class="results-panel" id="results_secMix"></div>
+
+</div><!-- /main -->
+
+<script>
+  // ── State ──────────────────────────────────────────────────
+  const state = {};
+  // total answerable questions per section
+  const sectionQs = {
+    sec46: ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'],
+    sec47: ['q11','q12','q13','q14','q15','q16','q17','q18','q19','q20'],
+    secMix: ['q21','q22','q23','q24','q25','q26','q27','q28']
+  };
+
+  let totalScore = 0;
+  let totalAnswered = 0;
+  const totalQ = 28;
+
+  function updateHeader() {
+    document.getElementById('scoreDisplay').textContent = totalScore;
+    document.getElementById('progressBar').style.width = (totalAnswered / totalQ * 100) + '%';
+    document.getElementById('progressText').textContent = totalAnswered + ' / ' + totalQ + ' answered';
+  }
+
+  // ── Tab switching ──────────────────────────────────────────
+  function showSection(id) {
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const idx = {sec46:0,sec47:1,secMix:2}[id];
+    tabs[idx].classList.add('active');
+  }
+
+  // ── Multiple choice ────────────────────────────────────────
+  function selectMC(qid, el, val) {
+    if (state[qid + '_locked']) return;
+    const opts = document.querySelectorAll('#' + qid + '_opts .mc-option');
+    opts.forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state[qid + '_selected'] = val;
+    const btn = document.getElementById(qid + '_btn');
+    if (btn) btn.disabled = false;
+  }
+
+  function checkMC(qid, correct, explanation, pts) {
+    if (state[qid + '_locked']) return;
+    state[qid + '_locked'] = true;
+    const selected = state[qid + '_selected'];
+    const opts = document.querySelectorAll('#' + qid + '_opts .mc-option');
+    const btn = document.getElementById(qid + '_btn');
+    const fb = document.getElementById(qid + '_fb');
+    const card = document.getElementById(qid);
+
+    opts.forEach(o => {
+      o.classList.add('disabled');
+      const optVal = o.querySelector('.mc-letter').nextSibling.textContent.trim();
+      if (optVal === correct) o.classList.add(selected === correct ? 'correct' : 'reveal');
+      else if (optVal === selected && selected !== correct) o.classList.add('wrong');
+    });
+
+    btn.disabled = true;
+    totalAnswered++;
+
+    if (selected === correct) {
+      card.classList.add('correct');
+      fb.className = 'q-feedback show correct';
+      fb.innerHTML = '✓ ¡Correcto! ' + explanation;
+      totalScore += pts;
+    } else {
+      card.classList.add('wrong');
+      fb.className = 'q-feedback show wrong';
+      fb.innerHTML = '✗ La respuesta correcta es <strong>' + correct + '</strong>. ' + explanation;
+    }
+    updateHeader();
+  }
+
+  // ── Fill-in-blank ──────────────────────────────────────────
+  function checkFill(qid, correct, explanation, verb, pts) {
+    if (state[qid + '_locked']) return;
+    const input = document.getElementById(qid + '_ans');
+    const fb = document.getElementById(qid + '_fb');
+    const card = document.getElementById(qid);
+
+    // grab the button (it's the element that called this)
+    const btn = card.querySelector('.check-btn');
+
+    const userVal = (input.value || '').trim().toLowerCase();
+    const correctLow = correct.toLowerCase();
+
+    state[qid + '_locked'] = true;
+    input.disabled = true;
+    btn.disabled = true;
+    totalAnswered++;
+
+    if (userVal === correctLow) {
+      card.classList.add('correct');
+      input.classList.add('correct-input');
+      fb.className = 'q-feedback show correct';
+      fb.innerHTML = '✓ ¡Correcto! ' + explanation;
+      totalScore += pts;
+    } else {
+      card.classList.add('wrong');
+      input.classList.add('wrong-input');
+      fb.className = 'q-feedback show wrong';
+      fb.innerHTML = '✗ La respuesta correcta es <strong>' + correct + '</strong>. ' + explanation;
+    }
+    updateHeader();
+  }
+
+  // ── Results ────────────────────────────────────────────────
+  function showResults(secId) {
+    const qs = sectionQs[secId];
+    let earned = 0;
+    let possible = 0;
+
+    qs.forEach(qid => {
+      // determine max pts for this q
+      const card = document.getElementById(qid);
+      if (!card) return;
+      const btn = card.querySelector('.check-btn');
+      if (btn && btn.onclick) {
+        const onStr = btn.getAttribute('onclick') || '';
+        const ptsMatch = onStr.match(/,(\d)\)/);
+        const pts = ptsMatch ? parseInt(ptsMatch[1]) : 1;
+        possible += pts;
+      } else {
+        possible += 1;
+      }
+    });
+
+    // re-count score from checked questions in this section
+    earned = 0;
+    qs.forEach(qid => {
+      const card = document.getElementById(qid);
+      if (!card) return;
+      const fb = document.getElementById(qid + '_fb');
+      if (fb && fb.classList.contains('correct')) {
+        const btn = card.querySelector('.check-btn');
+        const onStr = btn ? (btn.getAttribute('onclick') || '') : '';
+        const ptsMatch = onStr.match(/,(\d)\)/);
+        earned += ptsMatch ? parseInt(ptsMatch[1]) : 1;
+      }
+    });
+
+    const pct = possible > 0 ? Math.round(earned / possible * 100) : 0;
+    let grade, gradeClass;
+    if (pct >= 90) { grade = 'A'; gradeClass = 'grade-A'; }
+    else if (pct >= 80) { grade = 'B'; gradeClass = 'grade-B'; }
+    else if (pct >= 70) { grade = 'C'; gradeClass = 'grade-C'; }
+    else { grade = 'D — Necesitas más práctica'; gradeClass = 'grade-D'; }
+
+    const panel = document.getElementById('results_' + secId);
+    panel.innerHTML = `
+      <h2>Resultados</h2>
+      <div class="results-big">${pct}%</div>
+      <div class="results-sub">${earned} / ${possible} puntos correctos</div>
+      <div class="results-grade ${gradeClass}">Grade: ${grade}</div><br>
+      <button class="retry-btn" onclick="resetSection('${secId}')">🔄 Intentar de nuevo</button>
+    `;
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Reset ──────────────────────────────────────────────────
+  function resetSection(secId) {
+    const qs = sectionQs[secId];
+    qs.forEach(qid => {
+      // clear lock
+      delete state[qid + '_locked'];
+      delete state[qid + '_selected'];
+
+      const card = document.getElementById(qid);
+      if (!card) return;
+      card.classList.remove('correct','wrong');
+
+      // MC
+      const opts = document.querySelectorAll('#' + qid + '_opts .mc-option');
+      opts.forEach(o => { o.className = 'mc-option'; });
+
+      const btn = document.getElementById(qid + '_btn');
+      if (btn) btn.disabled = true;
+
+      // Fill
+      const input = document.getElementById(qid + '_ans');
+      if (input) {
+        input.value = '';
+        input.disabled = false;
+        input.className = 'blank-input';
+      }
+
+      const fillBtn = card.querySelector('.check-btn');
+      if (fillBtn) fillBtn.disabled = false;
+
+      const fb = document.getElementById(qid + '_fb');
+      if (fb) { fb.className = 'q-feedback'; fb.innerHTML = ''; }
+    });
+
+    // remove from score
+    totalAnswered = Math.max(0, totalAnswered - qs.length);
+    // reset results panel
+    const panel = document.getElementById('results_' + secId);
+    panel.classList.remove('show');
+    panel.innerHTML = '';
+    updateHeader();
+  }
+
+  // init
+  updateHeader();
+</script>
+</body>
+</html>
