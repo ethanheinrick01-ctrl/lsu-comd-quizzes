@@ -11,6 +11,8 @@
     total: 0,
     graded: {}
   };
+  var choiceSlotOffset = Math.floor(Math.random() * 4);
+  var choiceSlotCount = 0;
 
   function escapeHTML(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
@@ -158,39 +160,84 @@
 
   function questionHTML(q, number) {
     var id = "q" + number;
-    var typeLabel = q.type === "multi" ? "Find All" : q.type === "match" ? "Match" : q.type === "tf" ? "T/F" : "MC";
+    var displayQ = shuffleQuestionChoices(q);
+    var typeLabel = displayQ.type === "multi" ? "Find All" : displayQ.type === "match" ? "Match" : displayQ.type === "tf" ? "T/F" : "MC";
     var prompt = [
-      '<p class="q-prompt">' + escapeHTML(q.prompt) + ' <span class="pill paper">' + q.points + ' pt' + (q.points === 1 ? "" : "s") + '</span></p>',
-      q.subprompt ? '<p class="q-subprompt">' + escapeHTML(q.subprompt) + '</p>' : ''
+      '<p class="q-prompt">' + escapeHTML(displayQ.prompt) + ' <span class="pill paper">' + displayQ.points + ' pt' + (displayQ.points === 1 ? "" : "s") + '</span></p>',
+      displayQ.subprompt ? '<p class="q-subprompt">' + escapeHTML(displayQ.subprompt) + '</p>' : ''
     ].join("");
 
     var response = "";
-    if (q.type === "mc" || q.type === "tf" || q.type === "match") {
-      response = '<div class="option-list">' + q.options.map(function (option, index) {
+    if (displayQ.type === "mc" || displayQ.type === "tf" || displayQ.type === "match") {
+      response = '<div class="option-list">' + displayQ.options.map(function (option, index) {
         return '<button type="button" class="choice-btn" data-action="choose" data-qid="' + id + '" data-index="' + index + '">' + escapeHTML(option) + '</button>';
       }).join("") + '</div>';
-    } else if (q.type === "multi") {
-      response = '<div class="option-list">' + q.options.map(function (option, index) {
+    } else if (displayQ.type === "multi") {
+      response = '<div class="option-list">' + displayQ.options.map(function (option, index) {
         return '<label class="multi-row" data-index="' + index + '"><input type="checkbox" data-qid="' + id + '" data-index="' + index + '"> <span>' + escapeHTML(option) + '</span></label>';
       }).join("") + '</div><button type="button" class="check-btn" data-action="check-multi" data-qid="' + id + '">Check Answer</button>';
     }
 
-    window.__LANG_DIS_QS[id] = q;
+    window.__LANG_DIS_QS[id] = displayQ;
 
     return [
       '<article class="question-card" id="' + id + '">',
       '  <div class="question-top">',
       '    <span class="q-num">Question ' + number + ' - ' + typeLabel + '</span>',
-      '    <span class="q-topic">' + escapeHTML(q.topic || "") + '</span>',
+      '    <span class="q-topic">' + escapeHTML(displayQ.topic || "") + '</span>',
       '  </div>',
       '  <div class="q-body">',
       prompt,
       response,
       '    <div class="feedback" data-feedback="' + id + '"></div>',
-      modelHTML(q),
+      modelHTML(displayQ),
       '  </div>',
       '</article>'
     ].join("");
+  }
+
+  function shuffleQuestionChoices(q) {
+    if (!q.options || q.type === "tf") return q;
+
+    var copy = {};
+    Object.keys(q).forEach(function (key) { copy[key] = q[key]; });
+
+    var entries = q.options.map(function (option, index) {
+      return { option: option, originalIndex: index };
+    });
+
+    if (Array.isArray(q.answer)) {
+      for (var i = entries.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = entries[i];
+        entries[i] = entries[j];
+        entries[j] = tmp;
+      }
+      copy.options = entries.map(function (entry) { return entry.option; });
+      copy.answer = entries.reduce(function (answer, entry, index) {
+        if (q.answer.indexOf(entry.originalIndex) !== -1) answer.push(index);
+        return answer;
+      }, []);
+    } else {
+      var correctEntry = entries.find(function (entry) { return entry.originalIndex === q.answer; });
+      var distractors = entries.filter(function (entry) { return entry.originalIndex !== q.answer; });
+      for (var d = distractors.length - 1; d > 0; d--) {
+        var swap = Math.floor(Math.random() * (d + 1));
+        var temp = distractors[d];
+        distractors[d] = distractors[swap];
+        distractors[swap] = temp;
+      }
+      var targetIndex = (choiceSlotOffset + choiceSlotCount) % entries.length;
+      choiceSlotCount += 1;
+      entries = [];
+      for (var slot = 0; slot < q.options.length; slot++) {
+        entries[slot] = slot === targetIndex ? correctEntry : distractors.pop();
+      }
+      copy.options = entries.map(function (entry) { return entry.option; });
+      copy.answer = targetIndex;
+    }
+
+    return copy;
   }
 
   function modelHTML(q) {
