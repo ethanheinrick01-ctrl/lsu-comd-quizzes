@@ -372,6 +372,8 @@
 
     if (type.indexOf("spec:") === 0) drawSpectrogramRecipe(canvas, type.slice(5));
     else if (type === "source-filter") drawSourceFilter(ctx, w, h);
+    else if (type === "tube-classes") drawTubeClasses(ctx, w, h);
+    else if (type === "displays") drawDisplays(ctx, w, h);
     else if (type === "vowel-space") drawVowelSpace(ctx, w, h);
     else if (type === "nasal-order") drawNasalOrder(ctx, w, h);
     else if (type === "nasalization") drawNasalization(ctx, w, h);
@@ -530,6 +532,61 @@
     label(ctx, "nasalized vowel", 718, 108, 14, "#8a4f16");
     label(ctx, "nasal peak", 588, 188, 12, "#775500", "center");
     label(ctx, "antiresonance notch", 735, 272, 12, "#775500", "center");
+  }
+
+  function drawTubeClasses(ctx, w, h) {
+    label(ctx, "Schematic tube models: name the class, then explain source + filter", 38, 34, 18, "#215f73");
+    var models = [
+      { x: 54, tag: "(a)", name: "oral vowel", source: "periodic voicing", filter: "oral resonances", side: false, constrict: false },
+      { x: 366, tag: "(b)", name: "fricative/stop release", source: "aperiodic noise", filter: "front-cavity peak", side: false, constrict: true },
+      { x: 678, tag: "(c)", name: "nasal/lateral", source: "voicing + coupling", filter: "resonance + antiresonance", side: true, constrict: false }
+    ];
+    models.forEach(function (m) {
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#c3cfda";
+      ctx.lineWidth = 2;
+      ctx.roundRect(m.x, 70, 250, 222, 8);
+      ctx.fill();
+      ctx.stroke();
+      label(ctx, m.tag, m.x + 18, 100, 18, "#17212b");
+      drawTubeModel(ctx, m.x + 35, 128, m.side, m.constrict);
+      label(ctx, m.name, m.x + 125, 221, 15, "#215f73", "center");
+      label(ctx, m.source, m.x + 125, 248, 13, "#596573", "center");
+      label(ctx, m.filter, m.x + 125, 269, 13, "#596573", "center");
+    });
+    label(ctx, "Exam move: source type first; resonance/antiresonance second; acoustic consequence third.", w / 2, 330, 15, "#8a4f16", "center");
+  }
+
+  function drawTubeModel(ctx, x, y, side, constrict) {
+    ctx.strokeStyle = "#596573";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x, y + 32);
+    ctx.bezierCurveTo(x + 35, y + 2, x + 145, y + 2, x + 180, y + 32);
+    ctx.bezierCurveTo(x + 145, y + 62, x + 35, y + 62, x, y + 32);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(33,95,115,.12)";
+    ctx.beginPath();
+    ctx.ellipse(x + 90, y + 32, 83, 26, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (constrict) {
+      ctx.fillStyle = "#8a4f16";
+      ctx.fillRect(x + 116, y + 6, 12, 52);
+      label(ctx, "C1", x + 122, y - 7, 12, "#8a4f16", "center");
+      arrow(ctx, x + 118, y + 86, x + 122, y + 60);
+      label(ctx, "small front cavity", x + 105, y + 108, 12, "#8a4f16", "center");
+    }
+    if (side) {
+      ctx.strokeStyle = "#8a4f16";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + 92, y + 15);
+      ctx.lineTo(x + 92, y - 44);
+      ctx.bezierCurveTo(x + 92, y - 64, x + 138, y - 64, x + 138, y - 44);
+      ctx.lineTo(x + 138, y + 15);
+      ctx.stroke();
+      label(ctx, "side/trapped cavity", x + 112, y + 106, 12, "#8a4f16", "center");
+    }
   }
 
   function drawFricativeSpectra(ctx, w, h) {
