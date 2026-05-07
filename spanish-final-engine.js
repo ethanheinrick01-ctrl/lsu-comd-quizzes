@@ -110,10 +110,38 @@
       return;
     }
 
+    const verbHelp = isCorrect ? "" : renderVerbHelp(answerText);
     feedback.innerHTML = isCorrect
       ? `<strong>Correct.</strong> ${question.explain || ""}`
-      : `<strong>Not quite.</strong> Correct answer: ${answerText}. ${question.explain || ""}`;
+      : `<strong>Not quite.</strong> Correct answer: ${answerText}. ${question.explain || ""}${verbHelp}`;
     feedback.classList.add("show");
+  }
+
+  function renderVerbHelp(answerText) {
+    const help = findVerbHelp(answerText);
+    if (!help) return "";
+    return ` <span class="verb-help"><strong>Verb help:</strong> infinitive <em>${help.infinitive}</em> (${help.ending}), ${help.meaning}.</span>`;
+  }
+
+  function findVerbHelp(answerText) {
+    const lookup = window.SPANISH_VERB_HELP || {};
+    const normalized = normalizeVerbKey(answerText);
+    if (lookup[normalized]) return lookup[normalized];
+
+    const tokens = normalized.split(/\s+/).filter(Boolean);
+    for (let index = tokens.length - 1; index >= 0; index -= 1) {
+      if (lookup[tokens[index]]) return lookup[tokens[index]];
+    }
+    return null;
+  }
+
+  function normalizeVerbKey(value) {
+    return String(value)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[().,;:!?]/g, "")
+      .trim();
   }
 
   function submitQuiz(quiz) {

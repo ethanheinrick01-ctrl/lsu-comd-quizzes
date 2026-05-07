@@ -471,5 +471,117 @@
     questions: mockQuestions
   };
 
+  function normalizeVerbKey(value) {
+    return String(value)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[().,;:!?]/g, "")
+      .trim();
+  }
+
+  const verbEntries = [
+    { infinitive: "acabar", meaning: "to finish/end", forms: ["acabemos"] },
+    { infinitive: "ahorrar", meaning: "to save money", forms: ["ahorrar"] },
+    { infinitive: "anunciar", meaning: "to announce", forms: ["anuncie", "anuncio"] },
+    { infinitive: "apagar", meaning: "to turn off", forms: ["apagaramos"] },
+    { infinitive: "aprender", meaning: "to learn", forms: ["aprendido"] },
+    { infinitive: "atraer", meaning: "to attract", forms: ["atraer"] },
+    { infinitive: "bajar", meaning: "to go down/lower", forms: ["bajara"] },
+    { infinitive: "cambiar", meaning: "to change", forms: ["cambiaria"] },
+    { infinitive: "cometer", meaning: "to commit/make", forms: ["cometamos", "cometerias"] },
+    { infinitive: "completar", meaning: "to complete", forms: ["completen", "completado"] },
+    { infinitive: "comprar", meaning: "to buy", forms: ["comprado"] },
+    { infinitive: "comprender", meaning: "to understand", forms: ["comprendan"] },
+    { infinitive: "conducir", meaning: "to drive/lead", forms: ["conduzcan"] },
+    { infinitive: "conocer", meaning: "to know/meet", forms: ["conocieran", "conozcan"] },
+    { infinitive: "contaminar", meaning: "to pollute", forms: ["contamina", "contaminar", "contamine", "contaminado"] },
+    { infinitive: "corregir", meaning: "to correct", forms: ["corregido"] },
+    { infinitive: "dar", meaning: "to give", forms: ["da", "den", "diera"] },
+    { infinitive: "deber", meaning: "should/ought to", forms: ["deberia"] },
+    { infinitive: "depositar", meaning: "to deposit", forms: ["depositado"] },
+    { infinitive: "devolver", meaning: "to return/give back", forms: ["devuelvas"] },
+    { infinitive: "decir", meaning: "to say/tell", forms: ["dijera", "dijeras", "diremos", "diriamos"] },
+    { infinitive: "dormir", meaning: "to sleep", forms: ["dormir"] },
+    { infinitive: "empezar", meaning: "to begin", forms: ["empezara", "empiece"] },
+    { infinitive: "entender", meaning: "to understand", forms: ["entendamos", "entenderiamos", "entendido"] },
+    { infinitive: "entrar", meaning: "to enter", forms: ["entren"] },
+    { infinitive: "escoger", meaning: "to choose", forms: ["escogeriamos", "escogido"] },
+    { infinitive: "escribir", meaning: "to write", forms: ["escribira", "escribiria"] },
+    { infinitive: "estar", meaning: "to be", forms: ["esta", "estamos", "estan", "estarian", "este", "esten", "estuviera", "estuvieramos", "estado"] },
+    { infinitive: "estudiar", meaning: "to study", forms: ["estudiaras", "estudiado"] },
+    { infinitive: "evitar", meaning: "to avoid", forms: ["evitar"] },
+    { infinitive: "funcionar", meaning: "to work/function", forms: ["funciona", "funcionara", "funcione"] },
+    { infinitive: "ganar", meaning: "to win/earn", forms: ["ganar", "ganaras", "ganaria", "ganariamos", "ganado"] },
+    { infinitive: "graduarse", ending: "-ar reflexive", meaning: "to graduate", forms: ["graduaramos"] },
+    { infinitive: "gustar", meaning: "to be pleasing/like", forms: ["gustaria"] },
+    { infinitive: "haber", meaning: "to have as an auxiliary/there is", forms: ["hay", "haya", "hubiera", "hubieramos"] },
+    { infinitive: "hablar", meaning: "to speak/talk", forms: ["hablaran", "hablaria", "hable", "hablado"] },
+    { infinitive: "hacer", meaning: "to do/make", forms: ["hara", "haremos", "haria", "harian", "hecho", "hicieran"] },
+    { infinitive: "informar", meaning: "to inform/report", forms: ["informaria", "informado"] },
+    { infinitive: "ir", meaning: "to go", forms: ["ir", "vayas"] },
+    { infinitive: "jubilarse", ending: "-ar reflexive", meaning: "to retire", forms: ["jubilarse"] },
+    { infinitive: "jugar", meaning: "to play", forms: ["jugaba"] },
+    { infinitive: "leer", meaning: "to read", forms: ["leamos", "leido"] },
+    { infinitive: "llamar", meaning: "to call", forms: ["llamare", "llamariamos"] },
+    { infinitive: "llegar", meaning: "to arrive", forms: ["llega", "llegaramos", "llegaran", "llegaremos", "llegue", "lleguemos", "llegado"] },
+    { infinitive: "llenar", meaning: "to fill out/fill", forms: ["llenara", "llenaremos", "llenaria", "llenado"] },
+    { infinitive: "mantener", meaning: "to maintain/keep", forms: ["mantendran", "mantenido"] },
+    { infinitive: "mirar", meaning: "to look at/watch", forms: ["mirar"] },
+    { infinitive: "necesitar", meaning: "to need", forms: ["necesites"] },
+    { infinitive: "obedecer", meaning: "to obey", forms: ["obedeceremos", "obedeceria"] },
+    { infinitive: "ofrecer", meaning: "to offer", forms: ["ofrece", "ofrecera", "ofreceria", "ofrezca", "ofrezcan"] },
+    { infinitive: "oir", meaning: "to hear", forms: ["oiga", "oire"] },
+    { infinitive: "pagar", meaning: "to pay", forms: ["pagaremos", "pagariamos", "paguen", "pagado"] },
+    { infinitive: "parar", meaning: "to stop", forms: ["paren"] },
+    { infinitive: "pedir", meaning: "to ask for/order", forms: ["pediriamos"] },
+    { infinitive: "pelear", meaning: "to fight/argue", forms: ["pelean"] },
+    { infinitive: "perder", meaning: "to lose", forms: ["perderiamos", "perderian", "perdido"] },
+    { infinitive: "permitir", meaning: "to permit/allow", forms: ["permita", "permite"] },
+    { infinitive: "poder", meaning: "to be able/can", forms: ["podamos", "podremos", "podriamos", "pudiera", "pudieramos", "pudieran", "pueda", "puede"] },
+    { infinitive: "poner", meaning: "to put/place", forms: ["pondre", "pusiera"] },
+    { infinitive: "postularse", ending: "-ar reflexive", meaning: "to run/apply for a position", forms: ["postularse", "postula", "postule"] },
+    { infinitive: "practicar", meaning: "to practice", forms: ["practicaramos", "practicariamos", "practicado"] },
+    { infinitive: "publicar", meaning: "to publish", forms: ["publicara"] },
+    { infinitive: "querer", meaning: "to want/love", forms: ["querra", "querrian"] },
+    { infinitive: "recibir", meaning: "to receive", forms: ["recibido"] },
+    { infinitive: "recordar", meaning: "to remember", forms: ["recordara"] },
+    { infinitive: "repasar", meaning: "to review", forms: ["repasaramos"] },
+    { infinitive: "repetir", meaning: "to repeat", forms: ["repetira"] },
+    { infinitive: "responder", meaning: "to answer/respond", forms: ["respondamos"] },
+    { infinitive: "resolver", meaning: "to solve/resolve", forms: ["resuelva", "resuelve"] },
+    { infinitive: "revisar", meaning: "to review/check", forms: ["revise", "revisa", "reviso", "revisara"] },
+    { infinitive: "saber", meaning: "to know a fact", forms: ["sabe", "saben", "sabremos", "sepa", "sepan", "supiera", "supieramos"] },
+    { infinitive: "sacar", meaning: "to take out/withdraw", forms: ["sacar"] },
+    { infinitive: "salir", meaning: "to leave/go out", forms: ["saldremos", "saldriamos", "salgan", "salieramos", "salimos", "salir", "salido"] },
+    { infinitive: "seguir", meaning: "to continue/follow", forms: ["seguiremos"] },
+    { infinitive: "sentir", meaning: "to feel", forms: ["sienta"] },
+    { infinitive: "ser", meaning: "to be", forms: ["seria", "era", "eramos", "fuera", "fueramos"] },
+    { infinitive: "servir", meaning: "to serve/be useful", forms: ["sirva", "sirve"] },
+    { infinitive: "terminar", meaning: "to finish/end", forms: ["terminamos", "terminaramos", "termine", "terminemos", "termines", "termino", "terminado"] },
+    { infinitive: "tener", meaning: "to have", forms: ["tendras", "tendriamos", "tendrias", "tenga", "tengamos", "tenido", "tuviera", "tuvieramos"] },
+    { infinitive: "tomar", meaning: "to take/drink", forms: ["tomamos", "tomara", "tomaran", "tomemos"] },
+    { infinitive: "trabajar", meaning: "to work", forms: ["trabajaremos", "trabajado"] },
+    { infinitive: "unirse", ending: "-ir reflexive", meaning: "to join", forms: ["uniera"] },
+    { infinitive: "usar", meaning: "to use", forms: ["usaria"] },
+    { infinitive: "venir", meaning: "to come", forms: ["vendremos"] },
+    { infinitive: "ver", meaning: "to see", forms: ["veran", "veriamos", "visto"] },
+    { infinitive: "viajar", meaning: "to travel", forms: ["viajare", "viajaria", "viajariamos"] },
+    { infinitive: "vivir", meaning: "to live", forms: ["vive", "viviamos", "vivira", "viviriamos"] },
+    { infinitive: "votar", meaning: "to vote", forms: ["votar", "votara", "votaran", "votado"] }
+  ];
+
+  const verbHelp = {};
+  verbEntries.forEach(entry => {
+    entry.forms.forEach(form => {
+      verbHelp[normalizeVerbKey(form)] = {
+        infinitive: entry.infinitive,
+        ending: entry.ending || `-${entry.infinitive.replace(/se$/, "").slice(-2)}`,
+        meaning: entry.meaning
+      };
+    });
+  });
+
+  window.SPANISH_VERB_HELP = verbHelp;
   window.SPANISH_FINAL_QUIZZES = quizzes;
 })();

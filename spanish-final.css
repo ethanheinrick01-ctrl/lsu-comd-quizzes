@@ -492,6 +492,12 @@ main.mh-wrap {
   display: block;
 }
 
+.verb-help {
+  display: block;
+  margin-top: 6px;
+  color: inherit;
+}
+
 .quiz-actions {
   display: flex;
   flex-wrap: wrap;
