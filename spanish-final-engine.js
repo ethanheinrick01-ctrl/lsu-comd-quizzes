@@ -46,7 +46,7 @@
           </div>
           <div class="q-body">
             <div class="options">${optionMarkup(question, questionIndex)}</div>
-            <div class="feedback" id="fb${questionIndex}"></div>
+            <div class="feedback" id="fb${questionIndex}" aria-live="polite"></div>
           </div>
         </section>
       `;
@@ -56,7 +56,13 @@
     document.getElementById("totalCount").textContent = quiz.questions.length;
     document.getElementById("progressBar").style.width = "0%";
 
-    panel.addEventListener("change", updateProgress);
+    panel.addEventListener("change", event => {
+      const input = event.target.closest("input[type='radio']");
+      if (!input) return;
+      const questionIndex = Number(input.name.replace("q", ""));
+      showQuestionFeedback(quiz.questions[questionIndex], questionIndex);
+      updateProgress();
+    });
     document.getElementById("submitBtn").addEventListener("click", () => submitQuiz(quiz));
     document.getElementById("resetBtn").addEventListener("click", () => resetQuiz(quiz));
   }
@@ -66,6 +72,32 @@
     const answered = new Set([...document.querySelectorAll("input[type='radio']:checked")].map(input => input.name)).size;
     document.getElementById("answeredCount").textContent = answered;
     document.getElementById("progressBar").style.width = `${Math.round((answered / total) * 100)}%`;
+  }
+
+  function showQuestionFeedback(question, questionIndex) {
+    const selected = document.querySelector(`input[name="q${questionIndex}"]:checked`);
+    const selectedValue = selected ? Number(selected.value) : -1;
+    const isCorrect = selectedValue === question.answer;
+    const answerText = question.options[question.answer];
+
+    document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+      const option = input.closest(".option");
+      option.classList.remove("correct", "wrong");
+      if (selected && Number(input.value) === question.answer) option.classList.add("correct");
+      if (selected && input === selected && !isCorrect) option.classList.add("wrong");
+    });
+
+    const feedback = document.getElementById(`fb${questionIndex}`);
+    if (!selected) {
+      feedback.classList.remove("show");
+      feedback.textContent = "";
+      return;
+    }
+
+    feedback.innerHTML = isCorrect
+      ? `<strong>Correct.</strong> ${question.explain || ""}`
+      : `<strong>Not quite.</strong> Correct answer: ${answerText}. ${question.explain || ""}`;
+    feedback.classList.add("show");
   }
 
   function submitQuiz(quiz) {
@@ -84,20 +116,10 @@
       }
       sectionStats.set(question.section, stat);
 
+      showQuestionFeedback(question, questionIndex);
       document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
         input.disabled = true;
-        const option = input.closest(".option");
-        option.classList.remove("correct", "wrong");
-        if (Number(input.value) === question.answer) option.classList.add("correct");
-        if (selected && input === selected && !isCorrect) option.classList.add("wrong");
       });
-
-      const feedback = document.getElementById(`fb${questionIndex}`);
-      const answerText = question.options[question.answer];
-      feedback.innerHTML = isCorrect
-        ? `<strong>Correct.</strong> ${question.explain || ""}`
-        : `<strong>Correct answer:</strong> ${answerText}. ${question.explain || ""}`;
-      feedback.classList.add("show");
     });
 
     const scorePanel = document.getElementById("scorePanel");
