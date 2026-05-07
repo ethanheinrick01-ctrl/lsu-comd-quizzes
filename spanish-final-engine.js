@@ -110,11 +110,17 @@
       return;
     }
 
+    const promptTranslation = renderPromptTranslation(question);
     const verbHelp = isCorrect ? "" : renderVerbHelp(answerText);
     feedback.innerHTML = isCorrect
-      ? `<strong>Correct.</strong> ${question.explain || ""}`
-      : `<strong>Not quite.</strong> Correct answer: ${answerText}. ${question.explain || ""}${verbHelp}`;
+      ? `<strong>Correct.</strong> ${question.explain || ""}${promptTranslation}`
+      : `<strong>Not quite.</strong> Correct answer: ${answerText}. ${question.explain || ""}${promptTranslation}${verbHelp}`;
     feedback.classList.add("show");
+  }
+
+  function renderPromptTranslation(question) {
+    if (!question.translation) return "";
+    return ` <span class="translation-help"><strong>English:</strong> ${question.translation}</span>`;
   }
 
   function renderVerbHelp(answerText) {

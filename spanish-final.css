@@ -492,6 +492,7 @@ main.mh-wrap {
   display: block;
 }
 
+.translation-help,
 .verb-help {
   display: block;
   margin-top: 6px;
