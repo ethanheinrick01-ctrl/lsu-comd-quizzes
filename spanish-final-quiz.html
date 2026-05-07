@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPAN 2102 Quiz</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./spanish-final.css">
+</head>
+<body>
+  <div class="mh-topbar">
+    <div class="mh-wrap">
+      <div class="brand">
+        <div class="brand-mark">Mc<br>Graw</div>
+        <div class="brand-title">
+          <strong>SPAN 2102 Final Practice</strong>
+          <span>McGraw Hill-style multiple choice drills</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a href="./spanish-final-hub.html">Spanish hub</a>
+        <a href="./labeling-quiz.html">Main hub</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="mh-wrap">
+      <div>
+        <p class="kicker">SPAN 2102</p>
+        <h1 id="quizTitle">Loading quiz...</h1>
+        <p class="lede" id="quizSubtitle">Preparing questions.</p>
+        <div class="quiz-meta" id="quizMeta"></div>
+      </div>
+      <div class="hero-stat">
+        <strong id="quizCount">0</strong>
+        <span>questions</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="mh-wrap">
+    <div class="quiz-shell">
+      <aside class="question-rail" aria-label="Quiz progress">
+        <div class="rail-box">
+          <strong id="answeredCount">0</strong>
+          <span>answered</span>
+        </div>
+        <div class="rail-box">
+          <strong id="totalCount">0</strong>
+          <span>total</span>
+        </div>
+        <div class="rail-box">
+          <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+          <span>progress</span>
+        </div>
+      </aside>
+
+      <div>
+        <div class="quiz-panel" id="quizPanel"></div>
+        <div class="quiz-actions">
+          <button id="submitBtn" type="button">Submit for score</button>
+          <button class="secondary" id="resetBtn" type="button">Reset quiz</button>
+          <a class="button-link secondary" href="./spanish-final-hub.html">Back to hub</a>
+        </div>
+        <section class="score-panel" id="scorePanel" aria-live="polite">
+          <h2>Score</h2>
+          <div class="score-number" id="scoreNumber">0/0</div>
+          <p id="scoreSub" class="note"></p>
+          <table class="score-breakdown" id="scoreBreakdown"></table>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="./spanish-final-data.js"></script>
+  <script src="./spanish-final-engine.js"></script>
+</body>
+</html>
