@@ -17,6 +17,7 @@
   }
 
   function renderQuiz(quiz) {
+    quiz = prepareQuiz(quiz);
     document.title = `${quiz.title} | SPAN 2102`;
     document.getElementById("quizTitle").textContent = quiz.title;
     document.getElementById("quizSubtitle").textContent = quiz.subtitle;
@@ -65,7 +66,7 @@
       updateProgress();
     });
     document.getElementById("submitBtn").addEventListener("click", () => submitQuiz(quiz));
-    document.getElementById("resetBtn").addEventListener("click", () => resetQuiz(quiz));
+    document.getElementById("resetBtn").addEventListener("click", () => window.location.reload());
   }
 
   function renderRules(quiz) {
@@ -207,6 +208,30 @@
       return;
     }
     renderQuiz(quiz);
+  }
+
+  function prepareQuiz(quiz) {
+    return {
+      ...quiz,
+      questions: shuffleItems(quiz.questions).map(question => {
+        const correctText = question.options[question.answer];
+        const shuffledOptions = shuffleItems(question.options);
+        return {
+          ...question,
+          options: shuffledOptions,
+          answer: shuffledOptions.indexOf(correctText)
+        };
+      })
+    };
+  }
+
+  function shuffleItems(items) {
+    const shuffled = items.slice();
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
   }
 
   document.addEventListener("DOMContentLoaded", boot);
