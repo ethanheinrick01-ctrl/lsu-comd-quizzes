@@ -171,6 +171,62 @@ main.mh-wrap {
   padding: 28px 0 54px;
 }
 
+.rules-panel {
+  margin-bottom: 18px;
+  border: 1px solid #c9d8ea;
+  border-left: 6px solid var(--blue);
+  border-radius: 6px;
+  background: #fff;
+  padding: 18px 20px 18px 18px;
+  box-shadow: 0 8px 18px rgba(29, 42, 62, .05);
+}
+
+.rules-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.rules-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 900;
+}
+
+.rules-panel h2 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.rules-panel p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.rules-panel ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 18px;
+  margin: 0;
+  padding-left: 42px;
+}
+
+.rules-panel li {
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .hub-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -541,6 +597,11 @@ button.secondary:hover,
 
   .hub-grid {
     grid-template-columns: 1fr;
+  }
+
+  .rules-panel ul {
+    grid-template-columns: 1fr;
+    padding-left: 24px;
   }
 
   .q-head {

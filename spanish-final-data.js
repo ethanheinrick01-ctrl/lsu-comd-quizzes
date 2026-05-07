@@ -338,6 +338,77 @@
     "si-clauses": quiz("si-clauses", "Clausulas con si", "Normal and flipped si-clause order, including the tricky pattern your professor flagged.", "Grammar", siRows)
   };
 
+  const ruleSets = {
+    vocab: [
+      "Use context first: bank words go with money, job words go with work, prensa/noticiero/noticias go with media.",
+      "For profession matching, match the object/place to the job: dientes -> dentista, libros -> bibliotecario, puentes -> ingeniero.",
+      "For 'does not belong,' find the one word from the wrong category, not the one you know least.",
+      "Politics words cluster together: ley, cargo, candidato, votar, gobierno, derechos, dictadura.",
+      "Money traps: prestamo = loan, presupuesto = budget, recibo = receipt, efectivo = cash."
+    ],
+    perfect: [
+      "Fact or certainty takes indicative: creo que, se que, es verdad que -> he/has/ha/hemos/han + participle.",
+      "Doubt, denial, emotion, possibility, or judgment takes subjunctive: no creo que, dudo que, es bueno que -> haya/hayas/haya/hayamos/hayan + participle.",
+      "Nosotros forms are hemos for indicative and hayamos for subjunctive.",
+      "Do not choose preterite or future if the sentence is asking for 'has/have done.'",
+      "Find the trigger before choosing the verb form; the trigger decides mood."
+    ],
+    antecedents: [
+      "Known/specific person or thing takes indicative: conozco a alguien que, la profesora que, el restaurante que.",
+      "Unknown, nonexistent, or searched-for person/thing takes subjunctive: no conozco a nadie que, busco una persona que, necesito algo que.",
+      "Questions with hay alguien que often use subjunctive because existence is uncertain.",
+      "No hay ningun/ninguna almost always points to subjunctive.",
+      "Same verb, different setup: tengo un trabajo que ofrece = indicative; quiero un trabajo que ofrezca = subjunctive."
+    ],
+    purpose: [
+      "Always subjunctive after para que, sin que, en caso de que, con tal de que, a menos que, and antes de que.",
+      "If the subject stays the same after para, antes de, or sin, use the infinitive instead.",
+      "Para estudiar = same subject; para que nosotros estudiemos = new subject.",
+      "En caso de que and a menos que are contingency clauses, so expect subjunctive.",
+      "Watch spelling changes in present subjunctive: llegar -> lleguemos, pagar -> paguemos, conducir -> conduzcan."
+    ],
+    time: [
+      "Future or not-yet-happened action after cuando/en cuanto/tan pronto como/hasta que takes subjunctive.",
+      "Habitual action takes indicative: siempre, cada dia, generalmente.",
+      "Completed past action takes indicative, usually preterite or imperfect.",
+      "Antes de que always takes subjunctive; antes de + infinitive is for same subject.",
+      "Do not choose future after these time conjunctions when the action is pending; Spanish uses present subjunctive instead."
+    ],
+    future: [
+      "Regular future = infinitive + e, as, a, emos, eis, an.",
+      "Nosotros future ending is -emos: hablaremos, viviremos, podremos.",
+      "Irregular stems: dir-, har-, podr-, pondr-, querr-, sabr-, saldr-, tendr-, vendr-, habr-.",
+      "Do not confuse future with conditional: podremos = will be able; podriamos = would be able.",
+      "Future keeps the infinitive shape, so most spelling changes are not needed."
+    ],
+    "past-subjunctive": [
+      "Build past subjunctive from the ellos preterite stem, then drop -ron and add -ra endings.",
+      "Past triggers require past subjunctive: queria que, esperaba que, pidio que, era importante que.",
+      "Nosotros past subjunctive has the accent: hablaramos, pudieramos, tuvieramos, fueramos.",
+      "Como si and hypothetical si clauses use past subjunctive.",
+      "Past perfect subjunctive = hubiera/hubieras/hubieramos/hubieran + participle."
+    ],
+    conditional: [
+      "Conditional = infinitive + ia, ias, ia, iamos, iais, ian.",
+      "Use conditional for the result of a hypothetical: si tuviera dinero, viajaria.",
+      "Same irregular stems as future: dir-, har-, podr-, pondr-, querr-, sabr-, saldr-, tendr-, vendr-.",
+      "Nosotros conditional ending is -iamos: hablariamos, veriamos, tendriamos.",
+      "English 'would' can be a trap: habitual past uses imperfect, not conditional."
+    ],
+    "si-clauses": [
+      "Hypothetical formula: si + past subjunctive, then conditional.",
+      "The order can flip: viajaria si tuviera dinero means the same rule still applies.",
+      "In the si half, choose past subjunctive: tuviera, pudiera, fuera, supiera.",
+      "In the result half, choose conditional: tendria, podria, seria, viajaria.",
+      "For nosotros traps: si tuvieramos -> viajariamos; si fueramos -> tendriamos."
+    ]
+  };
+
+  Object.entries(ruleSets).forEach(([id, rules]) => {
+    quizzes[id].ruleIntro = "Use these rules before choosing an answer.";
+    quizzes[id].rules = rules;
+  });
+
   const anchorTargets = {
     vocab: 8,
     perfect: 6,
@@ -388,6 +459,15 @@
     title: "Comprehensive Mock Final",
     subtitle: "50 multiple-choice questions weighted to the study guide, with anchor items plus fresh near-clones.",
     kind: "Mock Final",
+    ruleIntro: "Mixed exam mode: identify the section rule before answering.",
+    rules: [
+      "First identify the trigger: fact/certainty = indicative; doubt/emotion/unknown/purpose/future-pending = subjunctive.",
+      "Known antecedent = indicative; unknown, nonexistent, or searched-for antecedent = subjunctive.",
+      "Time conjunctions use subjunctive for future/pending actions, indicative for habitual or completed actions.",
+      "Future and conditional share irregular stems, but future means will and conditional means would.",
+      "Si clauses: si + past subjunctive, conditional result. The order can flip.",
+      "Watch nosotros carefully: hemos/hayamos, lleguemos, podremos, tuvieramos, hablariamos."
+    ],
     questions: mockQuestions
   };
 

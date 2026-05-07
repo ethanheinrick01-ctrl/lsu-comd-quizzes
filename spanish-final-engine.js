@@ -26,6 +26,7 @@
       <span class="pill green">${quiz.questions.length} questions</span>
       <span class="pill purple">all multiple choice</span>
     `;
+    renderRules(quiz);
 
     const panel = document.getElementById("quizPanel");
     panel.innerHTML = quiz.questions.map((question, questionIndex) => {
@@ -65,6 +66,21 @@
     });
     document.getElementById("submitBtn").addEventListener("click", () => submitQuiz(quiz));
     document.getElementById("resetBtn").addEventListener("click", () => resetQuiz(quiz));
+  }
+
+  function renderRules(quiz) {
+    const panel = document.getElementById("rulesPanel");
+    const list = document.getElementById("rulesList");
+    const intro = document.getElementById("rulesIntro");
+
+    if (!quiz.rules || !quiz.rules.length) {
+      panel.hidden = true;
+      return;
+    }
+
+    intro.textContent = quiz.ruleIntro || "Read these before you answer.";
+    list.innerHTML = quiz.rules.map(rule => `<li>${rule}</li>`).join("");
+    panel.hidden = false;
   }
 
   function updateProgress() {
