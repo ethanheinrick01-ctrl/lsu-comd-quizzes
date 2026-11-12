@@ -1,0 +1,157 @@
+/* Exam 2 shell only. Existing answer colors and course annotation roles retain their meaning. */
+body.dx-exam2-shell {
+ --bg:#0e1117;--bg2:#10151e;--panel:#1b2029;--card:#1b2029;--panel2:#232b36;--card2:#232b36;--line:#354253;
+ --ink:#e4e9f1;--text:#e4e9f1;--mute:#b4c0d1;--muted:#b4c0d1;--acc:#7cc4ff;--focus:#9ed5ff;--shadow:none;
+ background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;position:relative;isolation:isolate;min-height:100vh;
+}
+body.dx-exam2-shell::before {content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url('penelope-outline.png') repeat 8px 16px/160px 133px;opacity:.11;filter:grayscale(1)}
+.dx-exam2-shell .skip {background:var(--panel);color:var(--ink)}
+.dx-exam2-shell .top {position:sticky;top:0;z-index:30;background:var(--bg2);border-bottom:1px solid var(--line);backdrop-filter:none}
+.dx-exam2-shell .topin {display:block;box-sizing:border-box;width:100%;max-width:976px;margin:auto;padding:8px 28px 0}
+.dx-exam2-shell .dx-identity {display:flex;justify-content:space-between;align-items:center;gap:16px}
+.dx-exam2-shell .brand {font-size:20px;line-height:28px;letter-spacing:0;font-weight:700;white-space:normal;color:var(--ink)}
+.dx-exam2-shell .brand span {display:block;color:var(--mute);font-size:16px;line-height:22.4px;font-weight:400;margin-top:4px}
+.dx-exam2-shell .nav {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:4px;overflow:visible;width:100%}
+.dx-exam2-shell[data-exam-prep-hidden="true"] .nav {grid-template-columns:repeat(3,minmax(0,1fr))}
+.dx-exam2-shell .nav a {display:block;min-width:0;min-height:48px;padding:12px 8px;text-align:center;font-size:18px;line-height:24px;text-decoration:none;border:0;border-bottom:3px solid transparent;border-radius:0;color:var(--mute);background:transparent;white-space:nowrap}
+.dx-exam2-shell .nav a:hover {background:var(--panel);color:var(--ink)}
+.dx-exam2-shell .nav a[aria-current="page"] {color:var(--acc);border-bottom-color:var(--acc);font-weight:700}
+.dx-exam2-shell .dx-tools {position:relative;font-size:16px;line-height:1.5}
+.dx-exam2-shell .dx-tools>summary {min-height:44px;padding:10px 6px;box-sizing:border-box;cursor:pointer;color:var(--acc)}
+.dx-exam2-shell .dx-tools-menu {position:absolute;right:0;top:48px;width:252px;max-width:calc(100vw - 32px);z-index:40;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 10px 30px #0006}
+.dx-exam2-shell .dx-tools-menu :is(a,button) {display:block;min-height:44px;width:100%;padding:10px 12px;text-align:left;color:var(--ink);font-size:16px;line-height:1.5;text-decoration:none;border:0;background:transparent;border-radius:8px;box-sizing:border-box}
+.dx-exam2-shell .dx-tools-menu :is(a,button):hover {background:var(--panel2)}
+.dx-exam2-shell main#app {width:100%;max-width:976px;margin:0 auto;padding:16px 28px 40px;box-sizing:border-box;min-width:0;font-size:20px;line-height:1.75}
+.dx-exam2-shell #app .topic-shell {width:100%;max-width:none;min-width:0}
+.dx-exam2-shell #app h1 {font-size:34px;line-height:44.2px;letter-spacing:-.02em;margin:0 0 12px;font-weight:700}
+.dx-exam2-shell #app h2 {font-size:22px;line-height:1.4;color:var(--acc);margin:0 0 12px}
+.dx-exam2-shell #app h3 {font-size:21px;line-height:1.4;color:var(--acc)}
+.dx-exam2-shell #app p {line-height:1.75}
+.dx-exam2-shell #app .lede {font-size:20px;line-height:1.75;color:var(--mute);margin:0 0 16px;max-width:78ch}
+.dx-exam2-shell #app :is(.eyebrow,.small,.saved-text,.study-citation,.qmeta,.scope-note,.statusmsg,.badge) {font-size:16px;line-height:1.6}
+.dx-exam2-shell #app .eyebrow {color:var(--mute);letter-spacing:0;margin:0 0 8px}
+.dx-exam2-shell #app :is(.card,.stat) {max-width:none;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:none;margin:16px 0}
+.dx-exam2-shell #app .row {gap:8px;flex-wrap:wrap;min-width:0}
+.dx-exam2-shell #app .btn {min-height:44px;min-width:44px;max-width:100%;padding:10px 14px;font-size:18px;line-height:28.8px;border-radius:9px;white-space:normal;box-sizing:border-box}
+.dx-exam2-shell #app .btn:is(.primary,.pri) {background:#21629a;border-color:#4189c5;color:#fff}
+.dx-exam2-shell #app .btn:is(.primary,.pri):hover {background:#286fa9}
+.dx-exam2-shell #app :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea) {max-width:100%;min-width:0;min-height:44px;padding:10px 12px;background:var(--bg2);color:var(--ink);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:18px;box-sizing:border-box}
+.dx-exam2-shell #app textarea {width:100%;min-height:140px}
+.dx-exam2-shell :is(a,button,input,select,textarea,summary):focus-visible {outline:3px solid #9ed5ff;outline-offset:3px}
+.dx-exam2-shell #app summary {min-height:44px;padding:10px 0;box-sizing:border-box;color:var(--acc);cursor:pointer;font-size:18px;line-height:1.6}
+.dx-exam2-shell #app :is(.stats,.run-scores,.dx-focus-metrics) {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:12px 0}
+.dx-exam2-shell #app .stats {grid-template-columns:repeat(4,minmax(0,1fr))}
+.dx-exam2-shell #app .stats .stat {margin:0;padding:0;border:0;background:transparent}
+.dx-exam2-shell #app :is(.stat strong,.run-scores strong,.dx-focus-metrics b) {display:block;color:var(--acc);font-size:26px;line-height:1.3}
+.dx-exam2-shell #app :is(.stat span,.run-scores span,.dx-focus-metrics span) {display:block;color:var(--mute);font-size:16px;line-height:1.4;margin-top:4px}
+.dx-exam2-shell #app .dx-dashboard-summary h2,.dx-exam2-shell #app .dx-section-summary h2 {font-size:24px}
+.dx-exam2-shell #app .dx-dashboard-summary .completion-note {margin-bottom:0}
+.dx-exam2-shell #app .dx-dashboard-summary>.row {margin-top:12px}
+.dx-exam2-shell #app .dx-scope-notice {font-size:16px;color:var(--mute);margin:12px 0 16px}
+.dx-exam2-shell #app .dx-chapters-heading {margin:24px 0 12px}
+.dx-exam2-shell #app .dx-chapter-list {display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.dx-exam2-shell #app .dx-chapter-list>.card {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;margin:0;padding:18px 22px}
+.dx-exam2-shell #app .dx-chapter-list>.card>:not(.row) {grid-column:1;margin:0}
+.dx-exam2-shell #app .dx-chapter-list>.card>.eyebrow {font-size:14px}
+.dx-exam2-shell #app .dx-chapter-list h2 a {display:block;color:var(--acc);text-decoration:none}
+.dx-exam2-shell #app .dx-chapter-list h2 a:hover {text-decoration:underline}
+.dx-exam2-shell #app .dx-chapter-list>.card>p:not(.small):not(.eyebrow) {font-size:20px;line-height:1.6;margin:4px 0}
+.dx-exam2-shell #app .dx-chapter-list>.card>.progress {max-width:360px;margin:6px 0;width:100%}
+.dx-exam2-shell #app .dx-chapter-list>.card>.row {grid-column:2;grid-row:1 / span 6;align-self:center;max-width:240px;align-content:center;justify-content:flex-end;padding:0;margin:0}
+.dx-exam2-shell #app .dx-packet {margin-top:24px}
+.dx-exam2-shell #app .dx-packet .e2-scope {margin:12px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0 0;background:transparent}
+.dx-exam2-shell #app .dx-crumb {font-size:16px;color:var(--mute);margin:0 0 12px}
+.dx-exam2-shell #app .dx-focus-filters {display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,260px);align-items:end;gap:16px;margin:24px 0 12px}
+.dx-exam2-shell #app .dx-focus-filters label {display:block;font-size:18px;color:var(--mute)}
+.dx-exam2-shell #app .dx-focus-filters :is(input,select) {display:block;width:100%;margin-top:6px}
+.dx-exam2-shell #app .dx-focus-list {display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.dx-exam2-shell #app .dx-focus-row {display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:8px 24px;margin:0;padding:18px 22px}
+.dx-exam2-shell #app .dx-focus-row h2 {font-size:22px;line-height:1.4;margin:0 0 8px}
+.dx-exam2-shell #app .dx-focus-row h2 a {text-decoration:none;color:var(--acc)}
+.dx-exam2-shell #app .dx-focus-row h2 a:hover {text-decoration:underline}
+.dx-exam2-shell #app .dx-focus-row .eyebrow {font-size:14px;margin:0 0 6px}
+.dx-exam2-shell #app .dx-focus-row .section-study {border:0;margin:0;padding:0;display:contents}
+.dx-exam2-shell #app .dx-focus-row .section-study>p {width:100%;order:3;margin:4px 0 0;font-size:14px;line-height:1.5}
+.dx-exam2-shell #app .dx-focus-record p {margin:0 0 6px;font-size:16px;line-height:1.5}
+.dx-exam2-shell #app .dx-focus-record .progress {margin:6px 0}
+.dx-exam2-shell #app .dx-focus-state[data-status=mastered] strong {color:#8bd5a2}
+.dx-exam2-shell #app .dx-skill-details {font-size:16px;line-height:1.6}
+.dx-exam2-shell #app .dx-skill-details summary {font-size:16px;padding:6px 0}
+.dx-exam2-shell #app .dx-skill-details ul {padding-left:20px;margin:8px 0}
+.dx-exam2-shell #app .dx-skill-details li {font-size:16px;margin-bottom:10px}
+.dx-exam2-shell #app .dx-skill-details li span {display:block;color:var(--mute);font-size:14px}
+.dx-exam2-shell #app .dx-section-summary>.progress {max-width:480px}
+.dx-exam2-shell #app .dx-section-summary>.dx-focus-state {font-size:18px;margin:4px 0}
+.dx-exam2-shell #app .dx-section-footer {display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px;margin:24px 0;font-size:18px}
+.dx-exam2-shell #app .dx-lesson-toolbar {display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin:8px 0}
+.dx-exam2-shell #app .dx-lesson-toolbar button {background:transparent;color:var(--acc);border:0;border-radius:8px;min-height:44px;padding:10px 12px;font-size:18px;line-height:1.5;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.dx-exam2-shell #app .dx-lesson-toolbar button:hover {background:var(--panel)}
+.dx-exam2-shell #app .dx-lesson-toolbar button:disabled {color:var(--mute);opacity:.65;cursor:default;text-decoration:none}
+.dx-exam2-shell #app .dx-lesson-jump {display:flex;align-items:center;gap:14px;font-size:18px;color:var(--mute);margin:10px 0 16px}
+.dx-exam2-shell #app .dx-lesson-jump select {flex:1;min-width:0}
+.dx-exam2-shell #app [id^=dx-reading-],.dx-exam2-shell #app [id^=dx-lesson-figure-],.dx-exam2-shell #app #dx-lesson-watch {scroll-margin-top:160px}
+.dx-exam2-shell #app .guide-module-head {margin-top:18px}
+.dx-exam2-shell #app :is(.study-card,.study-focus .study-card) {padding:22px 26px;margin-bottom:16px}
+.dx-exam2-shell #app :is(.study-prose,.study-prose p,.study-prose li,.study-points,.study-subpoints,.study-note p,.study-note li,.study-target small,.chapter-explainer .source-box>p,.dx-focus-targets li,.study-table,.study-table th,.study-table td) {font-size:24px;line-height:1.75}
+.dx-exam2-shell #app :is(.study-card h3,.focus-reading h2) {font-size:22px;line-height:1.4}
+.dx-exam2-shell #app .reading-key {font-size:16px;line-height:1.5;margin:12px 0 16px}
+.dx-exam2-shell #app .reading-check-label,.dx-exam2-shell #app .study-note>span {font-size:18px;line-height:1.6}
+.dx-exam2-shell #app .study-citation :is(li,p) {font-size:16px;line-height:1.6}
+.dx-exam2-shell #app .source-box pre {font-size:20px;line-height:1.75;max-width:100%;overflow-wrap:anywhere}
+.dx-exam2-shell #app :is(.qstem,.topic-option,.topic-feedback,.topic-feedback p,.topic-feedback li,.rubric,.mastery-rule) {font-size:20px;line-height:1.65}
+.dx-exam2-shell #app .qstem {font-size:22px}
+.dx-exam2-shell #app :is(.qcard,.topic-session,.lesson,.film-transcript) {max-width:100%;min-width:0}
+.dx-exam2-shell #app :is(.qcard h3,.paper-question h3) {color:var(--ink)}
+.dx-exam2-shell #app .topic-option:has(:disabled) {opacity:1}
+.dx-exam2-shell #app .tabs {overflow:visible;flex-wrap:wrap;gap:8px}
+.dx-exam2-shell #app :is(.skill-state,.review-tag,.pick-badge,.choice-result,.history-row small) {font-size:16px;line-height:1.6}
+.dx-exam2-shell #app .pick-grid {grid-template-columns:1fr}
+.dx-exam2-shell #app .pick-badge {display:inline-block;white-space:normal}
+.dx-exam2-shell #app .builder .formrow {align-items:flex-start}
+.dx-exam2-shell #app :is(.tablewrap,.table-scroll) {max-width:100%;overflow-x:auto}
+.dx-exam2-shell #app table {font-size:20px;line-height:1.6}
+.dx-exam2-shell #app :is(video,img,svg) {max-width:100%;height:auto}
+.dx-exam2-shell #app .movie-stage {gap:8px}
+.dx-exam2-shell #app .movie-stage .btn {flex:1 1 180px}
+.dx-exam2-shell #app .progress i {background:var(--acc)}
+.dx-exam2-shell [hidden] {display:none!important}
+.dx-exam2-shell footer {max-width:976px;padding:20px 28px;font-size:14px;line-height:1.6;box-sizing:border-box}
+[data-theme=light] body.dx-exam2-shell {--bg:#f4f7fb;--bg2:#eef3f9;--panel:#fff;--card:#fff;--panel2:#e8eef6;--card2:#e8eef6;--line:#c4cfdd;--ink:#182435;--text:#182435;--mute:#54687d;--muted:#54687d;--acc:#235f96}
+[data-theme=light] .dx-exam2-shell #app .dx-focus-state[data-status=mastered] strong {color:#187647}
+@media(max-width:900px) {
+ .dx-exam2-shell #app .dx-chapter-list>.card {grid-template-columns:minmax(0,1fr)}
+ .dx-exam2-shell #app .dx-chapter-list>.card>.row {grid-column:1;grid-row:auto;justify-content:flex-start;max-width:none;margin-top:8px}
+}
+@media(max-width:767px) {
+ body.dx-exam2-shell::before {background-size:130px 108px;opacity:.08}
+ .dx-exam2-shell .topin {padding:8px 16px 0}
+ .dx-exam2-shell .brand {font-size:18px;line-height:25.2px}
+ .dx-exam2-shell .brand span {font-size:14px;line-height:19.6px}
+ .dx-exam2-shell .nav {gap:0;margin-top:8px}
+ .dx-exam2-shell .nav a {font-size:15px;min-height:47px;padding:10px 2px}
+ .dx-exam2-shell main#app {padding:16px 16px 32px;font-size:20px}
+ .dx-exam2-shell #app h1 {font-size:28px;line-height:1.3}
+ .dx-exam2-shell #app :is(.card,.qcard,.study-card,.study-focus .study-card,.dx-chapter-list>.card,.dx-focus-row) {padding:18px}
+ .dx-exam2-shell #app :is(.stats,.run-scores,.dx-focus-metrics) {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .dx-exam2-shell #app .dx-focus-row {grid-template-columns:minmax(0,1fr);gap:12px}
+ .dx-exam2-shell #app .dx-focus-filters {grid-template-columns:1fr;gap:12px}
+ .dx-exam2-shell #app .dx-lesson-jump {display:block}
+ .dx-exam2-shell #app .dx-lesson-jump select {display:block;width:100%;margin-top:8px}
+ .dx-exam2-shell #app .dx-focus-copy>.row .btn {flex:1 1 140px}
+ .dx-exam2-shell #app :is(.study-prose,.study-prose p,.study-prose li,.study-points,.study-subpoints,.study-note p,.study-note li,.study-target small,.chapter-explainer .source-box>p,.dx-focus-targets li,.study-table,.study-table th,.study-table td) {font-size:20px}
+ .dx-exam2-shell #app .skill-row {grid-template-columns:1fr;gap:4px}
+ .dx-exam2-shell #app .builder .formrow>label:first-child {min-width:0}
+ .dx-exam2-shell #app .row .btn {flex:0 1 auto}
+ .dx-exam2-shell #app .pick {padding:10px 0;gap:10px;flex-wrap:wrap}
+ .dx-exam2-shell #app .pick>span:first-of-type {min-width:150px}
+ .dx-exam2-shell #app .topic-option {grid-template-columns:18px 22px minmax(0,1fr);padding:13px 12px;gap:9px}
+ .dx-exam2-shell #app .topic-option:has(>input[type=checkbox]) {grid-template-columns:18px minmax(0,1fr)}
+ .dx-exam2-shell footer {padding:20px 16px}
+}
+@media(max-height:600px) {.dx-exam2-shell .top {position:static}}
+@media print {
+ body.dx-exam2-shell::before,.dx-exam2-shell .top,.dx-exam2-shell .dx-focus-filters,.dx-exam2-shell .dx-section-footer {display:none!important}
+ body.dx-exam2-shell {background:#fff;color:#111}
+ .dx-exam2-shell main#app {max-width:none;padding:0}
+ .dx-exam2-shell #app .card {background:#fff;color:#111;border-color:#bbb}
+}
