@@ -1,0 +1,70 @@
+/* Shared lesson and Focus scale; theme colors and teaching content stay course-specific. */
+@media screen {
+  #app { font-size: 20px; line-height: 1.75; }
+  #app :is(.study-card, .cas-reading .card, .focus-priority, .focus-blueprint, .qcard) { font-size: 22px; line-height: 1.75; min-width: 0; overflow-wrap: anywhere; }
+  #app .topic-shell .study-card { padding: 30px 32px; }
+  #app :is(.study-card h3, .cas-reading .card h2, .focus-priority h3) { font-size: 26px; line-height: 1.4; color: var(--acc); }
+  #app :is(.study-prose, .study-prose p, .study-prose li, .study-note p, .study-table, .cas-reading .feature p, .qstem, .topic-option) { font-size: 22px; line-height: 1.75; }
+  #app .study-prose li { margin-bottom: 18px; }
+  #app :is(.study-citation, .section-study p, .source-box summary, .study-note > span) { font-size: 16px; line-height: 1.6; }
+  #app :is(.small, .eyebrow, .focus-number, .reading-key, .source-box figcaption) { font-size: 16px; line-height: 1.6; }
+  #app :is(.section-study .btn, .qcard .btn, .focus-priority .btn) { font-size: 18px; line-height: 1.6; min-height: 44px; }
+  #app .source-box pre { font-size: 18px; }
+  #app .study-card .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+  #app .study-card .flow li { font-size: 18px; line-height: 1.6; overflow-wrap: normal; }
+  #app .study-card .viz-note { font-size: 18px; line-height: 1.6; }
+}
+@media screen and (max-width: 767px) {
+  #app { font-size: 18px; }
+  #app :is(.study-card, .cas-reading .card, .focus-priority, .focus-blueprint, .qcard, .study-prose, .study-prose p, .study-prose li, .study-note p, .study-table, .cas-reading .feature p, .qstem, .topic-option) { font-size: 20px; }
+  #app .topic-shell .study-card { padding: 24px 18px; }
+  #app :is(.study-card h3, .cas-reading .card h2, .focus-priority h3) { font-size: 24px; }
+}
+
+/* Chapter 10 reading semantics are explicit; they do not depend on a moved wrapper. */
+:root { --reading-blue: #7cc4ff; --reading-term: #ff4fd8; --reading-checkpoint: #ffb78a; --reading-surface: #232b36; --reading-border: #47515e; }
+:root[data-theme="light"] { --reading-blue: #235f96; --reading-term: #9d087e; --reading-checkpoint: #99440d; --reading-surface: #f3f5f8; --reading-border: #bac4d1; }
+#app :is(.study-card, .cas-reading, .study-focus, .legacy-reading, .reading-key) mark.study-term { color: var(--reading-term); background: none; font-weight: 700; box-shadow: none; }
+#app :is(.study-card, .cas-reading, .study-focus, .legacy-reading, .reading-key) mark.study-emphasis { color: #000; background: #ffff00; font-weight: 400; box-shadow: none; padding: 0 .08em; border-radius: 0; }
+#app :is(.checkpoint-key, .study-note > span, .study-target > span) { color: var(--reading-checkpoint); }
+#app :is(.study-note, .study-target, .callout-cas, .focus-rule) { background: var(--reading-surface); border: 1px solid var(--reading-border); border-radius: 8px; padding: 16px 18px; }
+#app :is(.study-note > span, .study-target > span) { display: block; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: normal; text-transform: none; }
+#app :is(.study-card, .cas-reading, .study-focus, .legacy-reading) :is(h2, h3) { color: var(--reading-blue); }
+#app .study-card { margin-bottom: 24px; }
+#app .study-points { padding-left: 22px; margin: 18px 0; }
+#app .study-subpoints { padding-left: 24px; margin: 10px 0 0; }
+#app :is(.study-points, .study-subpoints) li { margin: 0 0 18px; }
+#app .study-subpoints li { margin-bottom: 10px; }
+#app :is(.study-points, .study-subpoints) li::marker { color: var(--mute); }
+#app .study-citation { margin-top: 22px; }
+#app .study-citation li { font-size: 16px; line-height: 1.6; }
+#app .study-citation summary { color: var(--reading-blue); font-size: 18px; }
+#app .focus-rule > strong { display: block; color: var(--reading-checkpoint); font-size: 18px; }
+#app .study-focus .focus-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+#app :is(.study-focus > section, .study-focus .focus-section, .study-focus .focus-reading, .cas-reading, .legacy-reading) :is(p, li, td) { font-size: 22px; line-height: 1.75; }
+#app :is(.study-note, .study-target) :is(p, li) { font-size: 22px; line-height: 1.75; }
+#app :is(.study-focus, .cas-reading, .legacy-reading) .small { font-size: 16px; line-height: 1.6; }
+#app :is(.study-focus, .cas-reading, .legacy-reading) .card { padding: 30px 32px; }
+#app .study-focus .focus-reading { margin: 24px 0; }
+#app .study-focus .focus-reading .btn { min-height: 44px; font-size: 18px; }
+#app .study-prose { color: var(--ink); }
+#app .study-card .emphasis-label { color: var(--ink); font-size: 16px; letter-spacing: normal; text-transform: none; }
+@media (max-width: 767px) {
+  #app :is(.study-focus > section, .study-focus .focus-section, .study-focus .focus-reading, .cas-reading, .legacy-reading, .study-note, .study-target) :is(p, li, td) { font-size: 20px; }
+  #app :is(.study-focus, .cas-reading, .legacy-reading) .card { padding: 24px 18px; }
+  #app :is(.study-note, .study-target, .callout-cas, .focus-rule) { padding: 14px 16px; }
+  #app :is(.study-focus, .cas-reading, .legacy-reading) :is(h2, h3) { font-size: 24px; line-height: 1.4; }
+}
+@media print {
+  #app :is(.study-card, .cas-reading, .study-focus, .legacy-reading) mark { color: #111; background: none; font-weight: 700; }
+  #app :is(.study-note, .study-target, .callout-cas, .focus-rule) { background: white; color: #111; }
+}
+#app .cas-reading .feature-list, #app .cas-reading .topic-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+#app .cas-reading .feature :is(p, li) { color: var(--ink); }
+#app .cas-reading .checkpoint-key { display: block; font-size: 18px; font-weight: 700; }
+#app .legacy-reading .study-card { padding: 30px 32px; }
+@media(max-width:767px) { #app .legacy-reading .study-card { padding: 24px 18px; } }
+#app .guide-module-head :is(h2, .module-count) { color: var(--reading-blue); }
+#app .study-target small { display: block; font-size: 22px; line-height: 1.75; }
+@media(max-width:767px) { #app .study-target small { font-size: 20px; } }
+#app :is(.study-card, .focus-priority) .topic-table :is(th, td):first-child { min-width: 160px; overflow-wrap: normal; }

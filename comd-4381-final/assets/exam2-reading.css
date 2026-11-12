@@ -1,0 +1,14 @@
+/* Same annotation roles as the accepted Geology reader, scoped to Exam Two. */
+#app.exam2-reading { --reading-definition: #b9e87c; }
+[data-theme="light"] #app.exam2-reading { --reading-definition: #315c08; }
+#app.exam2-reading :is(mark.study-definition,.reading-definition-key) { color: var(--reading-definition); background: none; font-weight: 500; box-shadow: none; }
+#app.exam2-reading .study-term { color: var(--reading-term); background: none; font-weight: 700; }
+#app.exam2-reading .reading-checkpoint { padding: 14px 16px; border: 1px solid var(--reading-border); border-radius: 8px; background: var(--reading-surface); }
+#app.exam2-reading .reading-check-label { display: block; margin-bottom: 6px; color: var(--reading-checkpoint); font-size: 18px; font-weight: 700; line-height: 1.6; }
+#app.exam2-reading .chapter-explainer .source-box > p { font-size: 22px; line-height: 1.75; }
+#app.exam2-reading .tablewrap mark { padding: 0; }
+@media(max-width:767px) { #app.exam2-reading .chapter-explainer .source-box > p { font-size: 20px; } }
+@media print {
+ #app.exam2-reading mark.study-definition { color: #264900; background: none; text-decoration: underline; }
+ #app.exam2-reading .reading-checkpoint { background: white; color: #111; }
+}
